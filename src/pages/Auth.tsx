@@ -59,12 +59,19 @@ const Auth = () => {
 
       <div className="space-y-6">
         <div className="space-y-2">
+          <Label htmlFor="email-signin" className="text-sm text-muted-foreground">Email</Label>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-foreground">{formData.email || 'techfieldstechnologies@gmail.com'}</span>
+            <Input
+              id="email-signin"
+              type="email"
+              value={formData.email || 'techfieldstechnologies@gmail.com'}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              className="bg-muted border-0 h-12 text-base flex-1 mr-2"
+            />
             <Button
               variant="link"
               className="p-0 h-auto text-primary font-normal text-sm"
-              onClick={() => setMode('signup')}
+              onClick={() => setFormData(prev => ({ ...prev, email: '' }))}
             >
               Change
             </Button>

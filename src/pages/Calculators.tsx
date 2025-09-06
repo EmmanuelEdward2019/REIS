@@ -313,16 +313,35 @@ const Calculators = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-        {/* Hero Section */}
+        {/* Hero Section with Metrics */}
         <section className="section-padding text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
-              Public <span className="text-primary">Calculators</span>
+              Energy <span className="text-primary">Metrics</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Explore interactive tools to understand the impact and benefits of renewable energy systems. 
-              No login required - start calculating your sustainability metrics today.
+            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+              Real-time energy analytics and performance metrics from our renewable energy systems.
             </p>
+            
+            {/* Live Metrics Dashboard */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+              <div className="bg-card border border-border rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-success mb-2">2,847</div>
+                <div className="text-sm text-muted-foreground">CO₂ Saved (tons)</div>
+              </div>
+              <div className="bg-card border border-border rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-primary mb-2">15.2M</div>
+                <div className="text-sm text-muted-foreground">kWh Generated</div>
+              </div>
+              <div className="bg-card border border-border rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-accent mb-2">98.7%</div>
+                <div className="text-sm text-muted-foreground">System Uptime</div>
+              </div>
+              <div className="bg-card border border-border rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-warning mb-2">₦847M</div>
+                <div className="text-sm text-muted-foreground">Cost Savings</div>
+              </div>
+            </div>
           </div>
         </section>
 
