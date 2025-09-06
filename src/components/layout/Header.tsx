@@ -113,12 +113,12 @@ const Header = () => {
                 </button>
                 
                 {activeMega === 'reis' && (
-                  <div className="mega-menu">
-                    <div className="max-w-[90vw] mx-auto px-8 py-12">
-                      <div className="grid grid-cols-3 gap-12">
-                        {/* Solar Solutions Section */}
+                  <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
+                    <div className="max-w-[1400px] mx-auto px-12 py-16">
+                      <div className="grid grid-cols-4 gap-12">
+                        {/* Solar Solutions */}
                         <div className="space-y-6">
-                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted">
+                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
                             <img 
                               src={megaMenuReis} 
                               alt="Solar Solutions"
@@ -126,19 +126,19 @@ const Header = () => {
                             />
                           </div>
                           <div>
-                            <h3 className="font-semibold text-foreground mb-6 text-xl">Solar Solutions</h3>
-                            <ul className="space-y-4">
-                              <li><a href="/reis/residential-solar" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Residential Solar</a></li>
-                              <li><a href="/reis/commercial-solar" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Commercial Solar</a></li>
-                              <li><a href="/reis/utility-scale" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Utility Scale</a></li>
-                              <li><a href="/reis/solar-wind-hybrid" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Solar-Wind Hybrid</a></li>
+                            <h3 className="font-bold text-foreground mb-4 text-lg">Solar Solutions</h3>
+                            <ul className="space-y-3">
+                              <li><a href="/reis/residential-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Residential Solar</a></li>
+                              <li><a href="/reis/commercial-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Commercial Solar</a></li>
+                              <li><a href="/reis/utility-scale" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Utility Scale</a></li>
+                              <li><a href="/reis/solar-wind-hybrid" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Solar-Wind Hybrid</a></li>
                             </ul>
                           </div>
                         </div>
 
-                        {/* Energy Storage Section */}
+                        {/* Energy Storage */}
                         <div className="space-y-6">
-                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted">
+                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
                             <img 
                               src={megaMenuReis} 
                               alt="Energy Storage"
@@ -146,19 +146,19 @@ const Header = () => {
                             />
                           </div>
                           <div>
-                            <h3 className="font-semibold text-foreground mb-6 text-xl">Energy Storage</h3>
-                            <ul className="space-y-4">
-                              <li><a href="/reis/battery-systems" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Battery Systems</a></li>
-                              <li><a href="/reis/grid-storage" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Grid Storage</a></li>
-                              <li><a href="/reis/hydrogen-solutions" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Hydrogen Solutions</a></li>
-                              <li><a href="/reis/micro-storage" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Micro Storage</a></li>
+                            <h3 className="font-bold text-foreground mb-4 text-lg">Energy Storage</h3>
+                            <ul className="space-y-3">
+                              <li><a href="/reis/battery-systems" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Battery Systems</a></li>
+                              <li><a href="/reis/grid-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Grid Storage</a></li>
+                              <li><a href="/reis/hydrogen-solutions" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Hydrogen Solutions</a></li>
+                              <li><a href="/reis/micro-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Micro Storage</a></li>
                             </ul>
                           </div>
                         </div>
 
-                        {/* Marine Energy Section */}
+                        {/* Marine Energy */}
                         <div className="space-y-6">
-                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted">
+                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
                             <img 
                               src={megaMenuReis} 
                               alt="Marine Energy"
@@ -166,27 +166,26 @@ const Header = () => {
                             />
                           </div>
                           <div>
-                            <h3 className="font-semibold text-foreground mb-6 text-xl">Marine Energy</h3>
-                            <ul className="space-y-4">
-                              <li><a href="/reis/offshore-wind" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Offshore Wind</a></li>
-                              <li><a href="/reis/tidal-energy" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Tidal Energy</a></li>
-                              <li><a href="/reis/wave-power" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Wave Power</a></li>
-                              <li><a href="/reis/floating-solar" className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">Floating Solar</a></li>
+                            <h3 className="font-bold text-foreground mb-4 text-lg">Marine Energy</h3>
+                            <ul className="space-y-3">
+                              <li><a href="/reis/offshore-wind" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Offshore Wind</a></li>
+                              <li><a href="/reis/tidal-energy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Tidal Energy</a></li>
+                              <li><a href="/reis/wave-power" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Wave Power</a></li>
+                              <li><a href="/reis/floating-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Floating Solar</a></li>
                             </ul>
                           </div>
                         </div>
-                      </div>
-                      
-                      {/* REIS Preview Card */}
-                      <div className="mt-12 bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg p-8">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h4 className="text-lg font-semibold text-foreground mb-2">REIS Preview</h4>
-                            <p className="text-muted-foreground text-sm">Experience our renewable energy systems in action</p>
-                          </div>
-                          <Button className="bg-primary/90 hover:bg-primary text-white">
-                            View Demo
+
+                        {/* Featured Content */}
+                        <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg p-8 space-y-4">
+                          <h4 className="text-lg font-bold text-foreground">REIS Platform</h4>
+                          <p className="text-foreground/70 text-sm leading-relaxed">Experience our comprehensive renewable energy infrastructure solutions designed for the future.</p>
+                          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
+                            Explore REIS
                           </Button>
+                          <div className="pt-4 border-t border-border/50">
+                            <p className="text-xs text-foreground/60">Trusted by 500+ organizations worldwide</p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -206,32 +205,59 @@ const Header = () => {
                 </button>
                 
                 {activeMega === 'data-ai' && (
-                  <div className="mega-menu">
-                    <div className="max-w-7xl mx-auto px-8 py-12">
-                      <div className="grid grid-cols-2 gap-16">
-                        {megaMenus['data-ai'].sections.map((section, idx) => (
-                          <div key={idx} className="space-y-6">
-                            <div className="aspect-[16/10] rounded-lg overflow-hidden bg-muted">
-                              <img 
-                                src={section.image} 
-                                alt={section.title}
-                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                              />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold text-foreground mb-6 text-xl">{section.title}</h3>
-                              <ul className="space-y-4">
-                                {section.items.map((item, itemIdx) => (
-                                  <li key={itemIdx}>
-                                    <a href={item.href} className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">
-                                      {item.name}
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
+                  <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
+                    <div className="max-w-[1400px] mx-auto px-12 py-16">
+                      <div className="grid grid-cols-3 gap-16">
+                        {/* Analytics & Strategy */}
+                        <div className="space-y-6">
+                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
+                            <img 
+                              src={megaMenuDataAI} 
+                              alt="Analytics & Strategy"
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            />
                           </div>
-                        ))}
+                          <div>
+                            <h3 className="font-bold text-foreground mb-4 text-lg">Analytics & Strategy</h3>
+                            <ul className="space-y-3">
+                              <li><a href="/data-ai/strategy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Strategy</a></li>
+                              <li><a href="/data-ai/analytics" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Analytics</a></li>
+                              <li><a href="/data-ai/ml" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Machine Learning</a></li>
+                              <li><a href="/data-ai/engineering" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Engineering</a></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Solutions & Security */}
+                        <div className="space-y-6">
+                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
+                            <img 
+                              src={megaMenuDataAI} 
+                              alt="Solutions & Security"
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-foreground mb-4 text-lg">Solutions & Security</h3>
+                            <ul className="space-y-3">
+                              <li><a href="/data-ai/products" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Products</a></li>
+                              <li><a href="/data-ai/security" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Security Solutions</a></li>
+                              <li><a href="/data-ai/geospatial" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Geospatial Analytics</a></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Featured Content */}
+                        <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg p-8 space-y-4">
+                          <h4 className="text-lg font-bold text-foreground">AI Innovation Hub</h4>
+                          <p className="text-foreground/70 text-sm leading-relaxed">Transform your business with cutting-edge AI and data analytics solutions.</p>
+                          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
+                            Discover AI Solutions
+                          </Button>
+                          <div className="pt-4 border-t border-border/50">
+                            <p className="text-xs text-foreground/60">99.9% uptime guarantee</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -250,32 +276,59 @@ const Header = () => {
                 </button>
                 
                 {activeMega === 'training' && (
-                  <div className="mega-menu">
-                    <div className="max-w-7xl mx-auto px-8 py-12">
-                      <div className="grid grid-cols-2 gap-16">
-                        {megaMenus.training.sections.map((section, idx) => (
-                          <div key={idx} className="space-y-6">
-                            <div className="aspect-[16/10] rounded-lg overflow-hidden bg-muted">
-                              <img 
-                                src={section.image} 
-                                alt={section.title}
-                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                              />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold text-foreground mb-6 text-xl">{section.title}</h3>
-                              <ul className="space-y-4">
-                                {section.items.map((item, itemIdx) => (
-                                  <li key={itemIdx}>
-                                    <a href={item.href} className="text-muted-foreground hover:text-primary transition-colors font-medium block text-base">
-                                      {item.name}
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
+                  <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
+                    <div className="max-w-[1400px] mx-auto px-12 py-16">
+                      <div className="grid grid-cols-3 gap-16">
+                        {/* Learning Systems */}
+                        <div className="space-y-6">
+                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
+                            <img 
+                              src={megaMenuTraining} 
+                              alt="Learning Systems"
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            />
                           </div>
-                        ))}
+                          <div>
+                            <h3 className="font-bold text-foreground mb-4 text-lg">Learning Systems</h3>
+                            <ul className="space-y-3">
+                              <li><a href="/training/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">LMS Platform</a></li>
+                              <li><a href="/training/content" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Content Development</a></li>
+                              <li><a href="/training/professional" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Professional Programs</a></li>
+                              <li><a href="/training/compliance" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Compliance Training</a></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Specialized Training */}
+                        <div className="space-y-6">
+                          <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
+                            <img 
+                              src={megaMenuTraining} 
+                              alt="Specialized Training"
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-foreground mb-4 text-lg">Specialized Training</h3>
+                            <ul className="space-y-3">
+                              <li><a href="/training/vocational" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Vocational Training</a></li>
+                              <li><a href="/training/assessment" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Assessment Tools</a></li>
+                              <li><a href="/training/advisory" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Advisory Services</a></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Featured Content */}
+                        <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg p-8 space-y-4">
+                          <h4 className="text-lg font-bold text-foreground">Training Excellence</h4>
+                          <p className="text-foreground/70 text-sm leading-relaxed">Empower your workforce with comprehensive training solutions and professional development.</p>
+                          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
+                            Start Training
+                          </Button>
+                          <div className="pt-4 border-t border-border/50">
+                            <p className="text-xs text-foreground/60">25,000+ certified professionals</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
