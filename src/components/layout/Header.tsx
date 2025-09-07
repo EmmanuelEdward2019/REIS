@@ -91,11 +91,12 @@ const Header = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center">
-              <a href="/" className="text-xl font-bold text-foreground flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-sm flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">E&T</span>
-                </div>
-                <span>Eagle & Thistle</span>
+              <a href="/" className="flex items-center">
+                <img 
+                  src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png" 
+                  alt="Eagle & Thistle Group" 
+                  className="h-10 w-auto"
+                />
               </a>
             </div>
 
