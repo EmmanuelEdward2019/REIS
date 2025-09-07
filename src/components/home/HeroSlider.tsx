@@ -116,10 +116,10 @@ const HeroSlider = () => {
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <div className="flex flex-row gap-4 justify-center">
                     <Button 
                       size="lg" 
-                      className="px-8 py-3 text-base font-medium bg-primary text-white hover:bg-primary/90 rounded-md transition-colors"
+                      className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-primary text-white hover:bg-primary/90 rounded-md transition-colors"
                       onClick={() => window.location.href = '/client-dashboard'}
                     >
                       {slide.cta1}
@@ -127,7 +127,7 @@ const HeroSlider = () => {
                     <Button 
                       size="lg" 
                       variant="outline"
-                      className="px-8 py-3 text-base font-medium bg-white/10 text-white border-white/30 hover:bg-white/20 rounded-md transition-colors"
+                      className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-white/10 text-white border-white/30 hover:bg-white/20 rounded-md transition-colors"
                       onClick={() => window.location.href = '/solutions'}
                     >
                       {slide.cta2}

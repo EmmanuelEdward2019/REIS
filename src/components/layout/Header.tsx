@@ -357,14 +357,27 @@ const Header = () => {
               </Button>
             </div>
 
-            {/* Mobile menu button */}
-            <div className="lg:hidden">
+            {/* Mobile menu button and icons */}
+            <div className="lg:hidden flex items-center space-x-3">
+              {/* Tesla-style Icons for mobile */}
+              <Button variant="ghost" size="sm" className="p-2" title="Support">
+                <HelpCircle className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="p-2" title="Region & Language">
+                <Globe className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="p-2" title="Account" onClick={() => window.location.href = '/auth'}>
+                <UserCircle className="w-5 h-5" />
+              </Button>
+              
+              {/* Menu button with text */}
               <Button 
                 variant="ghost" 
-                size="icon"
+                className="flex items-center space-x-2 px-3 py-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                <span className="text-sm font-medium">Menu</span>
               </Button>
             </div>
           </div>
@@ -373,15 +386,15 @@ const Header = () => {
           {isMenuOpen && (
             <div className="lg:hidden border-t border-border bg-background">
               <div className="px-2 pt-2 pb-3 space-y-1">
-                <a href="/products" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Products</a>
-                <a href="/solutions" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Solutions</a>
+                <a href="/products" className="block px-3 py-2 text-foreground hover:text-primary font-medium">REIS</a>
+                <a href="/data-ai" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Data & AI</a>
+                <a href="/training" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Training</a>
+                <a href="/services" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Services</a>
                 <a href="/projects" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Projects</a>
-                <a href="/about" className="block px-3 py-2 text-foreground hover:text-primary font-medium">About</a>
+                <a href="/calculators" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Calculators</a>
+                <a href="/shop" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Shop</a>
                 <a href="/support" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Support</a>
-                <div className="border-t border-border mt-4 pt-4 space-y-2">
-                  <Button variant="ghost" className="w-full justify-start font-medium">Account</Button>
-                  <Button className="w-full font-medium">Menu</Button>
-                </div>
+                <a href="/about" className="block px-3 py-2 text-foreground hover:text-primary font-medium">About</a>
               </div>
             </div>
           )}
