@@ -358,25 +358,13 @@ const Header = () => {
             </div>
 
             {/* Mobile menu button and icons */}
-            <div className="lg:hidden flex items-center space-x-3">
-              {/* Tesla-style Icons for mobile */}
-              <Button variant="ghost" size="sm" className="p-2" title="Support">
-                <HelpCircle className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="p-2" title="Region & Language">
-                <Globe className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="p-2" title="Account" onClick={() => window.location.href = '/auth'}>
-                <UserCircle className="w-5 h-5" />
-              </Button>
-              
-              {/* Menu button with text */}
+            <div className="lg:hidden">
+              {/* Menu button with text only */}
               <Button 
                 variant="ghost" 
-                className="flex items-center space-x-2 px-3 py-2"
+                className="px-3 py-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                 <span className="text-sm font-medium">Menu</span>
               </Button>
             </div>
@@ -395,6 +383,24 @@ const Header = () => {
                 <a href="/shop" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Shop</a>
                 <a href="/support" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Support</a>
                 <a href="/about" className="block px-3 py-2 text-foreground hover:text-primary font-medium">About</a>
+                
+                {/* Tesla-style Icons in mobile menu */}
+                <div className="border-t border-border mt-4 pt-4 px-3">
+                  <div className="flex items-center justify-center space-x-6">
+                    <Button variant="ghost" size="sm" className="flex flex-col items-center space-y-1 p-3" title="Support">
+                      <HelpCircle className="w-6 h-6" />
+                      <span className="text-xs">Support</span>
+                    </Button>
+                    <Button variant="ghost" size="sm" className="flex flex-col items-center space-y-1 p-3" title="Region & Language">
+                      <Globe className="w-6 h-6" />
+                      <span className="text-xs">Region</span>
+                    </Button>
+                    <Button variant="ghost" size="sm" className="flex flex-col items-center space-y-1 p-3" title="Account" onClick={() => window.location.href = '/auth'}>
+                      <UserCircle className="w-6 h-6" />
+                      <span className="text-xs">Account</span>
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
