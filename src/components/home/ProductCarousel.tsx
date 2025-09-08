@@ -62,7 +62,7 @@ const ProductCarousel = () => {
   };
 
   return (
-    <section className="relative">
+    <section className="relative px-4 md:px-0">
       <Carousel 
         setApi={setApi}
         className="w-full"
@@ -71,11 +71,11 @@ const ProductCarousel = () => {
           loop: true,
         }}
       >
-        <CarouselContent className="-ml-4">
+        <CarouselContent className="-ml-4 md:ml-0">
           {products.map((product, index) => (
             <CarouselItem 
               key={product.id} 
-              className={`pl-4 basis-full md:basis-[80%] lg:basis-[85%] ${index === 0 ? 'md:ml-[30px]' : ''}`}
+              className={`pl-4 md:pl-0 basis-full md:basis-[80%] lg:basis-[85%] ${index === 0 ? 'md:ml-[30px]' : ''}`}
             >
               <div className="relative h-[70vh] min-h-[500px] overflow-hidden rounded-2xl">
                 {/* Background Image */}
@@ -128,15 +128,15 @@ const ProductCarousel = () => {
         </CarouselContent>
         
         {/* Navigation Dots */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+        <div className="absolute md:bottom-8 -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
           {products.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
               className={`w-2 h-2 rounded-full transition-all duration-200 ${
                 current === index + 1
-                  ? 'bg-white scale-125'
-                  : 'bg-white/50 hover:bg-white/75'
+                  ? 'bg-white md:bg-white bg-primary scale-125'
+                  : 'bg-white/50 md:bg-white/50 bg-primary/50 hover:bg-white/75 md:hover:bg-white/75 hover:bg-primary/75'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />

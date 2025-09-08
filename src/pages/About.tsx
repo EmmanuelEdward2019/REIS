@@ -97,6 +97,111 @@ const About = () => {
         </div>
       </section>
 
+      {/* About Eagle & Thistle - USPs */}
+      <section className="section-padding">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+              About Eagle & Thistle
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              <div className="text-center p-6 bg-primary/5 rounded-xl">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Target className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-3">Innovative</h3>
+                <p className="text-muted-foreground">
+                  Cutting-edge technology and forward-thinking solutions that push the boundaries of renewable energy.
+                </p>
+              </div>
+              <div className="text-center p-6 bg-primary/5 rounded-xl">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Leaf className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-3">Sustainable</h3>
+                <p className="text-muted-foreground">
+                  Environmental stewardship at the core of every decision, driving long-term sustainable impact.
+                </p>
+              </div>
+              <div className="text-center p-6 bg-primary/5 rounded-xl">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Globe className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-3">Scalable</h3>
+                <p className="text-muted-foreground">
+                  Solutions designed to grow from local communities to global implementations seamlessly.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sustainability Statement */}
+      <section className="section-padding bg-gradient-to-br from-primary/5 to-accent/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+              Our Sustainability Commitment
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              At Eagle & Thistle, sustainability isn't just a goal—it's our foundation. We operate under comprehensive 
+              ESG principles with a strong focus on HSEQ standards, serving both African and global markets.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center">
+                  <Shield className="w-6 h-6 text-primary mr-3" />
+                  ESG Principles
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Environmental responsibility, social impact, and governance excellence guide every aspect of our operations. 
+                  We measure success not just in financial terms, but in our positive contribution to communities and the planet.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center">
+                  <Award className="w-6 h-6 text-primary mr-3" />
+                  HSEQ Focus
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Health, Safety, Environment, and Quality are integrated into our core operations. Our comprehensive 
+                  management systems ensure we deliver excellence while protecting our people and the environment.
+                </p>
+              </div>
+            </div>
+            
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center">
+                  <Globe className="w-6 h-6 text-primary mr-3" />
+                  African & Global Vision
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Rooted in African innovation with a global perspective, we develop solutions that address local needs 
+                  while meeting international standards. Our vision extends from community empowerment to worldwide 
+                  sustainable energy transformation.
+                </p>
+              </div>
+              
+              <div className="p-6 bg-background rounded-xl border border-border">
+                <h4 className="font-semibold text-foreground mb-3">Our Commitments</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center"><div className="w-2 h-2 bg-primary rounded-full mr-3"></div>Carbon neutral operations by 2024</li>
+                  <li className="flex items-center"><div className="w-2 h-2 bg-primary rounded-full mr-3"></div>50% renewable energy workforce training by 2025</li>
+                  <li className="flex items-center"><div className="w-2 h-2 bg-primary rounded-full mr-3"></div>Community impact programs in 25+ countries</li>
+                  <li className="flex items-center"><div className="w-2 h-2 bg-primary rounded-full mr-3"></div>Zero waste to landfill manufacturing</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Mission & Vision */}
       <section className="section-padding">
         <div className="max-w-7xl mx-auto">

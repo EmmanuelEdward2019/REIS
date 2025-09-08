@@ -46,6 +46,16 @@ const slides = [
     cta1: 'Order Now',
     cta2: 'Learn More',
     price: 'Starting at $500K'
+  },
+  {
+    id: 5,
+    title: 'Engineering a Cleaner, Smarter Future.',
+    subtitle: 'Sustainable Innovation',
+    description: 'Join us in transforming the energy landscape with cutting-edge renewable solutions',
+    image: heroRenewableIntegration,
+    cta1: 'Explore REIS',
+    cta2: 'Join as Partner',
+    price: 'Partnership Opportunities Available'
   }
 ];
 
