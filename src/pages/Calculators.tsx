@@ -775,7 +775,7 @@ const Calculators = () => {
             </p>
             
             {/* Live Metrics Dashboard */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-16">
               <div className="bg-card border border-border rounded-lg p-6 text-center">
                 <div className="text-3xl font-bold text-success mb-2">2,847</div>
                 <div className="text-sm text-muted-foreground">CO₂ Saved (tons)</div>
@@ -792,6 +792,94 @@ const Calculators = () => {
                 <div className="text-3xl font-bold text-warning mb-2">₦847M</div>
                 <div className="text-sm text-muted-foreground">Cost Savings</div>
               </div>
+              <div className="bg-card border border-border rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-success mb-2">12,654</div>
+                <div className="text-sm text-muted-foreground">Carbon Credits</div>
+                <div className="text-xs text-muted-foreground mt-1">$316K value</div>
+              </div>
+              <div className="bg-card border border-border rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-primary mb-2">73,428</div>
+                <div className="text-sm text-muted-foreground">Trees Equivalent</div>
+                <div className="text-xs text-muted-foreground mt-1">System-wide impact</div>
+              </div>
+            </div>
+
+            {/* Environmental Impact Summary */}
+            <div className="mb-16">
+              <Card className="bg-gradient-to-r from-success/10 to-primary/10 border border-success/20">
+                <CardHeader className="text-center">
+                  <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+                    <TreePine className="h-6 w-6 text-success" />
+                    Environmental Impact Across All Systems
+                  </CardTitle>
+                  <CardDescription>Cumulative environmental benefits from all REIS installations</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="text-center p-4 bg-success/10 rounded-lg border border-success/20">
+                      <TreePine className="h-8 w-8 text-success mx-auto mb-3" />
+                      <div className="text-3xl font-bold text-success mb-2">73,428</div>
+                      <div className="text-sm text-muted-foreground">Trees Planted Equivalent</div>
+                      <div className="text-xs text-success mt-1">Grown for 10 years</div>
+                    </div>
+                    <div className="text-center p-4 bg-primary/10 rounded-lg border border-primary/20">
+                      <Car className="h-8 w-8 text-primary mx-auto mb-3" />
+                      <div className="text-3xl font-bold text-primary mb-2">3,456</div>
+                      <div className="text-sm text-muted-foreground">Cars Off Road</div>
+                      <div className="text-xs text-primary mt-1">Annual equivalent</div>
+                    </div>
+                    <div className="text-center p-4 bg-accent/10 rounded-lg border border-accent/20">
+                      <Home className="h-8 w-8 text-accent mx-auto mb-3" />
+                      <div className="text-3xl font-bold text-accent mb-2">2,178</div>
+                      <div className="text-sm text-muted-foreground">Homes Powered</div>
+                      <div className="text-xs text-accent mt-1">Annual equivalent</div>
+                    </div>
+                    <div className="text-center p-4 bg-warning/10 rounded-lg border border-warning/20">
+                      <Factory className="h-8 w-8 text-warning mx-auto mb-3" />
+                      <div className="text-3xl font-bold text-warning mb-2">5,432</div>
+                      <div className="text-sm text-muted-foreground">Coal Avoided (t)</div>
+                      <div className="text-xs text-warning mt-1">Tonnes of coal not burned</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Carbon Credits Market Value */}
+            <div className="mb-16">
+              <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
+                <CardHeader className="text-center">
+                  <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+                    <Award className="h-6 w-6 text-primary" />
+                    Carbon Credits Market Performance
+                  </CardTitle>
+                  <CardDescription>Real carbon credit earnings across all REIS systems</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="text-center p-6 bg-success/10 rounded-lg border border-success/20">
+                      <div className="text-4xl font-bold text-success mb-2">12,654</div>
+                      <div className="text-lg text-muted-foreground mb-2">Credits Earned</div>
+                      <div className="text-sm text-success">Verified carbon credits</div>
+                    </div>
+                    <div className="text-center p-6 bg-primary/10 rounded-lg border border-primary/20">
+                      <div className="text-4xl font-bold text-primary mb-2">$316,350</div>
+                      <div className="text-lg text-muted-foreground mb-2">Market Value</div>
+                      <div className="text-sm text-primary">Current USD value</div>
+                    </div>
+                    <div className="text-center p-6 bg-accent/10 rounded-lg border border-accent/20">
+                      <div className="text-4xl font-bold text-accent mb-2">2,890</div>
+                      <div className="text-lg text-muted-foreground mb-2">Credits Pending</div>
+                      <div className="text-sm text-accent">Awaiting verification</div>
+                    </div>
+                  </div>
+                  <div className="mt-6 text-center">
+                    <div className="text-sm text-muted-foreground">
+                      Average credit price: <span className="font-semibold text-primary">$25.00</span> per tCO₂e
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
