@@ -71,9 +71,9 @@ const ProductCarousel = () => {
           loop: true,
         }}
       >
-        <CarouselContent className="-ml-0">
+        <CarouselContent className="-ml-4">
           {products.map((product, index) => (
-            <CarouselItem key={product.id} className="pl-0 basis-[85%] md:basis-[90%]">
+            <CarouselItem key={product.id} className="pl-4 basis-[80%] md:basis-[85%]">
               <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
                 {/* Background Image */}
                 <div className="absolute inset-0">
