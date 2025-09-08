@@ -153,13 +153,13 @@ const HeroSlider = () => {
       {/* Navigation Arrows - Tesla style */}
       <button
         onClick={prevSlide}
-        className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors flex items-center justify-center"
+        className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors hidden md:flex items-center justify-center"
       >
         <ChevronLeft className="w-5 h-5 text-black" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors flex items-center justify-center"
+        className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors hidden md:flex items-center justify-center"
       >
         <ChevronRight className="w-5 h-5 text-black" />
       </button>
