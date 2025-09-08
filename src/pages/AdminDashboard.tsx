@@ -49,7 +49,25 @@ import {
   ArrowRight,
   ArrowUp,
   ArrowDown,
-  Minus
+  Minus,
+  Leaf,
+  Gauge,
+  Battery,
+  Lightbulb,
+  TreePine,
+  Recycle,
+  Package,
+  MessageSquare,
+  Activity,
+  Wrench,
+  FlaskConical,
+  BarChart2,
+  TreeDeciduous,
+  Wind,
+  Sun,
+  Factory,
+  Home,
+  Car
 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 
@@ -68,6 +86,91 @@ const AdminDashboard = () => {
     clients: 456,
     seriousnessAvg: 12.4,
     complianceRate: 98.2
+  };
+
+  // Environmental & Performance metrics (cumulative from all users)
+  const environmentalMetrics = {
+    totalCO2Saved: 15847.3, // tonnes
+    carbonCredits: {
+      earned: 12654,
+      value: 316350, // USD
+      pending: 2890
+    },
+    energyGeneration: {
+      totalMWh: 8934.7,
+      monthlyMWh: 742.3,
+      dailyMWh: 24.1,
+      efficiency: 87.2
+    },
+    billSavings: {
+      totalSavings: 2847390, // USD
+      monthlySavings: 189560,
+      avgPerClient: 6245
+    },
+    environmentalEquivalents: {
+      treesPlanted: 267890,
+      carsOffRoad: 3456,
+      homesPoewered: 1234,
+      coalAvoided: 4567.8 // tonnes
+    },
+    reisScore: {
+      systemAverage: 78.4,
+      distribution: {
+        excellent: 234, // 90-100
+        good: 189, // 80-89
+        average: 124, // 70-79
+        poor: 45 // <70
+      }
+    }
+  };
+
+  // Real-time system performance
+  const performanceMetrics = {
+    activeSystems: 456,
+    systemsOnline: 442,
+    avgPerformance: 94.7,
+    maintenanceAlerts: 23,
+    criticalIssues: 3,
+    energyEfficiency: 89.2,
+    gridStability: 97.8
+  };
+
+  // Inventory management
+  const inventoryMetrics = {
+    totalSKUs: 1247,
+    stockValue: 3456789, // USD
+    lowStock: 34,
+    outOfStock: 7,
+    pendingOrders: 156,
+    topMovingItems: [
+      { name: "Solar Panel 450W", movement: 234, stock: 567 },
+      { name: "Battery System 10kWh", movement: 89, stock: 123 },
+      { name: "Inverter 5kW", movement: 156, stock: 289 }
+    ]
+  };
+
+  // User feedback and ticketing
+  const feedbackMetrics = {
+    totalTickets: 2456,
+    openTickets: 156,
+    avgResolutionTime: 4.2, // hours
+    satisfactionScore: 4.7, // out of 5
+    categoryBreakdown: {
+      technical: 89,
+      billing: 34,
+      installation: 23,
+      maintenance: 67
+    }
+  };
+
+  // R&D Insights
+  const rdInsights = {
+    activeProjects: 12,
+    completedProjects: 45,
+    patentApplications: 8,
+    publicationsThisYear: 15,
+    budgetUtilization: 78.5,
+    innovationScore: 8.4
   };
 
   // Recent jobs with full CRM data
@@ -289,11 +392,12 @@ const AdminDashboard = () => {
             {/* Main Content */}
             <div className="lg:col-span-3">
               <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-7">
+                <TabsList className="grid w-full grid-cols-8">
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="jobs">Jobs</TabsTrigger>
                   <TabsTrigger value="partners">Partners</TabsTrigger>
                   <TabsTrigger value="tickets">Tickets</TabsTrigger>
+                  <TabsTrigger value="metrics">Metrics</TabsTrigger>
                   <TabsTrigger value="analytics">Analytics</TabsTrigger>
                   <TabsTrigger value="compliance">Compliance</TabsTrigger>
                   <TabsTrigger value="settings">Settings</TabsTrigger>
@@ -630,6 +734,336 @@ const AdminDashboard = () => {
                       </Table>
                     </CardContent>
                   </Card>
+                </TabsContent>
+
+                <TabsContent value="metrics" className="space-y-6">
+                  {/* Environmental Impact Metrics */}
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+                    <Card className="bg-card border-border">
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">CO₂ Saved</CardTitle>
+                        <Leaf className="h-4 w-4 text-success" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-foreground">{environmentalMetrics.totalCO2Saved.toLocaleString()}</div>
+                        <p className="text-xs text-muted-foreground">tonnes CO₂</p>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-card border-border">
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Carbon Credits</CardTitle>
+                        <Award className="h-4 w-4 text-success" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-foreground">{environmentalMetrics.carbonCredits.earned.toLocaleString()}</div>
+                        <p className="text-xs text-muted-foreground">${environmentalMetrics.carbonCredits.value.toLocaleString()} value</p>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-card border-border">
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Energy Generated</CardTitle>
+                        <Zap className="h-4 w-4 text-primary" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-foreground">{environmentalMetrics.energyGeneration.totalMWh.toLocaleString()}</div>
+                        <p className="text-xs text-muted-foreground">MWh total</p>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-card border-border">
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Bill Savings</CardTitle>
+                        <DollarSign className="h-4 w-4 text-success" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-foreground">${environmentalMetrics.billSavings.totalSavings.toLocaleString()}</div>
+                        <p className="text-xs text-muted-foreground">total saved</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Environmental Equivalents */}
+                    <Card className="bg-card border-border">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <TreePine className="h-5 w-5" />
+                          Environmental Equivalents
+                        </CardTitle>
+                        <CardDescription>Impact visualization across all systems</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                            <TreeDeciduous className="h-8 w-8 text-success" />
+                            <div>
+                              <p className="text-2xl font-bold text-foreground">{environmentalMetrics.environmentalEquivalents.treesPlanted.toLocaleString()}</p>
+                              <p className="text-sm text-muted-foreground">Trees Planted</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                            <Car className="h-8 w-8 text-primary" />
+                            <div>
+                              <p className="text-2xl font-bold text-foreground">{environmentalMetrics.environmentalEquivalents.carsOffRoad.toLocaleString()}</p>
+                              <p className="text-sm text-muted-foreground">Cars off Road</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                            <Home className="h-8 w-8 text-accent" />
+                            <div>
+                              <p className="text-2xl font-bold text-foreground">{environmentalMetrics.environmentalEquivalents.homesPoewered.toLocaleString()}</p>
+                              <p className="text-sm text-muted-foreground">Homes Powered</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                            <Factory className="h-8 w-8 text-muted-foreground" />
+                            <div>
+                              <p className="text-2xl font-bold text-foreground">{environmentalMetrics.environmentalEquivalents.coalAvoided.toLocaleString()}</p>
+                              <p className="text-sm text-muted-foreground">Coal Avoided (t)</p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* REIS Score Distribution */}
+                    <Card className="bg-card border-border">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Gauge className="h-5 w-5" />
+                          REIS Score Distribution
+                        </CardTitle>
+                        <CardDescription>System-wide REIS performance (Avg: {environmentalMetrics.reisScore.systemAverage})</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Excellent (90-100)</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-24 bg-muted rounded-full h-2">
+                                <div className="bg-success h-2 rounded-full" style={{width: `${(environmentalMetrics.reisScore.distribution.excellent / systemMetrics.clients) * 100}%`}}></div>
+                              </div>
+                              <span className="text-sm font-medium text-success">{environmentalMetrics.reisScore.distribution.excellent}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Good (80-89)</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-24 bg-muted rounded-full h-2">
+                                <div className="bg-primary h-2 rounded-full" style={{width: `${(environmentalMetrics.reisScore.distribution.good / systemMetrics.clients) * 100}%`}}></div>
+                              </div>
+                              <span className="text-sm font-medium text-primary">{environmentalMetrics.reisScore.distribution.good}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Average (70-79)</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-24 bg-muted rounded-full h-2">
+                                <div className="bg-accent h-2 rounded-full" style={{width: `${(environmentalMetrics.reisScore.distribution.average / systemMetrics.clients) * 100}%`}}></div>
+                              </div>
+                              <span className="text-sm font-medium text-accent">{environmentalMetrics.reisScore.distribution.average}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Needs Improvement (&lt;70)</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-24 bg-muted rounded-full h-2">
+                                <div className="bg-muted-foreground h-2 rounded-full" style={{width: `${(environmentalMetrics.reisScore.distribution.poor / systemMetrics.clients) * 100}%`}}></div>
+                              </div>
+                              <span className="text-sm font-medium text-muted-foreground">{environmentalMetrics.reisScore.distribution.poor}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Real-time Performance & Maintenance */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <Card className="bg-card border-border">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Activity className="h-5 w-5" />
+                          Real-time Performance
+                        </CardTitle>
+                        <CardDescription>Live system performance metrics</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Systems Online</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
+                              <span className="font-medium">{performanceMetrics.systemsOnline}/{performanceMetrics.activeSystems}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Avg Performance</span>
+                            <span className="font-medium text-success">{performanceMetrics.avgPerformance}%</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Energy Efficiency</span>
+                            <span className="font-medium text-primary">{performanceMetrics.energyEfficiency}%</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Grid Stability</span>
+                            <span className="font-medium text-success">{performanceMetrics.gridStability}%</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-card border-border">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Wrench className="h-5 w-5" />
+                          Maintenance & Alerts
+                        </CardTitle>
+                        <CardDescription>System health and maintenance status</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Active Alerts</span>
+                            <Badge variant={performanceMetrics.maintenanceAlerts > 20 ? 'destructive' : 'secondary'}>
+                              {performanceMetrics.maintenanceAlerts}
+                            </Badge>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Critical Issues</span>
+                            <Badge variant={performanceMetrics.criticalIssues > 0 ? 'destructive' : 'default'}>
+                              {performanceMetrics.criticalIssues}
+                            </Badge>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Preventive Maintenance</span>
+                            <span className="text-sm font-medium text-primary">Up to date</span>
+                          </div>
+                          <Button size="sm" className="w-full">
+                            <AlertTriangle className="h-4 w-4 mr-2" />
+                            View All Alerts
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-card border-border">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Package className="h-5 w-5" />
+                          Inventory Management
+                        </CardTitle>
+                        <CardDescription>Stock levels and procurement status</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Total SKUs</span>
+                            <span className="font-medium">{inventoryMetrics.totalSKUs.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Stock Value</span>
+                            <span className="font-medium text-success">${inventoryMetrics.stockValue.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Low Stock Items</span>
+                            <Badge variant={inventoryMetrics.lowStock > 30 ? 'destructive' : 'secondary'}>
+                              {inventoryMetrics.lowStock}
+                            </Badge>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Pending Orders</span>
+                            <span className="font-medium text-primary">{inventoryMetrics.pendingOrders}</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* User Feedback & R&D Insights */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Card className="bg-card border-border">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <MessageSquare className="h-5 w-5" />
+                          User Feedback & Support
+                        </CardTitle>
+                        <CardDescription>Aggregated customer satisfaction and support metrics</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                          <div className="text-center p-3 bg-muted/50 rounded-lg">
+                            <div className="text-xl font-bold text-success">{feedbackMetrics.satisfactionScore}</div>
+                            <p className="text-xs text-muted-foreground">Satisfaction Score</p>
+                          </div>
+                          <div className="text-center p-3 bg-muted/50 rounded-lg">
+                            <div className="text-xl font-bold text-primary">{feedbackMetrics.avgResolutionTime}h</div>
+                            <p className="text-xs text-muted-foreground">Avg Resolution</p>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>Technical Issues</span>
+                            <span className="font-medium">{feedbackMetrics.categoryBreakdown.technical}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Billing Inquiries</span>
+                            <span className="font-medium">{feedbackMetrics.categoryBreakdown.billing}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Installation Support</span>
+                            <span className="font-medium">{feedbackMetrics.categoryBreakdown.installation}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Maintenance</span>
+                            <span className="font-medium">{feedbackMetrics.categoryBreakdown.maintenance}</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-card border-border">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <FlaskConical className="h-5 w-5" />
+                          R&D Insights
+                        </CardTitle>
+                        <CardDescription>Research & development performance metrics</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                          <div className="text-center p-3 bg-muted/50 rounded-lg">
+                            <div className="text-xl font-bold text-primary">{rdInsights.activeProjects}</div>
+                            <p className="text-xs text-muted-foreground">Active Projects</p>
+                          </div>
+                          <div className="text-center p-3 bg-muted/50 rounded-lg">
+                            <div className="text-xl font-bold text-success">{rdInsights.patentApplications}</div>
+                            <p className="text-xs text-muted-foreground">Patent Applications</p>
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="flex justify-between text-sm">
+                            <span>Completed Projects</span>
+                            <span className="font-medium">{rdInsights.completedProjects}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Publications (2024)</span>
+                            <span className="font-medium">{rdInsights.publicationsThisYear}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Budget Utilization</span>
+                            <span className="font-medium text-primary">{rdInsights.budgetUtilization}%</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Innovation Score</span>
+                            <span className="font-medium text-success">{rdInsights.innovationScore}/10</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="analytics" className="space-y-6">
