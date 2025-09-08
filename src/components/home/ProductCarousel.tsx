@@ -73,8 +73,11 @@ const ProductCarousel = () => {
       >
         <CarouselContent className="-ml-4">
           {products.map((product, index) => (
-            <CarouselItem key={product.id} className="pl-4 basis-[80%] md:basis-[85%]">
-              <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
+            <CarouselItem 
+              key={product.id} 
+              className={`pl-4 basis-full md:basis-[80%] lg:basis-[85%] ${index === 0 ? 'ml-[30px]' : ''}`}
+            >
+              <div className="relative h-[70vh] min-h-[500px] overflow-hidden rounded-2xl">
                 {/* Background Image */}
                 <div className="absolute inset-0">
                   <img
@@ -82,37 +85,37 @@ const ProductCarousel = () => {
                     alt={product.title}
                     className="w-full h-full object-cover rounded-2xl"
                   />
-                  <div className="absolute inset-0 bg-black/30"></div>
+                  <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 h-full flex flex-col justify-between p-8 md:p-16 text-white">
+                <div className="relative z-10 h-full flex flex-col justify-between p-6 md:p-8 lg:p-16 text-white">
                   {/* Top Left Title */}
                   <div className="flex-1">
-                    <h2 className="text-3xl md:text-5xl font-light tracking-wide">
+                    <h2 className="text-xl md:text-3xl lg:text-5xl font-light tracking-wide">
                       {product.title}
                     </h2>
                   </div>
 
                   {/* Bottom Left Content */}
-                  <div className="space-y-4">
-                    <h3 className="text-2xl md:text-3xl font-medium">
+                  <div className="space-y-2 md:space-y-4">
+                    <h3 className="text-lg md:text-2xl lg:text-3xl font-medium">
                       {product.model}
                     </h3>
-                    <p className="text-lg md:text-xl font-light max-w-md opacity-90">
+                    <p className="text-sm md:text-lg lg:text-xl font-light max-w-md opacity-90">
                       {product.description}
                     </p>
                     
                     {/* Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                    <div className="flex flex-row gap-3 md:gap-4 pt-2 md:pt-4">
                       <Button 
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-sm font-medium transition-colors"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-8 py-2 md:py-3 rounded-sm font-medium transition-colors text-sm md:text-base"
                       >
                         Order Now
                       </Button>
                       <Button 
                         variant="outline"
-                        className="bg-gray-200 hover:bg-gray-300 text-black border-gray-300 px-8 py-3 rounded-sm font-medium transition-colors"
+                        className="bg-gray-200 hover:bg-gray-300 text-black border-gray-300 px-4 md:px-8 py-2 md:py-3 rounded-sm font-medium transition-colors text-sm md:text-base"
                       >
                         Learn More
                       </Button>
