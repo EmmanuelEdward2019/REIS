@@ -62,7 +62,7 @@ const ProductCarousel = () => {
   };
 
   return (
-    <section className="relative px-4 md:px-0">
+    <section className="relative px-4 md:px-0 md:py-16 lg:py-20">
       <Carousel 
         setApi={setApi}
         className="w-full"
@@ -71,13 +71,13 @@ const ProductCarousel = () => {
           loop: true,
         }}
       >
-        <CarouselContent className="-ml-4 md:ml-0">
+        <CarouselContent className="-ml-4 md:ml-[30px] md:gap-6 lg:gap-8">
           {products.map((product, index) => (
             <CarouselItem 
               key={product.id} 
-              className={`pl-4 md:pl-0 basis-full md:basis-[80%] lg:basis-[85%] ${index === 0 ? 'md:ml-[30px]' : ''}`}
+              className="pl-4 md:pl-0 basis-full md:basis-[400px] lg:basis-[450px]"
             >
-              <div className="relative h-[70vh] min-h-[500px] overflow-hidden rounded-2xl">
+              <div className="relative h-[70vh] md:h-[75vh] lg:h-[80vh] min-h-[500px] md:min-h-[600px] overflow-hidden rounded-2xl">
                 {/* Background Image */}
                 <div className="absolute inset-0">
                   <img
