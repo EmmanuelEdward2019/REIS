@@ -127,7 +127,7 @@ const HeroSlider = () => {
                     <Button 
                       size="lg" 
                       variant="outline"
-                      className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-white/10 text-white border-white/30 hover:bg-white/20 rounded-md transition-colors"
+                      className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-gray-200 hover:bg-gray-300 text-black border-gray-300 rounded-md transition-colors"
                       onClick={() => window.location.href = '/solutions'}
                     >
                       {slide.cta2}
@@ -143,15 +143,15 @@ const HeroSlider = () => {
       {/* Navigation Arrows - Tesla style */}
       <button
         onClick={prevSlide}
-        className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-md transition-colors flex items-center justify-center backdrop-blur-sm"
+        className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors flex items-center justify-center"
       >
-        <ChevronLeft className="w-5 h-5 text-white" />
+        <ChevronLeft className="w-5 h-5 text-black" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-md transition-colors flex items-center justify-center backdrop-blur-sm"
+        className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors flex items-center justify-center"
       >
-        <ChevronRight className="w-5 h-5 text-white" />
+        <ChevronRight className="w-5 h-5 text-black" />
       </button>
 
       {/* Slide Indicators */}

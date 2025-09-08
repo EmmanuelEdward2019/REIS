@@ -10,7 +10,9 @@ const Index = () => {
   return (
     <Layout>
       <HeroSlider />
-      <ProductCarousel />
+      <div className="py-16">
+        <ProductCarousel />
+      </div>
       <CurrentOffers />
       <VideoProductCarousel />
       <DivisionsSection />

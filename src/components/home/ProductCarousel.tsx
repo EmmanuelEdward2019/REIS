@@ -1,39 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselApi } from '@/components/ui/carousel';
-import productCommercialSolar from '@/assets/product-commercial-solar.jpg';
-import productAnalyticsPlatform from '@/assets/product-analytics-platform.jpg';
-import productTrainingSuite from '@/assets/product-training-suite.jpg';
-import productGridStorage from '@/assets/product-grid-storage.jpg';
-
 const products = [
   {
     id: 1,
-    title: 'Commercial Solar',
-    model: 'REIS Pro',
-    image: productCommercialSolar,
-    description: 'Complete commercial solar solutions with integrated energy management'
+    title: 'Solaris Systems',
+    model: 'LIGHTBOX to ULTRAGRIDE',
+    image: '/lovable-uploads/b6450dea-940c-4706-9e7b-3adfa0b8c3cb.png',
+    description: 'Complete range of solar energy storage solutions for every need'
   },
   {
     id: 2,
-    title: 'Energy Analytics',
-    model: 'Platform AI',
-    image: productAnalyticsPlatform,
-    description: 'AI-powered analytics for maximum energy efficiency and cost optimization'
+    title: 'Community Lighting',
+    model: 'Solar Village',
+    image: '/lovable-uploads/a0b4d24a-a102-4800-8a4f-c35888e7c359.png',
+    description: 'Empowering communities with sustainable solar-powered infrastructure'
   },
   {
     id: 3,
-    title: 'Training Suite',
-    model: 'Professional',
-    image: productTrainingSuite,
-    description: 'Comprehensive training programs for renewable energy professionals'
+    title: 'Point of Sale Systems',
+    model: 'Solar POS',
+    image: '/lovable-uploads/7286c659-1089-4352-be3a-0e60950b0289.png',
+    description: 'Solar-powered payment and communication systems for remote locations'
   },
   {
     id: 4,
-    title: 'Grid Storage',
-    model: 'Systems Pro',
-    image: productGridStorage,
-    description: 'Industrial-grade battery storage with intelligent grid management'
+    title: 'Cyber Cafe Solutions',
+    model: 'Connected',
+    image: '/lovable-uploads/ed58d01d-4b26-4d11-9c91-d54c61f0fde0.png',
+    description: 'Complete solar-powered internet cafe and learning centers'
+  },
+  {
+    id: 5,
+    title: 'Commercial Services',
+    model: 'Business Solar',
+    image: '/lovable-uploads/f5f08cbc-a641-4cac-874c-e3e94350784c.png',
+    description: 'Solar solutions for barber shops, salons, and small businesses'
   }
 ];
 
@@ -78,7 +80,7 @@ const ProductCarousel = () => {
                   <img
                     src={product.image}
                     alt={product.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-2xl"
                   />
                   <div className="absolute inset-0 bg-black/30"></div>
                 </div>
@@ -110,7 +112,7 @@ const ProductCarousel = () => {
                       </Button>
                       <Button 
                         variant="outline"
-                        className="bg-gray-100 hover:bg-gray-200 text-black border-gray-300 px-8 py-3 rounded-sm font-medium transition-colors"
+                        className="bg-gray-200 hover:bg-gray-300 text-black border-gray-300 px-8 py-3 rounded-sm font-medium transition-colors"
                       >
                         Learn More
                       </Button>
