@@ -75,7 +75,7 @@ const ProductCarousel = () => {
           {products.map((product, index) => (
             <CarouselItem 
               key={product.id} 
-              className={`pl-4 basis-full md:basis-[80%] lg:basis-[85%] ${index === 0 ? 'ml-[30px]' : ''}`}
+              className={`pl-4 basis-full md:basis-[80%] lg:basis-[85%] ${index === 0 ? 'md:ml-[30px]' : ''}`}
             >
               <div className="relative h-[70vh] min-h-[500px] overflow-hidden rounded-2xl">
                 {/* Background Image */}
