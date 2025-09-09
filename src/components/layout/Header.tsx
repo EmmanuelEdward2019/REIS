@@ -130,10 +130,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-4 text-lg">Solar Solutions</h3>
                             <ul className="space-y-3">
-                              <li><a href="/reis/residential-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Residential Solar</a></li>
-                              <li><a href="/reis/commercial-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Commercial Solar</a></li>
-                              <li><a href="/reis/utility-scale" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Utility Scale</a></li>
-                              <li><a href="/reis/solar-wind-hybrid" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Solar-Wind Hybrid</a></li>
+<li><Link to="/reis/residential-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Residential Solar</Link></li>
+<li><Link to="/reis/commercial-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Commercial Solar</Link></li>
+<li><Link to="/reis/utility-scale" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Utility Scale</Link></li>
+<li><Link to="/reis/solar-wind-hybrid" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Solar-Wind Hybrid</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -150,10 +150,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-4 text-lg">Energy Storage</h3>
                             <ul className="space-y-3">
-                              <li><a href="/reis/battery-systems" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Battery Systems</a></li>
-                              <li><a href="/reis/grid-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Grid Storage</a></li>
-                              <li><a href="/reis/hydrogen-solutions" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Hydrogen Solutions</a></li>
-                              <li><a href="/reis/micro-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Micro Storage</a></li>
+<li><Link to="/reis/battery-systems" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Battery Systems</Link></li>
+<li><Link to="/reis/grid-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Grid Storage</Link></li>
+<li><Link to="/reis/hydrogen-solutions" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Hydrogen Solutions</Link></li>
+<li><Link to="/reis/micro-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Micro Storage</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -170,10 +170,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-4 text-lg">Marine Energy</h3>
                             <ul className="space-y-3">
-                              <li><a href="/reis/offshore-wind" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Offshore Wind</a></li>
-                              <li><a href="/reis/tidal-energy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Tidal Energy</a></li>
-                              <li><a href="/reis/wave-power" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Wave Power</a></li>
-                              <li><a href="/reis/floating-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Floating Solar</a></li>
+<li><Link to="/reis/offshore-wind" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Offshore Wind</Link></li>
+<li><Link to="/reis/tidal-energy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Tidal Energy</Link></li>
+<li><Link to="/reis/wave-power" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Wave Power</Link></li>
+<li><Link to="/reis/floating-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Floating Solar</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -222,10 +222,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-4 text-lg">Analytics & Strategy</h3>
                             <ul className="space-y-3">
-                              <li><a href="/data-ai/strategy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Strategy</a></li>
-                              <li><a href="/data-ai/analytics" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Analytics</a></li>
-                              <li><a href="/data-ai/ml" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Machine Learning</a></li>
-                              <li><a href="/data-ai/engineering" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Engineering</a></li>
+<li><Link to="/data-ai/strategy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Strategy</Link></li>
+<li><Link to="/data-ai/analytics" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Analytics</Link></li>
+<li><Link to="/data-ai/ml" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Machine Learning</Link></li>
+<li><Link to="/data-ai/engineering" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Engineering</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -242,9 +242,9 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-4 text-lg">Solutions & Security</h3>
                             <ul className="space-y-3">
-                              <li><a href="/data-ai/products" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Products</a></li>
-                              <li><a href="/data-ai/security" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Security Solutions</a></li>
-                              <li><a href="/data-ai/geospatial" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Geospatial Analytics</a></li>
+<li><Link to="/data-ai/products" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Products</Link></li>
+<li><Link to="/data-ai/security" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Security Solutions</Link></li>
+<li><Link to="/data-ai/geospatial" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Geospatial Analytics</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -272,10 +272,10 @@ const Header = () => {
                 onMouseEnter={() => setActiveMega('training')}
                 onMouseLeave={() => setActiveMega(null)}
               >
-                <a href="/lms" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
-                  <span>LMS</span>
-                  <ChevronDown className="w-4 h-4" />
-                </a>
+<Link to="/lms" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
+  <span>LMS</span>
+  <ChevronDown className="w-4 h-4" />
+</Link>
                 
                 {activeMega === 'training' && (
                   <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
@@ -293,10 +293,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-4 text-lg">Learning Systems</h3>
                             <ul className="space-y-3">
-                              <li><a href="/training/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">LMS Platform</a></li>
-                              <li><a href="/training/content" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Content Development</a></li>
-                              <li><a href="/training/professional" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Professional Programs</a></li>
-                              <li><a href="/training/compliance" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Compliance Training</a></li>
+<li><Link to="/training/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">LMS Platform</Link></li>
+<li><Link to="/training/content" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Content Development</Link></li>
+<li><Link to="/training/professional" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Professional Programs</Link></li>
+<li><Link to="/training/compliance" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Compliance Training</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -313,9 +313,9 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-4 text-lg">Specialized Training</h3>
                             <ul className="space-y-3">
-                              <li><a href="/training/vocational" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Vocational Training</a></li>
-                              <li><a href="/training/assessment" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Assessment Tools</a></li>
-                              <li><a href="/training/advisory" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Advisory Services</a></li>
+<li><Link to="/training/vocational" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Vocational Training</Link></li>
+<li><Link to="/training/assessment" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Assessment Tools</Link></li>
+<li><Link to="/training/advisory" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Advisory Services</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -375,15 +375,15 @@ const Header = () => {
           {isMenuOpen && (
             <div className="lg:hidden border-t border-border bg-background">
               <div className="px-2 pt-2 pb-3 space-y-1">
-                <Link to="/products" className="block px-3 py-2 text-foreground hover:text-primary font-medium">REIS</Link>
-                <Link to="/data-ai" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Data & AI</Link>
-                <Link to="/training" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Training</Link>
-                <Link to="/services" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Services</Link>
-                <Link to="/projects" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Projects</Link>
-                <Link to="/calculators" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Calculators</Link>
-                <Link to="/shop" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Shop</Link>
-                <Link to="/support" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Support</Link>
-                <Link to="/about" className="block px-3 py-2 text-foreground hover:text-primary font-medium">About</Link>
+<Link to="/reis" className="block px-3 py-2 text-foreground hover:text-primary font-medium">REIS</Link>
+<Link to="/data-and-ai" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Data & AI</Link>
+<Link to="/lms" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Training</Link>
+<Link to="/services" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Services</Link>
+<Link to="/projects" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Projects</Link>
+<Link to="/calculators" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Calculators</Link>
+<Link to="/shop" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Shop</Link>
+<Link to="/support" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Support</Link>
+<Link to="/about" className="block px-3 py-2 text-foreground hover:text-primary font-medium">About</Link>
                 
                 {/* Tesla-style Icons in mobile menu */}
                 <div className="border-t border-border mt-4 pt-4 px-3">

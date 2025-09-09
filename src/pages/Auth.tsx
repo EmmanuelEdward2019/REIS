@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Eye, EyeOff } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 type AuthMode = 'signin' | 'signup';
 type SignupStep = 1 | 2 | 3;
@@ -355,13 +356,13 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between p-6">
-        <a href="/" className="flex items-center">
-          <img 
-            src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png" 
-            alt="Eagle & Thistle Group" 
-            className="h-10 w-auto"
-          />
-        </a>
+<Link to="/" className="flex items-center">
+  <img 
+    src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png" 
+    alt="Eagle & Thistle Group" 
+    className="h-10 w-auto"
+  />
+</Link>
         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
           <span>en-CA</span>
           <div className="w-5 h-5 rounded-full border border-border flex items-center justify-center">
