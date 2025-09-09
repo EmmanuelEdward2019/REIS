@@ -261,7 +261,7 @@ const PartnerOnboarding = () => {
     });
 
     setTimeout(() => {
-      window.location.hash = '#/partners-dashboard';
+      window.location.href = '/partners-dashboard';
     }, 2000);
   };
 
