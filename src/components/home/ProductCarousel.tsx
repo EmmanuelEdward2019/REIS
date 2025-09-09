@@ -133,7 +133,7 @@ const ProductCarousel = () => {
         </CarouselContent>
         
         {/* Navigation Dots */}
-        <div className="absolute md:bottom-8 -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+        <div className="absolute md:bottom-8 bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
           {products.map((_, index) => (
             <button
               key={index}
