@@ -4,6 +4,7 @@ import HeroSlider from '@/components/home/HeroSlider';
 import ProductCarousel from '@/components/home/ProductCarousel';
 import CurrentOffers from '@/components/home/CurrentOffers';
 import VideoProductCarousel from '@/components/home/VideoProductCarousel';
+import DataAICarousel from '@/components/home/DataAICarousel';
 import DivisionsSection from '@/components/home/DivisionsSection';
 
 const Index = () => {
@@ -15,6 +16,7 @@ const Index = () => {
       </div>
       <CurrentOffers />
       <VideoProductCarousel />
+      <DataAICarousel />
       <DivisionsSection />
     </Layout>
   );
