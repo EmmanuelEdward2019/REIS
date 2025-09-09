@@ -108,10 +108,10 @@ const Header = () => {
                 onMouseEnter={() => setActiveMega('reis')}
                 onMouseLeave={() => setActiveMega(null)}
               >
-                <button className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
+                <a href="/reis" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
                   <span>REIS</span>
                   <ChevronDown className="w-4 h-4" />
-                </button>
+                </a>
                 
                 {activeMega === 'reis' && (
                   <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
@@ -200,10 +200,10 @@ const Header = () => {
                 onMouseEnter={() => setActiveMega('data-ai')}
                 onMouseLeave={() => setActiveMega(null)}
               >
-                <button className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
+                <a href="/data-and-ai" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
                   <span>Data & AI</span>
                   <ChevronDown className="w-4 h-4" />
-                </button>
+                </a>
                 
                 {activeMega === 'data-ai' && (
                   <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
@@ -271,10 +271,10 @@ const Header = () => {
                 onMouseEnter={() => setActiveMega('training')}
                 onMouseLeave={() => setActiveMega(null)}
               >
-                <button className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
-                  <span>Training</span>
+                <a href="/lms" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
+                  <span>LMS</span>
                   <ChevronDown className="w-4 h-4" />
-                </button>
+                </a>
                 
                 {activeMega === 'training' && (
                   <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">

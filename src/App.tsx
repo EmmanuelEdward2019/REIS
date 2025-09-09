@@ -15,6 +15,9 @@ import Auth from "./pages/Auth";
 import Services from "./pages/Services";
 import Shop from "./pages/Shop";
 import Calculators from "./pages/Calculators";
+import REIS from "./pages/REIS";
+import DataAI from "./pages/DataAI";
+import LMS from "./pages/LMS";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +38,9 @@ const App = () => (
           <Route path="/shop" element={<Shop />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/calculators" element={<Calculators />} />
+          <Route path="/reis" element={<REIS />} />
+          <Route path="/data-and-ai" element={<DataAI />} />
+          <Route path="/lms" element={<LMS />} />
           <Route path="/client-dashboard" element={<ClientDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/partners-dashboard" element={<PartnersDashboard />} />
