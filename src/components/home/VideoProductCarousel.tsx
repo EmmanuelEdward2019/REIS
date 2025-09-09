@@ -94,10 +94,10 @@ const VideoProductCarousel = () => {
                 {/* Background Video */}
                 <div className="absolute inset-0">
                   <iframe
-                    src={`https://www.youtube.com/embed/${product.videoId}?autoplay=1&mute=1&loop=1&playlist=${product.videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1`}
+                    src={`https://www.youtube.com/embed/${product.videoId}?autoplay=1&mute=1&loop=1&playlist=${product.videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`}
                     className="w-full h-full object-cover rounded-2xl"
                     frameBorder="0"
-                    allow="autoplay; encrypted-media"
+                    allow="autoplay; fullscreen; encrypted-media; accelerometer; gyroscope; picture-in-picture"
                     allowFullScreen
                     style={{ pointerEvents: pausedVideos.has(product.id) ? 'none' : 'auto' }}
                   />
