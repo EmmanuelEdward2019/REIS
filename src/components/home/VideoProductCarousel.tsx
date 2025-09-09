@@ -128,16 +128,7 @@ const VideoProductCarousel = () => {
 
   return (
     <section className="relative px-4 md:px-0 md:py-16 lg:py-20">
-      <div className="text-center mb-16">
-        <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
-          See Our Solutions in Action
-        </h2>
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Real projects, real results. Watch how we're transforming the energy landscape.
-        </p>
-      </div>
-
-      <Carousel 
+      <Carousel
         setApi={setApi}
         className="w-full"
         opts={{
@@ -156,12 +147,16 @@ const VideoProductCarousel = () => {
                 <div className="absolute inset-0">
                   <iframe
                     ref={(el) => (iframeRefs.current[product.id] = el)}
-                    src={`https://www.youtube.com/embed/${product.videoId}?autoplay=1&mute=1&loop=1&playlist=${product.videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`}
-                    className="w-full h-full object-cover rounded-2xl"
+                    src={`https://www.youtube.com/embed/${product.videoId}?autoplay=1&mute=1&loop=1&playlist=${product.videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1&disablekb=1&fs=0&cc_load_policy=0&start=0&end=0`}
+                    className="w-full h-full rounded-2xl"
                     frameBorder="0"
                     allow="autoplay; fullscreen; encrypted-media; accelerometer; gyroscope; picture-in-picture"
                     allowFullScreen
-                    style={{ pointerEvents: pausedVideos.has(product.id) ? 'none' : 'auto' }}
+                    style={{ 
+                      pointerEvents: pausedVideos.has(product.id) ? 'none' : 'auto',
+                      transform: 'scale(1.05)',
+                      transformOrigin: 'center center'
+                    }}
                     title={`${product.title} - ${product.subtitle}`}
                   />
                   <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
