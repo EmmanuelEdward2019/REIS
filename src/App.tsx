@@ -21,6 +21,7 @@ import LMS from "./pages/LMS";
 import Partners from "./pages/Partners";
 import BecomeAPartner from "./pages/BecomeAPartner";
 import NotFound from "./pages/NotFound";
+import ScrollToTop from "@/components/common/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/solutions" element={<Solutions />} />
