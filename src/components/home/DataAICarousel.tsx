@@ -1,172 +1,149 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselApi } from '@/components/ui/carousel';
 import { Link } from 'react-router-dom';
 
 const dataAIProducts = [
   {
     id: 1,
-    title: 'AI-Powered Analytics',
-    subtitle: 'Intelligent Energy Management',
-    description: 'Advanced AI chatbots and analytics platforms that optimize energy consumption, predict maintenance needs, and provide real-time insights for maximum efficiency.',
+    title: 'Data & AI',
+    model: 'AI-Powered Analytics',
+    description: 'Advanced AI chatbots and analytics platforms that optimize energy consumption and predict maintenance needs.',
     image: '/lovable-uploads/14519926-36cd-4536-893d-d86ae346591a.png',
     cta1: 'Explore AI Solutions',
-    cta2: 'Request Demo',
-    price: 'Starting at $50K'
+    cta2: 'Request Demo'
   },
   {
     id: 2,
-    title: 'Global Data Intelligence',
-    subtitle: 'Worldwide Energy Insights',
-    description: 'Harness the power of global data networks and holographic interfaces to monitor, analyze, and optimize energy systems across multiple locations and time zones.',
+    title: 'Data & AI',
+    model: 'Global Data Intelligence',
+    description: 'Harness the power of global data networks and holographic interfaces to monitor and optimize energy systems.',
     image: '/lovable-uploads/c674919a-db90-4606-a986-db6447308d8f.png',
     cta1: 'View Platform',
-    cta2: 'Learn More',
-    price: 'Enterprise Solutions'
+    cta2: 'Learn More'
   },
   {
     id: 3,
-    title: 'Carbon Reduction Analytics',
-    subtitle: 'Eagle & Thistle Dashboard',
-    description: 'Comprehensive carbon footprint analysis with real-time tracking, behavioral change recommendations, and detailed environmental impact reporting.',
+    title: 'Data & AI',
+    model: 'Carbon Reduction Analytics',
+    description: 'Comprehensive carbon footprint analysis with real-time tracking and behavioral change recommendations.',
     image: '/lovable-uploads/71161c08-3920-48fd-aced-b2b0999ad040.png',
     cta1: 'Try Dashboard',
-    cta2: 'Get Started',
-    price: 'Custom Pricing'
+    cta2: 'Get Started'
   }
 ];
 
 const DataAICarousel = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoplay, setIsAutoplay] = useState(true);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!isAutoplay) return;
-    
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % dataAIProducts.length);
-    }, 6000);
+    if (!api) {
+      return;
+    }
 
-    return () => clearInterval(interval);
-  }, [isAutoplay]);
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % dataAIProducts.length);
-    setIsAutoplay(false);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + dataAIProducts.length) % dataAIProducts.length);
-    setIsAutoplay(false);
-  };
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    setIsAutoplay(false);
+    api?.scrollTo(index);
   };
 
   return (
-    <section className="relative py-24 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
-      {/* Section Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-        <div className="text-center">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Data & AI
-          </h2>
-          <p className="text-xl text-blue-200 max-w-3xl mx-auto">
-            Revolutionizing energy management through artificial intelligence and advanced data analytics
-          </p>
-        </div>
-      </div>
+    <section className="relative px-4 md:px-0 md:py-16 lg:py-20">
+      <Carousel 
+        setApi={setApi}
+        className="w-full"
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+      >
+        <CarouselContent className="-ml-4 md:ml-[30px] md:gap-6 lg:gap-8">
+          {dataAIProducts.map((product, index) => (
+            <CarouselItem 
+              key={product.id} 
+              className="pl-4 md:pl-0 basis-full md:basis-[65%] lg:basis-[70%]"
+            >
+              <div className="relative h-[70vh] md:h-[75vh] lg:h-[80vh] min-h-[500px] md:min-h-[600px] overflow-hidden rounded-2xl">
+                {/* Background Image */}
+                <div className="absolute inset-0">
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="w-full h-full object-cover rounded-2xl"
+                  />
+                  <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
+                </div>
 
-      {/* Carousel */}
-      <div className="relative h-[600px] overflow-hidden">
-        {dataAIProducts.map((product, index) => (
-          <div
-            key={product.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            {/* Background Image */}
-            <div className="absolute inset-0">
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/50"></div>
-            </div>
+                {/* Content */}
+                <div className="relative z-10 h-full flex flex-col justify-between p-6 md:p-8 lg:p-16 text-white">
+                  {/* Top Left Title */}
+                  <div className="flex-1">
+                    <h2 className="text-xl md:text-3xl lg:text-5xl font-light tracking-wide">
+                      {product.title}
+                    </h2>
+                  </div>
 
-            {/* Content */}
-            <div className="relative z-10 h-full flex items-center">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                <div className="max-w-2xl">
-                  <div className="text-blue-300 text-sm font-medium mb-2 uppercase tracking-wide">
-                    {product.subtitle}
-                  </div>
-                  <h3 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-                    {product.title}
-                  </h3>
-                  <p className="text-lg text-gray-200 mb-4 leading-relaxed">
-                    {product.description}
-                  </p>
-                  <div className="text-cyan-300 font-semibold mb-8 text-lg">
-                    {product.price}
-                  </div>
-                  
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <Button 
-                      asChild
-                      size="lg" 
-                      className="px-8 py-3 bg-primary hover:bg-primary/90 text-white font-medium"
-                    >
-                      <Link to="/data-ai">{product.cta1}</Link>
-                    </Button>
-                    <Button 
-                      asChild
-                      size="lg" 
-                      variant="outline"
-                      className="px-8 py-3 border-white/30 text-white hover:bg-white/10 font-medium"
-                    >
-                      <Link to="/solutions">{product.cta2}</Link>
-                    </Button>
+                  {/* Bottom Left Content */}
+                  <div className="relative space-y-2 md:space-y-4">
+                    {/* Transparent overlay behind text */}
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px] rounded-lg -m-4"></div>
+                    
+                    <div className="relative p-4">
+                      <h3 className="text-lg md:text-2xl lg:text-3xl font-medium">
+                        {product.model}
+                      </h3>
+                      <p className="text-sm md:text-lg lg:text-xl font-light max-w-md opacity-90">
+                        {product.description}
+                      </p>
+                      
+                      {/* Buttons */}
+                      <div className="flex flex-row gap-3 md:gap-4 pt-2 md:pt-4">
+                        <Button 
+                          asChild
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-8 py-2 md:py-3 rounded-sm font-medium transition-colors text-sm md:text-base"
+                        >
+                          <Link to="/data-ai">{product.cta1}</Link>
+                        </Button>
+                        <Button 
+                          asChild
+                          variant="outline"
+                          className="bg-gray-200 hover:bg-gray-300 text-black border-gray-300 px-4 md:px-8 py-2 md:py-3 rounded-sm font-medium transition-colors text-sm md:text-base"
+                        >
+                          <Link to="/solutions">{product.cta2}</Link>
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-colors hidden md:flex items-center justify-center"
-      >
-        <ChevronLeft className="w-6 h-6 text-white" />
-      </button>
-      <button
-        onClick={nextSlide}
-        className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-colors hidden md:flex items-center justify-center"
-      >
-        <ChevronRight className="w-6 h-6 text-white" />
-      </button>
-
-      {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-        <div className="flex space-x-3">
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        
+        {/* Navigation Dots */}
+        <div className="absolute md:bottom-8 bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
           {dataAIProducts.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-colors ${
-                index === currentSlide ? 'bg-white' : 'bg-white/40'
+              className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                current === index + 1
+                  ? 'bg-white md:bg-white bg-primary scale-125'
+                  : 'bg-white/50 md:bg-white/50 bg-primary/50 hover:bg-white/75 md:hover:bg-white/75 hover:bg-primary/75'
               }`}
+              aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
-      </div>
+      </Carousel>
     </section>
   );
 };
