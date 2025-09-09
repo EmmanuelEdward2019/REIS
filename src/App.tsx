@@ -18,6 +18,8 @@ import Calculators from "./pages/Calculators";
 import REIS from "./pages/REIS";
 import DataAI from "./pages/DataAI";
 import LMS from "./pages/LMS";
+import Partners from "./pages/Partners";
+import BecomeAPartner from "./pages/BecomeAPartner";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +46,8 @@ const App = () => (
           <Route path="/client-dashboard" element={<ClientDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/partners-dashboard" element={<PartnersDashboard />} />
+          <Route path="/partners" element={<Partners />} />
+          <Route path="/become-a-partner" element={<BecomeAPartner />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
