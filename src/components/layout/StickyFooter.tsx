@@ -16,7 +16,7 @@ const StickyFooter = () => {
           </Button>
           <Button 
             className="flex-1 max-w-[200px] px-6 py-3 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 rounded-md transition-colors"
-            onClick={() => window.location.href = '/client-dashboard'}
+            onClick={() => (window.location.hash = '#/client-dashboard')}
           >
             <Calendar className="w-4 h-4 mr-2" />
             Get a Quote

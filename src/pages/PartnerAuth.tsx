@@ -97,7 +97,7 @@ const PartnerAuth = () => {
     // Simulate registration
     toast({ title: "Success", description: "Account created! Redirecting to onboarding..." });
     setTimeout(() => {
-      window.location.href = '/partner-onboarding';
+      window.location.hash = '#/partner-onboarding';
     }, 2000);
   };
 

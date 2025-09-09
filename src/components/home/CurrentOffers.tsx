@@ -48,7 +48,7 @@ const CurrentOffers = () => {
                 </p>
                 <Button 
                   className="bg-background text-foreground hover:bg-background/90 border border-border font-medium"
-                  onClick={() => window.location.href = section.link}
+                  onClick={() => (window.location.hash = section.link.startsWith('/') ? `#${section.link}` : `#/${section.link}`)}
                 >
                   Learn More
                 </Button>

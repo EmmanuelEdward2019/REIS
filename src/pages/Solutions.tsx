@@ -52,34 +52,6 @@ const Solutions = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="section-padding bg-gradient-to-br from-background to-primary/5">
-        <div className="max-w-7xl mx-auto text-center">
-          <Badge variant="secondary" className="mb-6 px-4 py-2">
-            Complete Solutions Portfolio
-          </Badge>
-          
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-            Integrated Solutions for
-            <span className="block text-primary">Sustainable Energy</span>
-          </h1>
-          
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">
-            Discover our comprehensive suite of renewable energy solutions, from integrated systems 
-            and AI-driven optimization to professional training and certification programs.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" className="px-8">
-              Schedule Consultation
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button variant="outline" size="lg">
-              Download Brochure
-            </Button>
-          </div>
-        </div>
-      </section>
 
       {/* Solutions Grid */}
       <section className="section-padding">

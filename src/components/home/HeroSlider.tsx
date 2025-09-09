@@ -130,7 +130,7 @@ const HeroSlider = () => {
                     <Button 
                       size="lg" 
                       className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-primary text-white hover:bg-primary/90 rounded-md transition-colors"
-                      onClick={() => window.location.href = '/client-dashboard'}
+                      onClick={() => (window.location.hash = '#/client-dashboard')}
                     >
                       {slide.cta1}
                     </Button>
@@ -138,7 +138,7 @@ const HeroSlider = () => {
                       size="lg" 
                       variant="outline"
                       className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-gray-200 hover:bg-gray-300 text-black border-gray-300 rounded-md transition-colors"
-                      onClick={() => window.location.href = '/solutions'}
+                      onClick={() => (window.location.hash = '#/solutions')}
                     >
                       {slide.cta2}
                     </Button>
