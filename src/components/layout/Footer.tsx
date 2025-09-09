@@ -25,11 +25,11 @@ const Footer = () => {
             <h3 className="font-semibold text-foreground text-base">Company</h3>
             <ul className="space-y-3">
               <li><Link to="/about" className="text-muted-foreground hover:text-primary transition-colors text-sm">About</Link></li>
-              <li><Link to="/about#leadership" className="text-muted-foreground hover:text-primary transition-colors text-sm">Leadership</Link></li>
-              <li><Link to="/about#governance" className="text-muted-foreground hover:text-primary transition-colors text-sm">Governance</Link></li>
-              <li><Link to="/about#iso" className="text-muted-foreground hover:text-primary transition-colors text-sm">IMS & ISO</Link></li>
-              <li><Link to="/about#hseq" className="text-muted-foreground hover:text-primary transition-colors text-sm">HSEQ</Link></li>
-              <li><Link to="/careers" className="text-muted-foreground hover:text-primary transition-colors text-sm">Careers</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Leadership</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Governance</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">IMS & ISO</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">HSEQ</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Careers</Link></li>
             </ul>
           </div>
 
@@ -37,11 +37,11 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground text-base">Solutions</h3>
             <ul className="space-y-3">
-              <li><Link to="/solutions/reis" className="text-muted-foreground hover:text-primary transition-colors text-sm">REIS</Link></li>
-              <li><Link to="/solutions/data-ai" className="text-muted-foreground hover:text-primary transition-colors text-sm">Data & AI</Link></li>
-              <li><Link to="/solutions/training" className="text-muted-foreground hover:text-primary transition-colors text-sm">Training & LMS</Link></li>
-              <li><Link to="/solutions/offshore" className="text-muted-foreground hover:text-primary transition-colors text-sm">Offshore</Link></li>
-              <li><Link to="/solutions/micro" className="text-muted-foreground hover:text-primary transition-colors text-sm">Micro Packs</Link></li>
+              <li><Link to="/reis" className="text-muted-foreground hover:text-primary transition-colors text-sm">REIS</Link></li>
+              <li><Link to="/data-ai" className="text-muted-foreground hover:text-primary transition-colors text-sm">Data & AI</Link></li>
+              <li><Link to="/lms" className="text-muted-foreground hover:text-primary transition-colors text-sm">Training & LMS</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Offshore</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Micro Packs</Link></li>
             </ul>
           </div>
 
@@ -49,11 +49,11 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground text-base">Services & Support</h3>
             <ul className="space-y-3">
-              <li><Link to="/services/performance" className="text-muted-foreground hover:text-primary transition-colors text-sm">Performance</Link></li>
-              <li><Link to="/services/maintenance" className="text-muted-foreground hover:text-primary transition-colors text-sm">Maintenance</Link></li>
-              <li><Link to="/support/ticket" className="text-muted-foreground hover:text-primary transition-colors text-sm">Ticket</Link></li>
-              <li><Link to="/support/warranty" className="text-muted-foreground hover:text-primary transition-colors text-sm">Warranty</Link></li>
-              <li><Link to="/support/downloads" className="text-muted-foreground hover:text-primary transition-colors text-sm">Downloads</Link></li>
+              <li><Link to="/support" className="text-muted-foreground hover:text-primary transition-colors text-sm">Performance</Link></li>
+              <li><Link to="/support" className="text-muted-foreground hover:text-primary transition-colors text-sm">Maintenance</Link></li>
+              <li><Link to="/support" className="text-muted-foreground hover:text-primary transition-colors text-sm">Ticket</Link></li>
+              <li><Link to="/support" className="text-muted-foreground hover:text-primary transition-colors text-sm">Warranty</Link></li>
+              <li><Link to="/support" className="text-muted-foreground hover:text-primary transition-colors text-sm">Downloads</Link></li>
             </ul>
           </div>
 
@@ -73,12 +73,12 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground text-base">Compliance & Docs</h3>
             <ul className="space-y-3">
-              <li><Link to="/compliance/iso-certs" className="text-muted-foreground hover:text-primary transition-colors text-sm">ISO Certs</Link></li>
-              <li><Link to="/compliance/policies" className="text-muted-foreground hover:text-primary transition-colors text-sm">Policies</Link></li>
-              <li><Link to="/compliance/abs" className="text-muted-foreground hover:text-primary transition-colors text-sm">ABS</Link></li>
-              <li><Link to="/compliance/dnv" className="text-muted-foreground hover:text-primary transition-colors text-sm">DNV</Link></li>
-              <li><Link to="/compliance/nerc" className="text-muted-foreground hover:text-primary transition-colors text-sm">NERC</Link></li>
-              <li><Link to="/compliance/ncdmb" className="text-muted-foreground hover:text-primary transition-colors text-sm">NCDMB</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">ISO Certs</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Policies</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">ABS</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">DNV</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">NERC</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">NCDMB</Link></li>
             </ul>
           </div>
 
@@ -86,10 +86,10 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground text-base">Locations & Contact</h3>
             <ul className="space-y-3">
-              <li><Link to="/locations/uk-hq" className="text-muted-foreground hover:text-primary transition-colors text-sm">UK HQ</Link></li>
-              <li><Link to="/locations/nigeria-hq" className="text-muted-foreground hover:text-primary transition-colors text-sm">Nigeria HQ</Link></li>
-              <li><Link to="/locations/asaba" className="text-muted-foreground hover:text-primary transition-colors text-sm">Asaba Office</Link></li>
-              <li><Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm">Contact Form</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">UK HQ</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Nigeria HQ</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Asaba Office</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Contact Form</Link></li>
             </ul>
           </div>
         </div>
