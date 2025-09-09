@@ -21,13 +21,6 @@ const Calculators = () => {
       color: 'success'
     },
     {
-      id: 'carbon-credit',
-      title: 'Carbon Credit Estimator', 
-      description: 'Calculate tradable carbon credits based on emissions saved',
-      icon: <TreePine className="w-6 h-6" />,
-      color: 'success'
-    },
-    {
       id: 'bill-savings',
       title: 'Bill Savings Tool',
       description: 'Compare monthly/annual costs of diesel vs. REIS',
@@ -40,20 +33,6 @@ const Calculators = () => {
       description: 'Estimate daily/monthly/yearly energy output by location',
       icon: <Zap className="w-6 h-6" />,
       color: 'accent'
-    },
-    {
-      id: 'environmental-equivalents',
-      title: 'Environmental Equivalents',
-      description: 'Translates CO₂ saved into relatable visuals (trees planted, oil barrels avoided)',
-      icon: <TreePine className="w-6 h-6" />,
-      color: 'success'
-    },
-    {
-      id: 'reis-badge',
-      title: 'REIS Impact Badge Preview',
-      description: 'Public version of REIS score with limited metrics',
-      icon: <Award className="w-6 h-6" />,
-      color: 'primary'
     }
   ];
 
