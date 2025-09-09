@@ -25,6 +25,7 @@ import {
   Zap
 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
+import { useNavigate } from 'react-router-dom';
 
 interface OnboardingData {
   // Location & Coverage
@@ -97,6 +98,7 @@ const PartnerOnboarding = () => {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [seriousnessScore, setSeriousnessScore] = useState(0);
   const [partnerId, setPartnerId] = useState('');
+  const navigate = useNavigate();
   
   const [data, setData] = useState<OnboardingData>({
     baseLocation: { city: '', state: '', country: '' },
@@ -261,7 +263,7 @@ const PartnerOnboarding = () => {
     });
 
     setTimeout(() => {
-      window.location.hash = '#/partners-dashboard';
+      navigate('/partners-dashboard');
     }, 2000);
   };
 

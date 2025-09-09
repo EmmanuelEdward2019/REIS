@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const StickyFooter = () => {
   return (
@@ -15,11 +16,13 @@ const StickyFooter = () => {
             Ask a Question
           </Button>
           <Button 
+            asChild
             className="flex-1 max-w-[200px] px-6 py-3 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 rounded-md transition-colors"
-            onClick={() => (window.location.hash = '#/client-dashboard')}
           >
-            <Calendar className="w-4 h-4 mr-2" />
-            Get a Quote
+            <Link to="/client-dashboard">
+              <Calendar className="w-4 h-4 mr-2" />
+              Get a Quote
+            </Link>
           </Button>
         </div>
       </div>

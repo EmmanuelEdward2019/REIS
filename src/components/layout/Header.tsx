@@ -353,8 +353,10 @@ const Header = () => {
               <Button variant="ghost" size="sm" className="p-2" title="Region & Language">
                 <Globe className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="sm" className="p-2" title="Account" onClick={() => (window.location.hash = '#/auth')}>
-                <UserCircle className="w-5 h-5" />
+              <Button variant="ghost" size="sm" className="p-2" title="Account" asChild>
+                <Link to="/auth">
+                  <UserCircle className="w-5 h-5" />
+                </Link>
               </Button>
             </div>
 
@@ -396,10 +398,12 @@ const Header = () => {
                       <Globe className="w-6 h-6" />
                       <span className="text-xs">Region</span>
                     </Button>
-                      <Button variant="ghost" size="sm" className="flex flex-col items-center space-y-1 p-3" title="Account" onClick={() => (window.location.hash = '#/auth')}>
-                        <UserCircle className="w-6 h-6" />
-                      <span className="text-xs">Account</span>
-                    </Button>
+                      <Button variant="ghost" size="sm" className="flex flex-col items-center space-y-1 p-3" title="Account" asChild>
+                        <Link to="/auth">
+                          <UserCircle className="w-6 h-6" />
+                          <span className="text-xs">Account</span>
+                        </Link>
+                      </Button>
                   </div>
                 </div>
               </div>

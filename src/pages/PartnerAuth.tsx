@@ -17,6 +17,7 @@ import {
   Globe
 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
+import { useNavigate } from 'react-router-dom';
 
 interface FormData {
   email: string;
@@ -52,6 +53,7 @@ const PartnerAuth = () => {
   const [verificationCode, setVerificationCode] = useState('');
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
   const [isVerifyingPhone, setIsVerifyingPhone] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (field: keyof FormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -97,7 +99,7 @@ const PartnerAuth = () => {
     // Simulate registration
     toast({ title: "Success", description: "Account created! Redirecting to onboarding..." });
     setTimeout(() => {
-      window.location.hash = '#/partner-onboarding';
+      navigate('/partner-onboarding');
     }, 2000);
   };
 

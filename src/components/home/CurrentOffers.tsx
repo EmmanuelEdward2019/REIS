@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import heroRenewableIntegration from '@/assets/hero-renewable-integration.jpg';
 import heroDataAnalytics from '@/assets/hero-data-analytics.jpg';
 import heroTrainingFacility from '@/assets/hero-training-facility.jpg';
+import { Link } from 'react-router-dom';
 
 const sections = [
   {
@@ -47,10 +48,10 @@ const CurrentOffers = () => {
                   {section.subtitle}
                 </p>
                 <Button 
+                  asChild
                   className="bg-background text-foreground hover:bg-background/90 border border-border font-medium"
-                  onClick={() => (window.location.hash = section.link.startsWith('/') ? `#${section.link}` : `#/${section.link}`)}
                 >
-                  Learn More
+                  <Link to={section.link}>Learn More</Link>
                 </Button>
               </div>
               

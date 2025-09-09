@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import heroRenewableIntegration from '@/assets/hero-renewable-integration.jpg';
 import heroResidentialSolar from '@/assets/hero-residential-solar.jpg';
 import heroTrainingFacility from '@/assets/hero-training-facility.jpg';
@@ -128,19 +129,19 @@ const HeroSlider = () => {
 
                   <div className="flex flex-row gap-4 justify-center">
                     <Button 
+                      asChild
                       size="lg" 
                       className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-primary text-white hover:bg-primary/90 rounded-md transition-colors"
-                      onClick={() => (window.location.hash = '#/client-dashboard')}
                     >
-                      {slide.cta1}
+                      <Link to="/client-dashboard">{slide.cta1}</Link>
                     </Button>
                     <Button 
+                      asChild
                       size="lg" 
                       variant="outline"
                       className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-gray-200 hover:bg-gray-300 text-black border-gray-300 rounded-md transition-colors"
-                      onClick={() => (window.location.hash = '#/solutions')}
                     >
-                      {slide.cta2}
+                      <Link to="/solutions">{slide.cta2}</Link>
                     </Button>
                   </div>
                 </div>
