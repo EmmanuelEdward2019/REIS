@@ -6,6 +6,7 @@ import CurrentOffers from '@/components/home/CurrentOffers';
 import VideoProductCarousel from '@/components/home/VideoProductCarousel';
 import DataAICarousel from '@/components/home/DataAICarousel';
 import DivisionsSection from '@/components/home/DivisionsSection';
+import MetricsWidget from '@/components/home/MetricsWidget';
 
 const Index = () => {
   return (
@@ -15,6 +16,7 @@ const Index = () => {
         <ProductCarousel />
       </div>
       <CurrentOffers />
+      <MetricsWidget />
       <VideoProductCarousel />
       <DataAICarousel />
       <DivisionsSection />
