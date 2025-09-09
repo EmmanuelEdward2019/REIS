@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown, HelpCircle, Globe, UserCircle } from 'lucide-reac
 import megaMenuReis from '@/assets/mega-menu-reis.jpg';
 import megaMenuDataAI from '@/assets/mega-menu-data-ai.jpg';
 import megaMenuTraining from '@/assets/mega-menu-training.jpg';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -91,13 +92,13 @@ const Header = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center">
-              <a href="/" className="flex items-center">
+              <Link to="/" className="flex items-center">
                 <img 
                   src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png" 
                   alt="Eagle & Thistle Group" 
                   className="h-10 w-auto"
                 />
-              </a>
+              </Link>
             </div>
 
             {/* Desktop Navigation */}
@@ -108,10 +109,10 @@ const Header = () => {
                 onMouseEnter={() => setActiveMega('reis')}
                 onMouseLeave={() => setActiveMega(null)}
               >
-                <a href="/reis" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/reis" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
                   <span>REIS</span>
                   <ChevronDown className="w-4 h-4" />
-                </a>
+                </Link>
                 
                 {activeMega === 'reis' && (
                   <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
@@ -200,10 +201,10 @@ const Header = () => {
                 onMouseEnter={() => setActiveMega('data-ai')}
                 onMouseLeave={() => setActiveMega(null)}
               >
-                <a href="/data-and-ai" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/data-and-ai" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
                   <span>Data & AI</span>
                   <ChevronDown className="w-4 h-4" />
-                </a>
+                </Link>
                 
                 {activeMega === 'data-ai' && (
                   <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
@@ -336,12 +337,12 @@ const Header = () => {
                 )}
               </div>
               
-              <a href="/services" className="text-foreground hover:text-primary transition-colors font-medium">Services</a>
-              <a href="/projects" className="text-foreground hover:text-primary transition-colors font-medium">Projects</a>
-              <a href="/calculators" className="text-foreground hover:text-primary transition-colors font-medium">Calculators</a>
-              <a href="/shop" className="text-foreground hover:text-primary transition-colors font-medium">Shop</a>
-              <a href="/support" className="text-foreground hover:text-primary transition-colors font-medium">Support</a>
-              <a href="/about" className="text-foreground hover:text-primary transition-colors font-medium">About</a>
+              <Link to="/services" className="text-foreground hover:text-primary transition-colors font-medium">Services</Link>
+              <Link to="/projects" className="text-foreground hover:text-primary transition-colors font-medium">Projects</Link>
+              <Link to="/calculators" className="text-foreground hover:text-primary transition-colors font-medium">Calculators</Link>
+              <Link to="/shop" className="text-foreground hover:text-primary transition-colors font-medium">Shop</Link>
+              <Link to="/support" className="text-foreground hover:text-primary transition-colors font-medium">Support</Link>
+              <Link to="/about" className="text-foreground hover:text-primary transition-colors font-medium">About</Link>
             </nav>
 
             {/* Tesla-style Icons */}
@@ -352,7 +353,7 @@ const Header = () => {
               <Button variant="ghost" size="sm" className="p-2" title="Region & Language">
                 <Globe className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="sm" className="p-2" title="Account" onClick={() => window.location.href = '/auth'}>
+              <Button variant="ghost" size="sm" className="p-2" title="Account" onClick={() => (window.location.hash = '#/auth')}>
                 <UserCircle className="w-5 h-5" />
               </Button>
             </div>
@@ -374,15 +375,15 @@ const Header = () => {
           {isMenuOpen && (
             <div className="lg:hidden border-t border-border bg-background">
               <div className="px-2 pt-2 pb-3 space-y-1">
-                <a href="/products" className="block px-3 py-2 text-foreground hover:text-primary font-medium">REIS</a>
-                <a href="/data-ai" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Data & AI</a>
-                <a href="/training" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Training</a>
-                <a href="/services" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Services</a>
-                <a href="/projects" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Projects</a>
-                <a href="/calculators" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Calculators</a>
-                <a href="/shop" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Shop</a>
-                <a href="/support" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Support</a>
-                <a href="/about" className="block px-3 py-2 text-foreground hover:text-primary font-medium">About</a>
+                <Link to="/products" className="block px-3 py-2 text-foreground hover:text-primary font-medium">REIS</Link>
+                <Link to="/data-ai" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Data & AI</Link>
+                <Link to="/training" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Training</Link>
+                <Link to="/services" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Services</Link>
+                <Link to="/projects" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Projects</Link>
+                <Link to="/calculators" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Calculators</Link>
+                <Link to="/shop" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Shop</Link>
+                <Link to="/support" className="block px-3 py-2 text-foreground hover:text-primary font-medium">Support</Link>
+                <Link to="/about" className="block px-3 py-2 text-foreground hover:text-primary font-medium">About</Link>
                 
                 {/* Tesla-style Icons in mobile menu */}
                 <div className="border-t border-border mt-4 pt-4 px-3">
@@ -395,8 +396,8 @@ const Header = () => {
                       <Globe className="w-6 h-6" />
                       <span className="text-xs">Region</span>
                     </Button>
-                    <Button variant="ghost" size="sm" className="flex flex-col items-center space-y-1 p-3" title="Account" onClick={() => window.location.href = '/auth'}>
-                      <UserCircle className="w-6 h-6" />
+                      <Button variant="ghost" size="sm" className="flex flex-col items-center space-y-1 p-3" title="Account" onClick={() => (window.location.hash = '#/auth')}>
+                        <UserCircle className="w-6 h-6" />
                       <span className="text-xs">Account</span>
                     </Button>
                   </div>
