@@ -96,7 +96,7 @@ const Footer = () => {
 
         {/* Newsletter and Social Media Section - New Row */}
         <div className="mt-16 pt-8 border-t border-border">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="flex flex-col lg:flex-row lg:justify-center lg:max-w-4xl lg:mx-auto gap-8">
             {/* Newsletter Signup */}
             <div className="space-y-4">
               <h3 className="font-semibold text-foreground text-base">Stay Updated</h3>
