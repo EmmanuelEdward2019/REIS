@@ -113,20 +113,16 @@ const HeroSlider = () => {
             <div className="relative z-10 h-full flex items-start justify-center pt-24">
               <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
                 <div className="text-white">
-                  {/* Transparent overlay behind text */}
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px] rounded-lg -m-8"></div>
-                    <div className="relative mb-8 py-8">
-                      <div className="text-sm font-medium opacity-90 mb-2 underline underline-offset-4">{slide.subtitle}</div>
-                      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">
-                        {slide.title}
-                      </h1>
-                      <p className="text-lg mb-3 opacity-90 max-w-2xl mx-auto">
-                        {slide.description}
-                      </p>
-                      <div className="text-base font-medium mb-8">
-                        {slide.price}
-                      </div>
+                  <div className="mb-8">
+                    <div className="text-sm font-medium opacity-90 mb-2 underline underline-offset-4">{slide.subtitle}</div>
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">
+                      {slide.title}
+                    </h1>
+                    <p className="text-lg mb-3 opacity-90 max-w-2xl mx-auto">
+                      {slide.description}
+                    </p>
+                    <div className="text-base font-medium mb-8">
+                      {slide.price}
                     </div>
                   </div>
 

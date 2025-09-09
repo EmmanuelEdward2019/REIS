@@ -98,27 +98,32 @@ const ProductCarousel = () => {
                   </div>
 
                   {/* Bottom Left Content */}
-                  <div className="space-y-2 md:space-y-4">
-                    <h3 className="text-lg md:text-2xl lg:text-3xl font-medium">
-                      {product.model}
-                    </h3>
-                    <p className="text-sm md:text-lg lg:text-xl font-light max-w-md opacity-90">
-                      {product.description}
-                    </p>
+                  <div className="relative space-y-2 md:space-y-4">
+                    {/* Transparent overlay behind text */}
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px] rounded-lg -m-4"></div>
                     
-                    {/* Buttons */}
-                    <div className="flex flex-row gap-3 md:gap-4 pt-2 md:pt-4">
-                      <Button 
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-8 py-2 md:py-3 rounded-sm font-medium transition-colors text-sm md:text-base"
-                      >
-                        Order Now
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        className="bg-gray-200 hover:bg-gray-300 text-black border-gray-300 px-4 md:px-8 py-2 md:py-3 rounded-sm font-medium transition-colors text-sm md:text-base"
-                      >
-                        Learn More
-                      </Button>
+                    <div className="relative p-4">
+                      <h3 className="text-lg md:text-2xl lg:text-3xl font-medium">
+                        {product.model}
+                      </h3>
+                      <p className="text-sm md:text-lg lg:text-xl font-light max-w-md opacity-90">
+                        {product.description}
+                      </p>
+                      
+                      {/* Buttons */}
+                      <div className="flex flex-row gap-3 md:gap-4 pt-2 md:pt-4">
+                        <Button 
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-8 py-2 md:py-3 rounded-sm font-medium transition-colors text-sm md:text-base"
+                        >
+                          Order Now
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          className="bg-gray-200 hover:bg-gray-300 text-black border-gray-300 px-4 md:px-8 py-2 md:py-3 rounded-sm font-medium transition-colors text-sm md:text-base"
+                        >
+                          Learn More
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
