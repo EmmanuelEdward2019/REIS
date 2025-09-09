@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Pause } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselApi } from '@/components/ui/carousel';
@@ -60,17 +60,50 @@ const VideoProductCarousel = () => {
   const [count, setCount] = useState(0);
   const [pausedVideos, setPausedVideos] = useState<Set<number>>(new Set());
 
+  const iframeRefs = useRef<Record<number, HTMLIFrameElement | null>>({});
+
+  const postYTCommand = (iframe: HTMLIFrameElement | null | undefined, func: string, args: any[] = []) => {
+    if (!iframe?.contentWindow) return;
+    iframe.contentWindow.postMessage(
+      JSON.stringify({ event: "command", func, args }),
+      "*"
+    );
+  };
+
+  const playVideoById = (id: number) => {
+    const iframe = iframeRefs.current[id];
+    if (!iframe) return;
+    postYTCommand(iframe, "mute");
+    postYTCommand(iframe, "playVideo");
+  };
+
+  const pauseAllVideosExcept = (id?: number) => {
+    Object.entries(iframeRefs.current).forEach(([key, iframe]) => {
+      const pid = Number(key);
+      if (id && pid === id) return;
+      postYTCommand(iframe, "pauseVideo");
+    });
+  };
+
   useEffect(() => {
     if (!api) {
       return;
     }
 
     setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
 
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
+    const updateOnSelect = () => {
+      const selectedIndex = api.selectedScrollSnap();
+      setCurrent(selectedIndex + 1);
+      const currentProductId = videoProducts[selectedIndex]?.id;
+      if (currentProductId) {
+        playVideoById(currentProductId);
+        pauseAllVideosExcept(currentProductId);
+      }
+    };
+
+    updateOnSelect();
+    api.on("select", updateOnSelect);
   }, [api]);
 
   const goToSlide = (index: number) => {
@@ -82,8 +115,12 @@ const VideoProductCarousel = () => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
+        // Unpaused: resume playback
+        playVideoById(id);
       } else {
         newSet.add(id);
+        // Paused: pause this video's playback
+        postYTCommand(iframeRefs.current[id], "pauseVideo");
       }
       return newSet;
     });
@@ -118,12 +155,14 @@ const VideoProductCarousel = () => {
                 {/* Background Video */}
                 <div className="absolute inset-0">
                   <iframe
+                    ref={(el) => (iframeRefs.current[product.id] = el)}
                     src={`https://www.youtube.com/embed/${product.videoId}?autoplay=1&mute=1&loop=1&playlist=${product.videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`}
                     className="w-full h-full object-cover rounded-2xl"
                     frameBorder="0"
                     allow="autoplay; fullscreen; encrypted-media; accelerometer; gyroscope; picture-in-picture"
                     allowFullScreen
                     style={{ pointerEvents: pausedVideos.has(product.id) ? 'none' : 'auto' }}
+                    title={`${product.title} - ${product.subtitle}`}
                   />
                   <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
                 </div>
