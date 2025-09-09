@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Database, Users, Brain, HeadphonesIcon, Handshake } from 'lucide-react';
+import { ArrowRight, Database, Users, Brain, Headphones, Handshake } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const DivisionsSection = () => {
@@ -31,7 +31,7 @@ const DivisionsSection = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/support">
                 <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:shadow-lg">
-                  <HeadphonesIcon className="w-5 h-5 mr-2" />
+                  <Headphones className="w-5 h-5 mr-2" />
                   Services & Support
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
