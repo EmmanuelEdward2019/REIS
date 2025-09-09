@@ -6,14 +6,38 @@ import { Carousel, CarouselContent, CarouselItem, CarouselApi } from '@/componen
 const videoProducts = [
   {
     id: 1,
-    title: 'REIS in Action',
-    subtitle: 'See Our Commercial Solar Installation Process',
-    videoId: '3s9IusiIOTI',
-    description: 'Watch our certified technicians install a complete commercial solar system in under 48 hours',
-    cta: 'Get Installation Quote'
+    title: 'Innovation Showcase',
+    subtitle: 'Advanced Energy Solutions',
+    videoId: 'lE3rH1Tisng',
+    description: 'Discover our cutting-edge renewable energy technologies and innovative approaches',
+    cta: 'Learn More'
   },
   {
     id: 2,
+    title: 'Smart Infrastructure',
+    subtitle: 'Next-Generation Grid Systems',
+    videoId: 'oR0yoAAPsMQ',
+    description: 'See how we\'re building the intelligent energy infrastructure of tomorrow',
+    cta: 'Explore Solutions'
+  },
+  {
+    id: 3,
+    title: 'Sustainable Future',
+    subtitle: 'Clean Energy Revolution',
+    videoId: '4bu-b-QMKdk',
+    description: 'Join us in creating a sustainable future through innovative renewable energy',
+    cta: 'Get Started'
+  },
+  {
+    id: 4,
+    title: 'Training Excellence',
+    subtitle: 'Professional Development Programs', 
+    videoId: 'fVQGlBXKeD4',
+    description: 'Experience our hands-on training facilities and expert-led certification programs',
+    cta: 'Explore Courses'
+  },
+  {
+    id: 5,
     title: 'AI Analytics Dashboard', 
     subtitle: 'Real-Time Energy Optimization',
     videoId: 'gYsPq1qwWBc',
@@ -21,12 +45,12 @@ const videoProducts = [
     cta: 'Try Free Demo'
   },
   {
-    id: 3,
-    title: 'Training Excellence',
-    subtitle: 'Professional Development Programs', 
-    videoId: 'fVQGlBXKeD4',
-    description: 'Experience our hands-on training facilities and expert-led certification programs',
-    cta: 'Explore Courses'
+    id: 6,
+    title: 'REIS in Action',
+    subtitle: 'Commercial Solar Installation Process',
+    videoId: '3s9IusiIOTI',
+    description: 'Watch our certified technicians install a complete commercial solar system in under 48 hours',
+    cta: 'Get Installation Quote'
   }
 ];
 
