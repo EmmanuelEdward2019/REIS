@@ -182,6 +182,8 @@ const QuestionnaireFlow: React.FC<QuestionnaireFlowProps> = ({
         return formData.hasRecentAudit 
           ? true 
           : formData.siteFiles.length > 0;
+      case 5:
+        return true; // Final step - always allow completion
       default: return true;
     }
   };
