@@ -235,13 +235,13 @@ const PartnersDashboard = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-secondary">
+      <div className="min-h-screen bg-secondary overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-foreground">Partners Dashboard</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Partners Dashboard</h1>
                 <Badge className={getStatusColor(partnerProfile.status)}>
                   {partnerProfile.status}
                 </Badge>
@@ -357,13 +357,13 @@ const PartnersDashboard = () => {
             {/* Main Content */}
             <div className="lg:col-span-3">
               <Tabs defaultValue="dashboard" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-6">
-                  <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-                  <TabsTrigger value="jobs">Job Codes</TabsTrigger>
-                  <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
-                  <TabsTrigger value="products">Products</TabsTrigger>
-                  <TabsTrigger value="commissions">Commissions</TabsTrigger>
-                  <TabsTrigger value="compliance">Compliance</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+                  <TabsTrigger value="dashboard" className="text-xs sm:text-sm">Dashboard</TabsTrigger>
+                  <TabsTrigger value="jobs" className="text-xs sm:text-sm">Job Codes</TabsTrigger>
+                  <TabsTrigger value="marketplace" className="text-xs sm:text-sm">Marketplace</TabsTrigger>
+                  <TabsTrigger value="products" className="text-xs sm:text-sm">Products</TabsTrigger>
+                  <TabsTrigger value="commissions" className="text-xs sm:text-sm">Commissions</TabsTrigger>
+                  <TabsTrigger value="compliance" className="text-xs sm:text-sm">Compliance</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="dashboard" className="space-y-6">

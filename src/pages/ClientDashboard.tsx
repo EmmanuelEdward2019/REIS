@@ -30,7 +30,8 @@ import {
   MessageCircle,
   Calculator,
   Award,
-  AlertTriangle
+  AlertTriangle,
+  FileCheck
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import Layout from '@/components/layout/Layout';
@@ -629,14 +630,14 @@ const ClientDashboard = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-secondary">
+      <div className="min-h-screen bg-secondary overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8 flex items-center justify-between">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-foreground">Eagle & Thistle CRM</h1>
-                <Badge variant="outline" className="px-3 py-1">
+                <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Eagle & Thistle CRM</h1>
+                <Badge variant="outline" className="px-3 py-1 text-xs sm:text-sm">
                   {getRoleLabel(userRole)}
                 </Badge>
               </div>
@@ -662,22 +663,25 @@ const ClientDashboard = () => {
           {/* Navigation Tabs */}
           <div className="mb-8">
             <Tabs value={currentView} onValueChange={(value) => setCurrentView(value as any)}>
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="overview" className="flex items-center gap-2">
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+                <TabsTrigger value="overview" className="flex items-center gap-2 text-xs sm:text-sm">
                   <BarChart3 className="h-4 w-4" />
-                  Overview
+                  <span className="hidden sm:inline">Overview</span>
+                  <span className="sm:hidden">Home</span>
                 </TabsTrigger>
-                <TabsTrigger value="services" className="flex items-center gap-2">
+                <TabsTrigger value="services" className="flex items-center gap-2 text-xs sm:text-sm">
                   <Target className="h-4 w-4" />
                   Services
                 </TabsTrigger>
-                <TabsTrigger value="documents" className="flex items-center gap-2">
+                <TabsTrigger value="documents" className="flex items-center gap-2 text-xs sm:text-sm">
                   <FileText className="h-4 w-4" />
-                  Documents
+                  <span className="hidden sm:inline">Documents</span>
+                  <span className="sm:hidden">Docs</span>
                 </TabsTrigger>
-                <TabsTrigger value="questionnaire" className="flex items-center gap-2">
-                  <ClipboardList className="h-4 w-4" />
-                  Questionnaire
+                <TabsTrigger value="questionnaire" className="flex items-center gap-2 text-xs sm:text-sm">
+                  <FileCheck className="h-4 w-4" />
+                  <span className="hidden sm:inline">Questionnaire</span>
+                  <span className="sm:hidden">Forms</span>
                 </TabsTrigger>
               </TabsList>
             </Tabs>

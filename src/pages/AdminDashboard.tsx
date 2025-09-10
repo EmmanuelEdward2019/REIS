@@ -289,11 +289,11 @@ const AdminDashboard = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-secondary">
+      <div className="min-h-screen bg-secondary overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-2">System Administration</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">System Administration</h1>
             <p className="text-muted-foreground">Comprehensive CRM, Partner Network & System Management</p>
           </div>
 
@@ -392,15 +392,15 @@ const AdminDashboard = () => {
             {/* Main Content */}
             <div className="lg:col-span-3">
               <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-8">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="jobs">Jobs</TabsTrigger>
-                  <TabsTrigger value="partners">Partners</TabsTrigger>
-                  <TabsTrigger value="tickets">Tickets</TabsTrigger>
-                  <TabsTrigger value="metrics">Metrics</TabsTrigger>
-                  <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                  <TabsTrigger value="compliance">Compliance</TabsTrigger>
-                  <TabsTrigger value="settings">Settings</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 h-auto">
+                  <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+                  <TabsTrigger value="jobs" className="text-xs sm:text-sm">Jobs</TabsTrigger>
+                  <TabsTrigger value="partners" className="text-xs sm:text-sm">Partners</TabsTrigger>
+                  <TabsTrigger value="tickets" className="text-xs sm:text-sm">Tickets</TabsTrigger>
+                  <TabsTrigger value="metrics" className="text-xs sm:text-sm">Metrics</TabsTrigger>
+                  <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
+                  <TabsTrigger value="compliance" className="text-xs sm:text-sm">Compliance</TabsTrigger>
+                  <TabsTrigger value="settings" className="text-xs sm:text-sm">Settings</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="overview" className="space-y-6">
