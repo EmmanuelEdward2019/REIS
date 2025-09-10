@@ -221,7 +221,7 @@ const AboutNew = () => {
                 <p className="text-lg opacity-90 mb-6 max-w-md">
                   {item.description}
                 </p>
-                <Button variant="outline" className="w-fit border-white text-white hover:bg-white hover:text-black">
+                <Button variant="outline" className="w-fit border-muted-foreground text-muted-foreground hover:bg-muted-foreground hover:text-background">
                   Explore
                 </Button>
               </div>

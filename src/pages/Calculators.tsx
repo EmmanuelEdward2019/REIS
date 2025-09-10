@@ -12,29 +12,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const Calculators = () => {
   const [activeCalculator, setActiveCalculator] = useState<string | null>(null);
   
-  const calculators = [
-    {
-      id: 'co2-savings',
-      title: 'CO₂ Savings Calculator',
-      description: 'Estimate CO₂ emissions avoided by using REIS systems vs. diesel',
-      icon: <Leaf className="w-6 h-6" />,
-      color: 'success'
-    },
-    {
-      id: 'bill-savings',
-      title: 'Bill Savings Tool',
-      description: 'Compare monthly/annual costs of diesel vs. REIS',
-      icon: <DollarSign className="w-6 h-6" />,
-      color: 'primary'
-    },
-    {
-      id: 'energy-simulator',
-      title: 'Energy Generation Simulator',
-      description: 'Estimate daily/monthly/yearly energy output by location',
-      icon: <Zap className="w-6 h-6" />,
-      color: 'accent'
-    }
-  ];
 
   const CO2Calculator = () => {
     const [monthlyKwh, setMonthlyKwh] = useState('');
@@ -863,67 +840,6 @@ const Calculators = () => {
           </div>
         </section>
 
-        {/* Calculators Grid */}
-        <section className="section-padding">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {calculators.map((calc) => (
-                <Card 
-                  key={calc.id}
-                  className={`cursor-pointer transition-all duration-300 hover:shadow-lg border-2 ${
-                    activeCalculator === calc.id 
-                      ? `border-${calc.color} bg-${calc.color}/5` 
-                      : 'border-border hover:border-muted-foreground'
-                  }`}
-                  onClick={() => setActiveCalculator(activeCalculator === calc.id ? null : calc.id)}
-                >
-                  <CardHeader className="text-center">
-                    <div className={`mx-auto mb-4 p-3 rounded-full bg-${calc.color}/10 text-${calc.color} w-fit`}>
-                      {calc.icon}
-                    </div>
-                    <CardTitle className="text-lg">{calc.title}</CardTitle>
-                    <CardDescription>{calc.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button 
-                      variant={activeCalculator === calc.id ? "default" : "outline"} 
-                      className="w-full"
-                    >
-                      {activeCalculator === calc.id ? "Close Calculator" : "Open Calculator"}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Active Calculator */}
-            {activeCalculator && (
-              <Card className="max-w-4xl mx-auto">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-primary/10 rounded-full">
-                        <Calculator className="w-5 h-5 text-primary" />
-                      </div>
-                      <CardTitle>
-                        {calculators.find(c => c.id === activeCalculator)?.title}
-                      </CardTitle>
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => setActiveCalculator(null)}
-                    >
-                      ✕
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {renderCalculatorContent(activeCalculator)}
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </section>
 
         {/* Downloadables Section */}
         <section className="section-padding bg-muted/20">
