@@ -141,7 +141,7 @@ const HeroSlider = () => {
                       variant="outline"
                       className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-gray-200 hover:bg-gray-300 text-black border-gray-300 rounded-md transition-colors"
                     >
-                      <Link to="/solutions">{slide.cta2}</Link>
+                      <Link to="/partners">{slide.cta2}</Link>
                     </Button>
                   </div>
                 </div>
