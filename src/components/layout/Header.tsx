@@ -24,7 +24,7 @@ const Header = () => {
           title: 'Solar Solutions',
           image: megaMenuReis,
           items: [
-            { name: 'Solar Systems', href: '/reis },
+            { name: 'Solar Systems', href: '/reis' },
             { name: 'Solar-Wind Hybrid', href: '/reis' },
             { name: 'Energy Storage', href: '/reis' },
             { name: 'Hydrogen Solutions', href: '/reis' }
