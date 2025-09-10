@@ -263,14 +263,14 @@ const PartnersDashboard = () => {
           </div>
 
           {/* Key Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
             <Card className="bg-card border-border">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
                 <Briefcase className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{partnerMetrics.totalOrders}</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground break-words">{partnerMetrics.totalOrders}</div>
                 <p className="text-xs text-muted-foreground">All time</p>
               </CardContent>
             </Card>
@@ -281,7 +281,7 @@ const PartnersDashboard = () => {
                 <Clock className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{partnerMetrics.activeProjects}</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground break-words">{partnerMetrics.activeProjects}</div>
                 <p className="text-xs text-muted-foreground">In progress</p>
               </CardContent>
             </Card>
@@ -292,7 +292,7 @@ const PartnersDashboard = () => {
                 <DollarSign className="h-4 w-4 text-success" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{partnerMetrics.totalCommissions}</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground break-words">{partnerMetrics.totalCommissions}</div>
                 <p className="text-xs text-muted-foreground">Earned</p>
               </CardContent>
             </Card>
@@ -303,7 +303,7 @@ const PartnersDashboard = () => {
                 <Clock className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{partnerMetrics.pendingPayouts}</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground break-words">{partnerMetrics.pendingPayouts}</div>
                 <p className="text-xs text-muted-foreground">Awaiting payment</p>
               </CardContent>
             </Card>
@@ -314,7 +314,7 @@ const PartnersDashboard = () => {
                 <CheckCircle className="h-4 w-4 text-success" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{partnerMetrics.completionRate}</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground break-words">{partnerMetrics.completionRate}</div>
                 <p className="text-xs text-muted-foreground">Success rate</p>
               </CardContent>
             </Card>
@@ -325,7 +325,7 @@ const PartnersDashboard = () => {
                 <Star className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{partnerMetrics.rating}</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground break-words">{partnerMetrics.rating}</div>
                 <p className="text-xs text-muted-foreground">⭐⭐⭐⭐⭐</p>
               </CardContent>
             </Card>
@@ -336,7 +336,7 @@ const PartnersDashboard = () => {
                 <TrendingUp className="h-4 w-4 text-success" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{partnerMetrics.revenueThisMonth}</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground break-words">{partnerMetrics.revenueThisMonth}</div>
                 <p className="text-xs text-muted-foreground">This month</p>
               </CardContent>
             </Card>
@@ -347,7 +347,7 @@ const PartnersDashboard = () => {
                 <Package className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{partnerMetrics.activeListings}</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground break-words">{partnerMetrics.activeListings}</div>
                 <p className="text-xs text-muted-foreground">Products</p>
               </CardContent>
             </Card>
