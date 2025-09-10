@@ -24,19 +24,19 @@ const Header = () => {
           title: 'Solar Solutions',
           image: megaMenuReis,
           items: [
-            { name: 'Solar Systems', href: '/reis/solar' },
-            { name: 'Solar-Wind Hybrid', href: '/reis/solar-wind' },
-            { name: 'Energy Storage', href: '/reis/storage' },
-            { name: 'Hydrogen Solutions', href: '/reis/hydrogen' }
+            { name: 'Solar Systems', href: '/reis },
+            { name: 'Solar-Wind Hybrid', href: '/reis' },
+            { name: 'Energy Storage', href: '/reis' },
+            { name: 'Hydrogen Solutions', href: '/reis' }
           ]
         },
         {
           title: 'Advanced Systems',
           image: megaMenuReis,
           items: [
-            { name: 'Tidal Energy', href: '/reis/tidal' },
-            { name: 'Offshore Solutions', href: '/reis/offshore' },
-            { name: 'Micro Systems', href: '/reis/micro' }
+            { name: 'Tidal Energy', href: '/reis' },
+            { name: 'Offshore Solutions', href: '/reis' },
+            { name: 'Micro Systems', href: '/reis' }
           ]
         }
       ]
@@ -48,19 +48,19 @@ const Header = () => {
           title: 'Analytics & Strategy',
           image: megaMenuDataAI,
           items: [
-            { name: 'AI Strategy', href: '/data-ai/strategy' },
-            { name: 'Data Analytics', href: '/data-ai/analytics' },
-            { name: 'Machine Learning', href: '/data-ai/ml' },
-            { name: 'Data Engineering', href: '/data-ai/engineering' }
+            { name: 'AI Strategy', href: '/data-and-ai' },
+            { name: 'Data Analytics', href: '/data-and-ai' },
+            { name: 'Machine Learning', href: '/data-and-ai' },
+            { name: 'Data Engineering', href: '/data-and-ai' }
           ]
         },
         {
           title: 'Solutions & Security',
           image: megaMenuDataAI,
           items: [
-            { name: 'AI Products', href: '/data-ai/products' },
-            { name: 'Security Solutions', href: '/data-ai/security' },
-            { name: 'Geospatial Analytics', href: '/data-ai/geospatial' }
+            { name: 'AI Products', href: '/data-and-ai' },
+            { name: 'Security Solutions', href: '/data-and-ai' },
+            { name: 'Geospatial Analytics', href: '/data-and-ai' }
           ]
         }
       ]
@@ -72,19 +72,19 @@ const Header = () => {
           title: 'Learning Systems',
           image: megaMenuTraining,
           items: [
-            { name: 'LMS Platform', href: '/training/lms' },
-            { name: 'Content Development', href: '/training/content' },
-            { name: 'Professional Programs', href: '/training/professional' },
-            { name: 'Compliance Training', href: '/training/compliance' }
+            { name: 'LMS Platform', href: '/lms' },
+            { name: 'Content Development', href: '/lms' },
+            { name: 'Professional Programs', href: '/lms' },
+            { name: 'Compliance Training', href: '/lms' }
           ]
         },
         {
           title: 'Specialized Training',
           image: megaMenuTraining,
           items: [
-            { name: 'Vocational Training', href: '/training/vocational' },
-            { name: 'Assessment Tools', href: '/training/assessment' },
-            { name: 'Advisory Services', href: '/training/advisory' }
+            { name: 'Vocational Training', href: '/lms' },
+            { name: 'Assessment Tools', href: '/lms' },
+            { name: 'Advisory Services', href: '/lms' }
           ]
         }
       ]
@@ -136,10 +136,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">Solar Solutions</h3>
                             <ul className="space-y-2">
-<li><Link to="/reis/residential-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Residential Solar</Link></li>
-<li><Link to="/reis/commercial-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Commercial Solar</Link></li>
-<li><Link to="/reis/utility-scale" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Utility Scale</Link></li>
-<li><Link to="/reis/solar-wind-hybrid" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Solar-Wind Hybrid</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Residential Solar</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Commercial Solar</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Utility Scale</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Solar-Wind Hybrid</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -156,10 +156,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">Energy Storage</h3>
                             <ul className="space-y-2">
-<li><Link to="/reis/battery-systems" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Battery Systems</Link></li>
-<li><Link to="/reis/grid-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Grid Storage</Link></li>
-<li><Link to="/reis/hydrogen-solutions" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Hydrogen Solutions</Link></li>
-<li><Link to="/reis/micro-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Micro Storage</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Battery Systems</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Grid Storage</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Hydrogen Solutions</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Micro Storage</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -176,10 +176,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">Marine Energy</h3>
                             <ul className="space-y-2">
-<li><Link to="/reis/offshore-wind" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Offshore Wind</Link></li>
-<li><Link to="/reis/tidal-energy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Tidal Energy</Link></li>
-<li><Link to="/reis/wave-power" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Wave Power</Link></li>
-<li><Link to="/reis/floating-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Floating Solar</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Offshore Wind</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Tidal Energy</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Wave Power</Link></li>
+<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Floating Solar</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -228,10 +228,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">Analytics & Strategy</h3>
                             <ul className="space-y-2">
-<li><Link to="/data-ai/strategy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Strategy</Link></li>
-<li><Link to="/data-ai/analytics" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Analytics</Link></li>
-<li><Link to="/data-ai/ml" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Machine Learning</Link></li>
-<li><Link to="/data-ai/engineering" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Engineering</Link></li>
+<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Strategy</Link></li>
+<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Analytics</Link></li>
+<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Machine Learning</Link></li>
+<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Data Engineering</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -248,9 +248,9 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">Solutions & Security</h3>
                             <ul className="space-y-2">
-<li><Link to="/data-ai/products" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Products</Link></li>
-<li><Link to="/data-ai/security" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Security Solutions</Link></li>
-<li><Link to="/data-ai/geospatial" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Geospatial Analytics</Link></li>
+<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">AI Products</Link></li>
+<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Security Solutions</Link></li>
+<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Geospatial Analytics</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -299,10 +299,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">Learning Systems</h3>
                             <ul className="space-y-2">
-<li><Link to="/training/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">LMS Platform</Link></li>
-<li><Link to="/training/content" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Content Development</Link></li>
-<li><Link to="/training/professional" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Professional Programs</Link></li>
-<li><Link to="/training/compliance" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Compliance Training</Link></li>
+<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">LMS Platform</Link></li>
+<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Content Development</Link></li>
+<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Professional Programs</Link></li>
+<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Compliance Training</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -319,9 +319,9 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">Specialized Training</h3>
                             <ul className="space-y-2">
-<li><Link to="/training/vocational" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Vocational Training</Link></li>
-<li><Link to="/training/assessment" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Assessment Tools</Link></li>
-<li><Link to="/training/advisory" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Advisory Services</Link></li>
+<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Vocational Training</Link></li>
+<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Assessment Tools</Link></li>
+<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Advisory Services</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -394,10 +394,10 @@ const Header = () => {
                     <ChevronRight className={`w-4 h-4 transition-transform ${mobileMenuState.reis ? 'rotate-90' : ''}`} />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1">
-                    <Link to="/reis/residential-solar" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Residential Solar</Link>
-                    <Link to="/reis/commercial-solar" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Commercial Solar</Link>
-                    <Link to="/reis/battery-systems" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Battery Systems</Link>
-                    <Link to="/reis/offshore-wind" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Offshore Wind</Link>
+                    <Link to="/reis" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Residential Solar</Link>
+                    <Link to="/reis" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Commercial Solar</Link>
+                    <Link to="/reis" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Battery Systems</Link>
+                    <Link to="/reis" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Offshore Wind</Link>
                   </CollapsibleContent>
                 </Collapsible>
 
@@ -411,10 +411,10 @@ const Header = () => {
                     <ChevronRight className={`w-4 h-4 transition-transform ${mobileMenuState.dataAi ? 'rotate-90' : ''}`} />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1">
-                    <Link to="/data-ai/strategy" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">AI Strategy</Link>
-                    <Link to="/data-ai/analytics" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Data Analytics</Link>
-                    <Link to="/data-ai/products" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">AI Products</Link>
-                    <Link to="/data-ai/security" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Security Solutions</Link>
+                    <Link to="/data-and-ai" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">AI Strategy</Link>
+                    <Link to="/data-and-ai" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Data Analytics</Link>
+                    <Link to="/data-and-ai" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">AI Products</Link>
+                    <Link to="/data-and-ai" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Security Solutions</Link>
                   </CollapsibleContent>
                 </Collapsible>
 
@@ -428,10 +428,10 @@ const Header = () => {
                     <ChevronRight className={`w-4 h-4 transition-transform ${mobileMenuState.lms ? 'rotate-90' : ''}`} />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1">
-                    <Link to="/training/lms" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">LMS Platform</Link>
-                    <Link to="/training/content" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Content Development</Link>
-                    <Link to="/training/professional" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Professional Programs</Link>
-                    <Link to="/training/vocational" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Vocational Training</Link>
+                    <Link to="/lms" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">LMS Platform</Link>
+                    <Link to="/lms" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Content Development</Link>
+                    <Link to="/lms" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Professional Programs</Link>
+                    <Link to="/lms" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">Vocational Training</Link>
                   </CollapsibleContent>
                 </Collapsible>
 
