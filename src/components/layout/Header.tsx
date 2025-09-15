@@ -365,13 +365,27 @@ const Header = () => {
                 )}
               </div>
               
-              <Link to="/partners" className="text-foreground hover:text-primary transition-colors font-medium">Partners</Link>
-              <Link to="/services" className="text-foreground hover:text-primary transition-colors font-medium">Services</Link>
-              <Link to="/projects" className="text-foreground hover:text-primary transition-colors font-medium">Projects</Link>
-              <Link to="/calculators" className="text-foreground hover:text-primary transition-colors font-medium">Calculators</Link>
-              <Link to="/shop" className="text-foreground hover:text-primary transition-colors font-medium">Shop</Link>
-              <Link to="/support" className="text-foreground hover:text-primary transition-colors font-medium">Support</Link>
-              <Link to="/about" className="text-foreground hover:text-primary transition-colors font-medium">About</Link>
+              <Link to="/partners" className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? 'text-foreground' : 'text-white'
+              }`}>Partners</Link>
+              <Link to="/services" className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? 'text-foreground' : 'text-white'
+              }`}>Services</Link>
+              <Link to="/projects" className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? 'text-foreground' : 'text-white'
+              }`}>Projects</Link>
+              <Link to="/calculators" className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? 'text-foreground' : 'text-white'
+              }`}>Calculators</Link>
+              <Link to="/shop" className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? 'text-foreground' : 'text-white'
+              }`}>Shop</Link>
+              <Link to="/support" className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? 'text-foreground' : 'text-white'
+              }`}>Support</Link>
+              <Link to="/about" className={`hover:text-primary transition-colors font-medium ${
+                isScrolled ? 'text-foreground' : 'text-white'
+              }`}>About</Link>
             </nav>
 
             {/* Tesla-style Icons - Far Right */}
