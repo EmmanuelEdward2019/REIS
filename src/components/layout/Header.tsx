@@ -17,6 +17,23 @@ const Header = () => {
     lms: false
   });
 
+  // Handle click outside to close mega menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.mega-menu-container')) {
+        setActiveMega(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const toggleMegaMenu = (menu: string) => {
+    setActiveMega(activeMega === menu ? null : menu);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -126,17 +143,18 @@ const Header = () => {
             {/* Desktop Navigation - Centered */}
             <nav className="hidden lg:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
               {/* REIS Mega Menu */}
-              <div 
-                className="relative group"
-                onMouseEnter={() => setActiveMega('reis')}
-                onMouseLeave={() => setActiveMega(null)}
-              >
-                <Link to="/reis" className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
-                  isScrolled ? 'text-foreground' : 'text-white'
-                }`}>
+              <div className="relative mega-menu-container">
+                <button 
+                  onClick={() => toggleMegaMenu('reis')}
+                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
+                    isScrolled ? 'text-foreground' : 'text-white'
+                  }`}
+                >
                   <span>REIS</span>
-                  <ChevronDown className="w-4 h-4" />
-                </Link>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                    activeMega === 'reis' ? 'rotate-180' : ''
+                  }`} />
+                </button>
                 
                 {activeMega === 'reis' && (
                   <div className="fixed top-16 left-0 right-0 w-full bg-background/95 backdrop-blur-md border-t border-border shadow-2xl z-50">
@@ -220,17 +238,18 @@ const Header = () => {
               </div>
 
               {/* Data & AI Mega Menu */}
-              <div 
-                className="relative group"
-                onMouseEnter={() => setActiveMega('data-ai')}
-                onMouseLeave={() => setActiveMega(null)}
-              >
-                <Link to="/data-and-ai" className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium whitespace-nowrap ${
-                  isScrolled ? 'text-foreground' : 'text-white'
-                }`}>
+              <div className="relative mega-menu-container">
+                <button 
+                  onClick={() => toggleMegaMenu('data-ai')}
+                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium whitespace-nowrap ${
+                    isScrolled ? 'text-foreground' : 'text-white'
+                  }`}
+                >
                   <span>Data & AI</span>
-                  <ChevronDown className="w-4 h-4" />
-                </Link>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                    activeMega === 'data-ai' ? 'rotate-180' : ''
+                  }`} />
+                </button>
                 
                 {activeMega === 'data-ai' && (
                   <div className="fixed top-16 left-0 right-0 w-full bg-background/95 backdrop-blur-md border-t border-border shadow-2xl z-50">
@@ -293,17 +312,18 @@ const Header = () => {
               </div>
 
               {/* Training Mega Menu */}
-              <div 
-                className="relative group"
-                onMouseEnter={() => setActiveMega('training')}
-                onMouseLeave={() => setActiveMega(null)}
-              >
-                <Link to="/lms" className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
-                  isScrolled ? 'text-foreground' : 'text-white'
-                }`}>
+              <div className="relative mega-menu-container">
+                <button 
+                  onClick={() => toggleMegaMenu('training')}
+                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
+                    isScrolled ? 'text-foreground' : 'text-white'
+                  }`}
+                >
                   <span>LMS</span>
-                  <ChevronDown className="w-4 h-4" />
-                </Link>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                    activeMega === 'training' ? 'rotate-180' : ''
+                  }`} />
+                </button>
                 
                 {activeMega === 'training' && (
                   <div className="fixed top-16 left-0 right-0 w-full bg-background/95 backdrop-blur-md border-t border-border shadow-2xl z-50">
