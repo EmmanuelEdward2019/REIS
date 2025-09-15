@@ -4,10 +4,11 @@ import { Menu, X, ChevronDown, HelpCircle, Globe, UserCircle, ChevronRight } fro
 import megaMenuReis from '@/assets/mega-menu-reis.jpg';
 import megaMenuDataAI from '@/assets/mega-menu-data-ai.jpg';
 import megaMenuTraining from '@/assets/mega-menu-training.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 const Header = () => {
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeMega, setActiveMega] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,6 +17,9 @@ const Header = () => {
     dataAi: false,
     lms: false
   });
+
+  // Check if we're on the homepage
+  const isHomePage = location.pathname === '/';
 
   // Handle click outside to close mega menu
   useEffect(() => {
@@ -121,7 +125,7 @@ const Header = () => {
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
+        isScrolled || !isHomePage
           ? 'bg-background/95 backdrop-blur-md border-b border-border' 
           : 'bg-transparent'
       }`}>
@@ -134,7 +138,7 @@ const Header = () => {
                   src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png" 
                   alt="Eagle & Thistle Group" 
                   className={`h-10 w-auto transition-all duration-300 ${
-                    isScrolled ? 'brightness-100' : 'brightness-0 invert'
+                    (isScrolled || !isHomePage) ? 'brightness-100' : 'brightness-0 invert'
                   }`}
                 />
               </Link>
@@ -147,7 +151,7 @@ const Header = () => {
                 <button 
                   onClick={() => toggleMegaMenu('reis')}
                   className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
-                    isScrolled ? 'text-foreground' : 'text-white'
+                    (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
                   }`}
                 >
                   <span>REIS</span>
@@ -158,8 +162,8 @@ const Header = () => {
                 
                 {activeMega === 'reis' && (
                   <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="w-full px-8 py-6">
-                      <div className="grid grid-cols-4 gap-8 max-w-6xl mx-auto">
+                    <div className="container mx-auto px-0 py-8">
+                      <div className="grid grid-cols-4 gap-12 max-w-7xl mx-auto px-12">
                         {/* Solar Solutions */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
@@ -242,7 +246,7 @@ const Header = () => {
                 <button 
                   onClick={() => toggleMegaMenu('data-ai')}
                   className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium whitespace-nowrap ${
-                    isScrolled ? 'text-foreground' : 'text-white'
+                    (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
                   }`}
                 >
                   <span>Data & AI</span>
@@ -253,8 +257,8 @@ const Header = () => {
                 
                 {activeMega === 'data-ai' && (
                   <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="w-full px-8 py-6">
-                        <div className="grid grid-cols-3 gap-10 max-w-5xl mx-auto">
+                    <div className="container mx-auto px-0 py-8">
+                        <div className="grid grid-cols-3 gap-12 max-w-6xl mx-auto px-12">
                         {/* Analytics & Strategy */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
@@ -316,7 +320,7 @@ const Header = () => {
                 <button 
                   onClick={() => toggleMegaMenu('training')}
                   className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
-                    isScrolled ? 'text-foreground' : 'text-white'
+                    (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
                   }`}
                 >
                   <span>LMS</span>
@@ -327,8 +331,8 @@ const Header = () => {
                 
                 {activeMega === 'training' && (
                   <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="w-full px-8 py-6">
-                      <div className="grid grid-cols-3 gap-10 max-w-5xl mx-auto">
+                    <div className="container mx-auto px-0 py-8">
+                      <div className="grid grid-cols-3 gap-12 max-w-6xl mx-auto px-12">
                         {/* Learning Systems */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
