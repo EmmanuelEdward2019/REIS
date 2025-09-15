@@ -116,7 +116,9 @@ const Header = () => {
                 <img 
                   src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png" 
                   alt="Eagle & Thistle Group" 
-                  className="h-10 w-auto"
+                  className={`h-10 w-auto transition-all duration-300 ${
+                    isScrolled ? 'brightness-100' : 'brightness-0 invert'
+                  }`}
                 />
               </Link>
             </div>
@@ -129,7 +131,9 @@ const Header = () => {
                 onMouseEnter={() => setActiveMega('reis')}
                 onMouseLeave={() => setActiveMega(null)}
               >
-                <Link to="/reis" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/reis" className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
+                  isScrolled ? 'text-foreground' : 'text-white'
+                }`}>
                   <span>REIS</span>
                   <ChevronDown className="w-4 h-4" />
                 </Link>
@@ -221,7 +225,9 @@ const Header = () => {
                 onMouseEnter={() => setActiveMega('data-ai')}
                 onMouseLeave={() => setActiveMega(null)}
               >
-                <Link to="/data-and-ai" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/data-and-ai" className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium whitespace-nowrap ${
+                  isScrolled ? 'text-foreground' : 'text-white'
+                }`}>
                   <span>Data & AI</span>
                   <ChevronDown className="w-4 h-4" />
                 </Link>
@@ -292,10 +298,12 @@ const Header = () => {
                 onMouseEnter={() => setActiveMega('training')}
                 onMouseLeave={() => setActiveMega(null)}
               >
-<Link to="/lms" className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors font-medium">
-  <span>LMS</span>
-  <ChevronDown className="w-4 h-4" />
-</Link>
+                <Link to="/lms" className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
+                  isScrolled ? 'text-foreground' : 'text-white'
+                }`}>
+                  <span>LMS</span>
+                  <ChevronDown className="w-4 h-4" />
+                </Link>
                 
                 {activeMega === 'training' && (
                   <div className="fixed top-16 left-0 right-0 w-full bg-background/95 backdrop-blur-md border-t border-border shadow-2xl z-50">
@@ -368,13 +376,19 @@ const Header = () => {
 
             {/* Tesla-style Icons - Far Right */}
             <div className="hidden lg:flex items-center space-x-3 ml-auto">
-              <Button variant="ghost" size="sm" className="p-2" title="Support">
+              <Button variant="ghost" size="sm" className={`p-2 transition-colors ${
+                isScrolled ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
+              }`} title="Support">
                 <HelpCircle className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="sm" className="p-2" title="Region & Language">
+              <Button variant="ghost" size="sm" className={`p-2 transition-colors ${
+                isScrolled ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
+              }`} title="Region & Language">
                 <Globe className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="sm" className="p-2" title="Account" asChild>
+              <Button variant="ghost" size="sm" className={`p-2 transition-colors ${
+                isScrolled ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
+              }`} title="Account" asChild>
                 <Link to="/auth">
                   <UserCircle className="w-5 h-5" />
                 </Link>
