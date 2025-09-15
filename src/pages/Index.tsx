@@ -6,6 +6,8 @@ import CurrentOffers from '@/components/home/CurrentOffers';
 import VideoProductCarousel from '@/components/home/VideoProductCarousel';
 import DataAICarousel from '@/components/home/DataAICarousel';
 import DivisionsSection from '@/components/home/DivisionsSection';
+import StickyMetrics from '@/components/home/StickyMetrics';
+
 const Index = () => {
   return (
     <Layout>
@@ -17,6 +19,7 @@ const Index = () => {
       <VideoProductCarousel />
       <DataAICarousel />
       <DivisionsSection />
+      <StickyMetrics />
     </Layout>
   );
 };

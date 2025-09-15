@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, ChevronDown, HelpCircle, Globe, UserCircle, ChevronRight } from 'lucide-react';
 import megaMenuReis from '@/assets/mega-menu-reis.jpg';
@@ -10,11 +10,21 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeMega, setActiveMega] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuState, setMobileMenuState] = useState({
     reis: false,
     dataAi: false,
     lms: false
   });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const megaMenus = {
     reis: {
@@ -93,11 +103,15 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center">
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-background/95 backdrop-blur-md border-b border-border' 
+          : 'bg-transparent'
+      }`}>
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center h-16">
+            {/* Logo - Far Left */}
+            <div className="flex items-center mr-auto">
               <Link to="/" className="flex items-center">
                 <img 
                   src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png" 
@@ -107,8 +121,8 @@ const Header = () => {
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-6">
+            {/* Desktop Navigation - Centered */}
+            <nav className="hidden lg:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
               {/* REIS Mega Menu */}
               <div 
                 className="relative group"
@@ -121,8 +135,8 @@ const Header = () => {
                 </Link>
                 
                 {activeMega === 'reis' && (
-                  <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
-                    <div className="max-w-[1200px] mx-auto px-8 py-10">
+                  <div className="fixed top-16 left-0 right-0 w-full bg-background/95 backdrop-blur-md border-t border-border shadow-2xl z-50">
+                    <div className="max-w-[1400px] mx-auto px-8 py-10">
                       <div className="grid grid-cols-4 gap-8">
                         {/* Solar Solutions */}
                         <div className="space-y-4">
@@ -213,8 +227,8 @@ const Header = () => {
                 </Link>
                 
                 {activeMega === 'data-ai' && (
-                  <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
-                    <div className="max-w-[1200px] mx-auto px-8 py-10">
+                  <div className="fixed top-16 left-0 right-0 w-full bg-background/95 backdrop-blur-md border-t border-border shadow-2xl z-50">
+                    <div className="max-w-[1400px] mx-auto px-8 py-10">
                       <div className="grid grid-cols-3 gap-10">
                         {/* Analytics & Strategy */}
                         <div className="space-y-4">
@@ -284,8 +298,8 @@ const Header = () => {
 </Link>
                 
                 {activeMega === 'training' && (
-                  <div className="absolute top-full left-0 w-screen bg-background border-t border-border shadow-2xl z-50">
-                    <div className="max-w-[1200px] mx-auto px-8 py-10">
+                  <div className="fixed top-16 left-0 right-0 w-full bg-background/95 backdrop-blur-md border-t border-border shadow-2xl z-50">
+                    <div className="max-w-[1400px] mx-auto px-8 py-10">
                       <div className="grid grid-cols-3 gap-10">
                         {/* Learning Systems */}
                         <div className="space-y-4">
@@ -352,8 +366,8 @@ const Header = () => {
               <Link to="/about" className="text-foreground hover:text-primary transition-colors font-medium">About</Link>
             </nav>
 
-            {/* Tesla-style Icons */}
-            <div className="hidden lg:flex items-center space-x-3">
+            {/* Tesla-style Icons - Far Right */}
+            <div className="hidden lg:flex items-center space-x-3 ml-auto">
               <Button variant="ghost" size="sm" className="p-2" title="Support">
                 <HelpCircle className="w-5 h-5" />
               </Button>

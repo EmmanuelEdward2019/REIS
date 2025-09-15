@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Play, TrendingUp, Zap, Shield } from 'lucide-react';
+import { ArrowRight, Play } from 'lucide-react';
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/5"></div>
       
@@ -21,12 +21,6 @@ const HeroSection = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-4xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center space-x-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-8">
-            <TrendingUp className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Leading Sustainable Energy Innovation</span>
-          </div>
-
           {/* Main Heading */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
             The Future of
@@ -54,53 +48,6 @@ const HeroSection = () => {
               Watch Demo
             </Button>
           </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-foreground mb-2">50+</div>
-              <div className="text-sm text-muted-foreground">GW Deployed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-foreground mb-2">1M+</div>
-              <div className="text-sm text-muted-foreground">Tons CO₂ Saved</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-foreground mb-2">25+</div>
-              <div className="text-sm text-muted-foreground">Countries</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Floating Cards */}
-      <div className="absolute top-1/4 left-8 hidden lg:block">
-        <div className="glass p-4 rounded-xl shadow-lg max-w-xs transform -rotate-6 hover:rotate-0 transition-transform duration-500">
-          <div className="flex items-center space-x-3 mb-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold">Energy Generated</div>
-              <div className="text-xs text-muted-foreground">Today</div>
-            </div>
-          </div>
-          <div className="text-2xl font-bold text-primary">847 MWh</div>
-        </div>
-      </div>
-
-      <div className="absolute top-1/3 right-8 hidden lg:block">
-        <div className="glass p-4 rounded-xl shadow-lg max-w-xs transform rotate-6 hover:rotate-0 transition-transform duration-500">
-          <div className="flex items-center space-x-3 mb-2">
-            <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-              <Shield className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold">Carbon Offset</div>
-              <div className="text-xs text-muted-foreground">This Month</div>
-            </div>
-          </div>
-          <div className="text-2xl font-bold text-accent">2.4k Tons</div>
         </div>
       </div>
 
