@@ -162,7 +162,7 @@ const Header = () => {
                 
                 {activeMega === 'reis' && (
                   <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="w-full py-8">
+                    <div className="w-screen py-8">
                       <div className="grid grid-cols-4 gap-12 max-w-7xl mx-auto px-8">
                         {/* Solar Solutions */}
                         <div className="space-y-4">
@@ -257,7 +257,7 @@ const Header = () => {
                 
                 {activeMega === 'data-ai' && (
                   <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="w-full py-8">
+                    <div className="w-screen py-8">
                       <div className="grid grid-cols-3 gap-12 max-w-6xl mx-auto px-8">
                         {/* Analytics & Strategy */}
                         <div className="space-y-4">
@@ -331,7 +331,7 @@ const Header = () => {
                 
                 {activeMega === 'training' && (
                   <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="w-full py-8">
+                    <div className="w-screen py-8">
                       <div className="grid grid-cols-3 gap-12 max-w-6xl mx-auto px-8">
                         {/* Learning Systems */}
                         <div className="space-y-4">
@@ -441,7 +441,9 @@ const Header = () => {
                 className="px-3 py-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                <span className="text-sm font-medium">Menu</span>
+                <span className={`text-sm font-medium transition-colors ${
+                  (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                }`}>Menu</span>
               </Button>
             </div>
           </div>
