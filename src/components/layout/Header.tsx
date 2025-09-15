@@ -158,7 +158,7 @@ const Header = () => {
                 
                 {activeMega === 'reis' && (
                   <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="max-w-[1400px] mx-auto px-8 py-10">
+                    <div className="max-w-7xl mx-auto px-6 py-6">
                       <div className="grid grid-cols-4 gap-8">
                         {/* Solar Solutions */}
                         <div className="space-y-4">
@@ -253,7 +253,7 @@ const Header = () => {
                 
                 {activeMega === 'data-ai' && (
                   <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="max-w-[1400px] mx-auto px-8 py-10">
+                    <div className="max-w-7xl mx-auto px-6 py-6">
                       <div className="grid grid-cols-3 gap-10">
                         {/* Analytics & Strategy */}
                         <div className="space-y-4">
@@ -327,7 +327,7 @@ const Header = () => {
                 
                 {activeMega === 'training' && (
                   <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="max-w-[1400px] mx-auto px-8 py-10">
+                    <div className="max-w-7xl mx-auto px-6 py-6">
                       <div className="grid grid-cols-3 gap-10">
                         {/* Learning Systems */}
                         <div className="space-y-4">
