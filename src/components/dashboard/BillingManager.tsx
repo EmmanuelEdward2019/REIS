@@ -36,7 +36,11 @@ interface BillingRecord {
   created_at: string;
 }
 
-const BillingManager: React.FC = () => {
+interface BillingManagerProps {
+  userRole?: 'client' | 'partner' | 'admin';
+}
+
+const BillingManager: React.FC<BillingManagerProps> = ({ userRole = 'admin' }) => {
   const [billingRecords, setBillingRecords] = useState<BillingRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -208,16 +212,24 @@ const BillingManager: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Billing & Payments</h2>
-          <p className="text-muted-foreground">Manage invoices and track payments</p>
+          <h2 className="text-2xl font-bold text-foreground">
+            {userRole === 'client' ? 'My Billing & Payments' : 'Billing Management'}
+          </h2>
+          <p className="text-muted-foreground">
+            {userRole === 'client' 
+              ? 'View and pay your invoices' 
+              : 'Manage invoices and track payments'
+            }
+          </p>
         </div>
-        <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Invoice
-            </Button>
-          </DialogTrigger>
+        {userRole !== 'client' && (
+          <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Invoice
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Create New Invoice</DialogTitle>
@@ -294,6 +306,7 @@ const BillingManager: React.FC = () => {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Summary Cards */}

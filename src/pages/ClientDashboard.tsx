@@ -10,8 +10,8 @@ import {
 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import ModernEnergyMetrics from '@/components/dashboard/ModernEnergyMetrics';
+import MetricsWidget from '@/components/crm/MetricsWidget';
 import IoTControllerManager from '@/components/dashboard/IoTControllerManager';
-import InventoryManager from '@/components/dashboard/InventoryManager';
 import BillingManager from '@/components/dashboard/BillingManager';
 import TicketingSystem, { TicketData } from '@/components/crm/TicketingSystem';
 import ServiceCatalog from '@/components/crm/ServiceCatalog';
@@ -23,7 +23,7 @@ type UserRole = 'client' | 'partner' | 'admin';
 
 const ClientDashboard = () => {
   const [userRole] = useState<UserRole>('client');
-  const [currentView, setCurrentView] = useState<'overview' | 'controllers' | 'inventory' | 'billing' | 'tickets' | 'services' | 'documents'>('overview');
+  const [currentView, setCurrentView] = useState<'overview' | 'controllers' | 'orders' | 'billing' | 'tickets' | 'services' | 'documents'>('overview');
   const [controllers, setControllers] = useState([]);
   const [energyMetrics, setEnergyMetrics] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
@@ -199,7 +199,7 @@ const ClientDashboard = () => {
               <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
                 <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
                 <TabsTrigger value="controllers" className="text-xs sm:text-sm">Controllers</TabsTrigger>
-                <TabsTrigger value="inventory" className="text-xs sm:text-sm">Inventory</TabsTrigger>
+                <TabsTrigger value="orders" className="text-xs sm:text-sm">My Orders</TabsTrigger>
                 <TabsTrigger value="billing" className="text-xs sm:text-sm">Billing</TabsTrigger>
                 <TabsTrigger value="tickets" className="text-xs sm:text-sm">Support</TabsTrigger>
                 <TabsTrigger value="services" className="text-xs sm:text-sm">Services</TabsTrigger>
@@ -207,6 +207,27 @@ const ClientDashboard = () => {
               </TabsList>
 
               <TabsContent value="overview" className="space-y-6">
+                {/* REIS Metrics Dashboard */}
+                <MetricsWidget 
+                  data={{
+                    co2Saved: 15.2,
+                    carbonCreditsEarned: 45,
+                    carbonCreditsValue: 2250,
+                    energyGeneration: {
+                      daily: 32.5,
+                      monthly: 975,
+                      yearly: 11700
+                    },
+                    billSavings: 1840,
+                    reisScore: 78,
+                    maintenanceAlerts: 0,
+                    lcoeTracker: 0.085,
+                    gridEquivalent: 0.142,
+                    isLiveSystem: true
+                  }}
+                  jobCode={userProfile?.service_class ? `ET-REIS-${userProfile.service_class.toUpperCase()}-2024-001` : undefined}
+                />
+
                 {/* Modern Energy Metrics Dashboard */}
                 {energyMetrics && (
                   <ModernEnergyMetrics 
@@ -270,15 +291,28 @@ const ClientDashboard = () => {
               </TabsContent>
 
               <TabsContent value="controllers" className="space-y-6">
-                <IoTControllerManager />
+                <IoTControllerManager userRole="client" />
               </TabsContent>
 
-              <TabsContent value="inventory" className="space-y-6">
-                <InventoryManager />
+              <TabsContent value="orders" className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>My Orders & Purchases</CardTitle>
+                    <CardDescription>Manage your product orders and payments</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-8">
+                      <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">No Orders Yet</h3>
+                      <p className="text-muted-foreground mb-4">You haven't made any purchases yet.</p>
+                      <Button>Browse Shop</Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </TabsContent>
 
               <TabsContent value="billing" className="space-y-6">
-                <BillingManager />
+                <BillingManager userRole="client" />
               </TabsContent>
 
               <TabsContent value="tickets" className="space-y-6">

@@ -44,7 +44,11 @@ interface Controller {
   firmware_version: string | null;
 }
 
-const IoTControllerManager: React.FC = () => {
+interface IoTControllerManagerProps {
+  userRole?: 'client' | 'partner' | 'admin';
+}
+
+const IoTControllerManager: React.FC<IoTControllerManagerProps> = ({ userRole = 'admin' }) => {
   const [controllers, setControllers] = useState<Controller[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -247,33 +251,41 @@ const IoTControllerManager: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">IoT Controllers</h2>
-          <p className="text-muted-foreground">Manage your energy monitoring devices</p>
+          <h2 className="text-2xl font-bold">
+            {userRole === 'client' ? 'My Controllers' : 'IoT Controller Management'}
+          </h2>
+          <p className="text-muted-foreground">
+            {userRole === 'client' 
+              ? 'View your renewable energy system controllers' 
+              : 'Monitor and manage renewable energy controllers'
+            }
+          </p>
         </div>
-        <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-          <DialogTrigger asChild>
-            <Button onClick={() => {
-              setEditingController(null);
-              setFormData({
-                controller_id: '',
-                device_name: '',
-                device_type: 'solar_inverter',
-                ip_address: '',
-                location_address: '',
-                firmware_version: ''
-              });
-            }}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Controller
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                {editingController ? 'Edit Controller' : 'Add New Controller'}
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        {userRole !== 'client' && (
+          <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+            <DialogTrigger asChild>
+              <Button onClick={() => {
+                setEditingController(null);
+                setFormData({
+                  controller_id: '',
+                  device_name: '',
+                  device_type: 'solar_inverter',
+                  ip_address: '',
+                  location_address: '',
+                  firmware_version: ''
+                });
+              }}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Controller
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingController ? 'Edit Controller' : 'Add New Controller'}
+                </DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label htmlFor="controller_id">Controller ID</Label>
                 <Input
@@ -360,6 +372,7 @@ const IoTControllerManager: React.FC = () => {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Controllers Grid */}
