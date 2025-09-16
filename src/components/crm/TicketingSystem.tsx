@@ -45,11 +45,12 @@ export interface TicketData {
 
 interface TicketingSystemProps {
   tickets: TicketData[];
-  jobCode: string;
+  jobCode?: string;
   onTicketUpdate: (ticketCode: string, updates: Partial<TicketData>) => void;
+  userRole?: 'client' | 'partner' | 'admin';
 }
 
-const TicketingSystem: React.FC<TicketingSystemProps> = ({ tickets, jobCode, onTicketUpdate }) => {
+const TicketingSystem: React.FC<TicketingSystemProps> = ({ tickets, jobCode = 'N/A', onTicketUpdate, userRole = 'client' }) => {
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
 
   const getStageOrder = (): TicketStage[] => [

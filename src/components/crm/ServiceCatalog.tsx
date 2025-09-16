@@ -30,11 +30,11 @@ interface ServiceItem {
 }
 
 interface ServiceCatalogProps {
-  selectedSegment: 'RES' | 'COM' | 'IND';
+  selectedSegment?: 'RES' | 'COM' | 'IND';
   onServiceSelect: (service: Service) => void;
 }
 
-const ServiceCatalog: React.FC<ServiceCatalogProps> = ({ selectedSegment, onServiceSelect }) => {
+const ServiceCatalog: React.FC<ServiceCatalogProps> = ({ selectedSegment = 'RES', onServiceSelect }) => {
   const services: ServiceItem[] = [
     {
       code: 'AUD',

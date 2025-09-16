@@ -30,18 +30,18 @@ interface Controller {
   controller_id: string;
   device_name: string;
   device_type: string;
-  ip_address: string;
+  ip_address: string | null;
   is_online: boolean;
   is_active: boolean;
-  last_heartbeat: string;
-  installation_date: string;
-  warranty_expiry: string;
+  last_heartbeat: string | null;
+  installation_date: string | null;
+  warranty_expiry: string | null;
   location: {
     address: string;
     lat?: number;
     lng?: number;
-  };
-  firmware_version: string;
+  } | null;
+  firmware_version: string | null;
 }
 
 const IoTControllerManager: React.FC = () => {
@@ -91,7 +91,15 @@ const IoTControllerManager: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setControllers(data || []);
+      setControllers((data || []).map(controller => ({
+        ...controller,
+        ip_address: controller.ip_address as string || null,
+        location: controller.location as { address: string; lat?: number; lng?: number } || null,
+        firmware_version: controller.firmware_version || null,
+        last_heartbeat: controller.last_heartbeat || null,
+        installation_date: controller.installation_date || null,
+        warranty_expiry: controller.warranty_expiry || null
+      })));
     } catch (error) {
       console.error('Error fetching controllers:', error);
     } finally {

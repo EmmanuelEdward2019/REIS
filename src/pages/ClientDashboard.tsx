@@ -19,10 +19,10 @@ import DocumentManager from '@/components/crm/DocumentManager';
 import { supabase } from '@/integrations/supabase/client';
 
 // Mock user role - in real app this would come from auth context
-type UserRole = 'CLIENT' | 'PROSPECT' | 'SDR' | 'SALES' | 'ENGINEER' | 'PM' | 'FINANCE' | 'OM';
+type UserRole = 'client' | 'partner' | 'admin';
 
 const ClientDashboard = () => {
-  const [userRole] = useState<UserRole>('CLIENT');
+  const [userRole] = useState<UserRole>('client');
   const [currentView, setCurrentView] = useState<'overview' | 'controllers' | 'inventory' | 'billing' | 'tickets' | 'services' | 'documents'>('overview');
   const [controllers, setControllers] = useState([]);
   const [energyMetrics, setEnergyMetrics] = useState(null);
@@ -142,15 +142,23 @@ const ClientDashboard = () => {
     console.log('Uploading files:', Array.from(files));
   };
 
-  const handleDocumentAction = (documentId: string, action: 'download' | 'delete' | 'view') => {
-    console.log(`Document ${action}:`, documentId);
+  const handleDocumentDownload = (documentId: string) => {
+    console.log(`Document download:`, documentId);
+  };
+
+  const handleDocumentDelete = (documentId: string) => {
+    console.log(`Document delete:`, documentId);
+  };
+
+  const handleDocumentView = (documentId: string) => {
+    console.log(`Document view:`, documentId);
   };
 
   const mockDocuments = [
     {
       id: '1',
       name: 'System Manual.pdf',
-      type: 'manual' as const,
+      type: 'other' as const,
       category: 'system' as const,
       size: 2450000,
       uploadDate: new Date('2024-01-16'),
@@ -288,8 +296,11 @@ const ClientDashboard = () => {
               <TabsContent value="documents" className="space-y-6">
                 <DocumentManager 
                   documents={mockDocuments}
+                  jobCode="ET-REIS-RES-AUD-2024-0123"
                   onUpload={handleDocumentUpload}
-                  onAction={handleDocumentAction}
+                  onDownload={handleDocumentDownload}
+                  onDelete={handleDocumentDelete}
+                  onView={handleDocumentView}
                 />
               </TabsContent>
             </Tabs>
