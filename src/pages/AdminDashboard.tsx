@@ -70,6 +70,10 @@ import {
   Car
 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
+import AdminProjectSegments from '@/components/admin/AdminProjectSegments';
+import AdminControllerManager from '@/components/admin/AdminControllerManager';
+import AdminUserManager from '@/components/admin/AdminUserManager';
+import AdminLoyaltyManager from '@/components/admin/AdminLoyaltyManager';
 
 const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -392,16 +396,34 @@ const AdminDashboard = () => {
             {/* Main Content */}
             <div className="lg:col-span-3">
               <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 h-auto">
+                <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 h-auto">
                   <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+                  <TabsTrigger value="segments" className="text-xs sm:text-sm">Segments</TabsTrigger>
+                  <TabsTrigger value="controllers" className="text-xs sm:text-sm">Controllers</TabsTrigger>
+                  <TabsTrigger value="users" className="text-xs sm:text-sm">Users</TabsTrigger>
+                  <TabsTrigger value="loyalty" className="text-xs sm:text-sm">Loyalty</TabsTrigger>
                   <TabsTrigger value="jobs" className="text-xs sm:text-sm">Jobs</TabsTrigger>
                   <TabsTrigger value="partners" className="text-xs sm:text-sm">Partners</TabsTrigger>
                   <TabsTrigger value="tickets" className="text-xs sm:text-sm">Tickets</TabsTrigger>
                   <TabsTrigger value="metrics" className="text-xs sm:text-sm">Metrics</TabsTrigger>
-                  <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
-                  <TabsTrigger value="compliance" className="text-xs sm:text-sm">Compliance</TabsTrigger>
                   <TabsTrigger value="settings" className="text-xs sm:text-sm">Settings</TabsTrigger>
                 </TabsList>
+
+                <TabsContent value="segments" className="space-y-6">
+                  <AdminProjectSegments />
+                </TabsContent>
+
+                <TabsContent value="controllers" className="space-y-6">
+                  <AdminControllerManager />
+                </TabsContent>
+
+                <TabsContent value="users" className="space-y-6">
+                  <AdminUserManager />
+                </TabsContent>
+
+                <TabsContent value="loyalty" className="space-y-6">
+                  <AdminLoyaltyManager />
+                </TabsContent>
 
                 <TabsContent value="overview" className="space-y-6">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
