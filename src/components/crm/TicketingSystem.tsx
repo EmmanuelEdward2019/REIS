@@ -12,8 +12,10 @@ import {
   CheckCircle, 
   PlayCircle,
   Calendar,
-  MessageSquare
+  MessageSquare,
+  Plus
 } from 'lucide-react';
+import CreateTicketDialog from './CreateTicketDialog';
 
 export type TicketStage = 
   | 'INTAKE' 
@@ -47,10 +49,16 @@ interface TicketingSystemProps {
   tickets: TicketData[];
   jobCode?: string;
   onTicketUpdate: (ticketCode: string, updates: Partial<TicketData>) => void;
+  onTicketCreate?: (ticket: {
+    title: string;
+    description: string;
+    priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+    category: string;
+  }) => void;
   userRole?: 'client' | 'partner' | 'admin';
 }
 
-const TicketingSystem: React.FC<TicketingSystemProps> = ({ tickets, jobCode = 'N/A', onTicketUpdate, userRole = 'client' }) => {
+const TicketingSystem: React.FC<TicketingSystemProps> = ({ tickets, jobCode = 'N/A', onTicketUpdate, onTicketCreate, userRole = 'client' }) => {
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
 
   const getStageOrder = (): TicketStage[] => [
@@ -110,13 +118,21 @@ const TicketingSystem: React.FC<TicketingSystemProps> = ({ tickets, jobCode = 'N
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Project Pipeline</h2>
-          <p className="text-muted-foreground">Job: {jobCode}</p>
+          <h2 className="text-2xl font-bold">
+            {userRole === 'client' ? 'Support Tickets' : 'Project Pipeline'}
+          </h2>
+          <p className="text-muted-foreground">
+            {userRole === 'client' ? 'Create and manage your support requests' : `Job: ${jobCode}`}
+          </p>
         </div>
-        <div className="text-right">
-          <div className="text-2xl font-bold">{Math.round(getProgressPercentage())}%</div>
-          <div className="text-sm text-muted-foreground">Complete</div>
-        </div>
+        {userRole === 'client' ? (
+          onTicketCreate && <CreateTicketDialog onCreateTicket={onTicketCreate} />
+        ) : (
+          <div className="text-right">
+            <div className="text-2xl font-bold">{Math.round(getProgressPercentage())}%</div>
+            <div className="text-sm text-muted-foreground">Complete</div>
+          </div>
+        )}
       </div>
 
       {/* Progress Bar */}

@@ -441,31 +441,33 @@ const IoTControllerManager: React.FC<IoTControllerManagerProps> = ({ userRole = 
                 </div>
               )}
               
-              <div className="flex gap-2 pt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleEdit(controller)}
-                  className="flex-1"
-                >
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => toggleActiveStatus(controller)}
-                >
-                  {controller.is_active ? 'Deactivate' : 'Activate'}
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDelete(controller.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
+              {userRole !== 'client' && (
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(controller)}
+                    className="flex-1"
+                  >
+                    <Edit className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toggleActiveStatus(controller)}
+                  >
+                    {controller.is_active ? 'Deactivate' : 'Activate'}
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(controller.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -477,12 +479,17 @@ const IoTControllerManager: React.FC<IoTControllerManagerProps> = ({ userRole = 
             <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-foreground mb-2">No Controllers Found</h3>
             <p className="text-muted-foreground mb-4">
-              Add your first IoT controller to start monitoring your energy systems.
+              {userRole === 'client' 
+                ? 'Your energy system controllers will appear here once configured by our admin team.'
+                : 'Add your first IoT controller to start monitoring your energy systems.'
+              }
             </p>
-            <Button onClick={() => setShowAddDialog(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Your First Controller
-            </Button>
+            {userRole !== 'client' && (
+              <Button onClick={() => setShowAddDialog(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Your First Controller
+              </Button>
+            )}
           </CardContent>
         </Card>
       )}

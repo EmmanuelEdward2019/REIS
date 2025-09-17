@@ -134,6 +134,16 @@ const ClientDashboard = () => {
     console.log('Updating ticket:', ticketCode, updates);
   };
 
+  const handleTicketCreate = (ticket: {
+    title: string;
+    description: string;
+    priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+    category: string;
+  }) => {
+    console.log('Creating ticket:', ticket);
+    // In a real app, this would create a new ticket in the database
+  };
+
   const handleServiceSelect = (service: string) => {
     console.log('Service selected:', service);
   };
@@ -196,15 +206,17 @@ const ClientDashboard = () => {
 
           <div className="space-y-6">
             <Tabs value={currentView} onValueChange={(value) => setCurrentView(value as typeof currentView)} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
-                <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
-                <TabsTrigger value="controllers" className="text-xs sm:text-sm">Controllers</TabsTrigger>
-                <TabsTrigger value="orders" className="text-xs sm:text-sm">My Orders</TabsTrigger>
-                <TabsTrigger value="billing" className="text-xs sm:text-sm">Billing</TabsTrigger>
-                <TabsTrigger value="tickets" className="text-xs sm:text-sm">Support</TabsTrigger>
-                <TabsTrigger value="services" className="text-xs sm:text-sm">Services</TabsTrigger>
-                <TabsTrigger value="documents" className="text-xs sm:text-sm">Documents</TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto">
+                <TabsList className="grid grid-cols-7 min-w-max w-full">
+                  <TabsTrigger value="overview" className="text-xs px-2 py-1 min-w-0">Overview</TabsTrigger>
+                  <TabsTrigger value="controllers" className="text-xs px-2 py-1 min-w-0">Controllers</TabsTrigger>
+                  <TabsTrigger value="orders" className="text-xs px-2 py-1 min-w-0">Orders</TabsTrigger>
+                  <TabsTrigger value="billing" className="text-xs px-2 py-1 min-w-0">Billing</TabsTrigger>
+                  <TabsTrigger value="tickets" className="text-xs px-2 py-1 min-w-0">Support</TabsTrigger>
+                  <TabsTrigger value="services" className="text-xs px-2 py-1 min-w-0">Services</TabsTrigger>
+                  <TabsTrigger value="documents" className="text-xs px-2 py-1 min-w-0">Docs</TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value="overview" className="space-y-6">
                 {/* REIS Metrics Dashboard */}
@@ -319,6 +331,7 @@ const ClientDashboard = () => {
                 <TicketingSystem 
                   tickets={mockTickets}
                   onTicketUpdate={handleTicketUpdate}
+                  onTicketCreate={handleTicketCreate}
                   userRole={userRole}
                 />
               </TabsContent>
