@@ -91,7 +91,7 @@ const HeroSlider = () => {
   };
 
   return (
-    <section className="relative h-[75vh] overflow-hidden">
+    <section className="relative h-[85vh] overflow-hidden">
       <FloatingEnergyMetrics />
       {/* Slides */}
       <div className="relative h-full">
