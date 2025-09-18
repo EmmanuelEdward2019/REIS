@@ -52,7 +52,7 @@ const FloatingEnergyMetrics = () => {
 
   if (!isExpanded) {
     return (
-      <div className="fixed top-1/2 right-2 transform -translate-y-1/2 z-30">
+      <div className="fixed top-[70%] right-2 transform -translate-y-1/2 z-30">
         <Card 
           className="bg-slate-900/95 backdrop-blur-md border border-slate-700/50 shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300"
           onClick={() => setIsExpanded(true)}
