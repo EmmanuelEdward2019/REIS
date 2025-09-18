@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import FloatingEnergyMetrics from './FloatingEnergyMetrics';
 import heroRenewableIntegration from '@/assets/hero-renewable-integration.jpg';
 import heroResidentialSolar from '@/assets/hero-residential-solar.jpg';
 import heroTrainingFacility from '@/assets/hero-training-facility.jpg';
@@ -91,6 +92,7 @@ const HeroSlider = () => {
 
   return (
     <section className="relative h-[75vh] overflow-hidden">
+      <FloatingEnergyMetrics />
       {/* Slides */}
       <div className="relative h-full">
         {slides.map((slide, index) => (

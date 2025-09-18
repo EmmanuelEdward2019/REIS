@@ -1,7 +1,6 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import StickyFooter from './StickyFooter';
 
 interface LayoutProps {
   children: React.ReactNode;
