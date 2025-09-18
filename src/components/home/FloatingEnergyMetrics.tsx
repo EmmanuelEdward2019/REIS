@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { X, BarChart3, Leaf, Zap, TrendingUp, DollarSign, Award, TreePine } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const FloatingEnergyMetrics = () => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const isMobile = useIsMobile();
+  const [isExpanded, setIsExpanded] = useState(!isMobile);
 
   const metrics = [
     {
@@ -43,7 +45,7 @@ const FloatingEnergyMetrics = () => {
 
   if (!isExpanded) {
     return (
-      <div className="fixed top-1/2 right-16 transform -translate-y-1/2 z-30">
+      <div className="fixed top-1/2 right-2 transform -translate-y-1/2 z-30">
         <Card 
           className="bg-slate-900/95 backdrop-blur-md border border-slate-700/50 shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300"
           onClick={() => setIsExpanded(true)}
@@ -60,7 +62,7 @@ const FloatingEnergyMetrics = () => {
   }
 
   return (
-    <div className="fixed top-24 right-16 z-30 w-48">
+    <div className="fixed top-24 right-2 z-30 w-48">
       <Card className="bg-slate-900/95 backdrop-blur-md border border-slate-700/50 shadow-xl">
         <CardContent className="p-2">
           {/* Header */}
