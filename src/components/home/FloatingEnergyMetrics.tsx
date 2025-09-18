@@ -6,7 +6,14 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 const FloatingEnergyMetrics = () => {
   const isMobile = useIsMobile();
-  const [isExpanded, setIsExpanded] = useState(!isMobile);
+  const [isExpanded, setIsExpanded] = useState(false); // Always start collapsed on mobile
+
+  // Force collapsed state on mobile
+  React.useEffect(() => {
+    if (isMobile) {
+      setIsExpanded(false);
+    }
+  }, [isMobile]);
 
   const metrics = [
     {
