@@ -74,6 +74,8 @@ import AdminProjectSegments from '@/components/admin/AdminProjectSegments';
 import AdminControllerManager from '@/components/admin/AdminControllerManager';
 import AdminUserManager from '@/components/admin/AdminUserManager';
 import AdminLoyaltyManager from '@/components/admin/AdminLoyaltyManager';
+import OrderManagement from '@/components/admin/OrderManagement';
+import InventorySupplyChain from '@/components/admin/InventorySupplyChain';
 
 const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -396,7 +398,7 @@ const AdminDashboard = () => {
             {/* Main Content */}
             <div className="lg:col-span-3">
               <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 h-auto">
+                <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 h-auto">
                   <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
                   <TabsTrigger value="segments" className="text-xs sm:text-sm">Segments</TabsTrigger>
                   <TabsTrigger value="controllers" className="text-xs sm:text-sm">Controllers</TabsTrigger>
@@ -405,7 +407,13 @@ const AdminDashboard = () => {
                   <TabsTrigger value="jobs" className="text-xs sm:text-sm">Jobs</TabsTrigger>
                   <TabsTrigger value="partners" className="text-xs sm:text-sm">Partners</TabsTrigger>
                   <TabsTrigger value="tickets" className="text-xs sm:text-sm">Tickets</TabsTrigger>
+                  <TabsTrigger value="orders" className="text-xs sm:text-sm">Orders</TabsTrigger>
+                  <TabsTrigger value="inventory" className="text-xs sm:text-sm">Inventory</TabsTrigger>
                   <TabsTrigger value="metrics" className="text-xs sm:text-sm">Metrics</TabsTrigger>
+                  <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
+                  <TabsTrigger value="compliance" className="text-xs sm:text-sm">Compliance</TabsTrigger>
+                  <TabsTrigger value="settings" className="text-xs sm:text-sm">Settings</TabsTrigger>
+                </TabsList>
                   <TabsTrigger value="settings" className="text-xs sm:text-sm">Settings</TabsTrigger>
                 </TabsList>
 
@@ -1281,6 +1289,14 @@ const AdminDashboard = () => {
                   </Card>
                 </TabsContent>
 
+                <TabsContent value="orders" className="space-y-6">
+                  <OrderManagement />
+                </TabsContent>
+
+                <TabsContent value="inventory" className="space-y-6">
+                  <InventorySupplyChain />
+                </TabsContent>
+
                 <TabsContent value="settings" className="space-y-6">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card className="bg-card border-border">
@@ -1471,10 +1487,13 @@ const AdminDashboard = () => {
               </Card>
             </div>
           </div>
-        </div>
+        </Tabs>
       </div>
-    </Layout>
-  );
+    </div>
+  </div>
+</div>
+</Layout>
+);
 };
 
 export default AdminDashboard;
