@@ -414,8 +414,6 @@ const AdminDashboard = () => {
                   <TabsTrigger value="compliance" className="text-xs sm:text-sm">Compliance</TabsTrigger>
                   <TabsTrigger value="settings" className="text-xs sm:text-sm">Settings</TabsTrigger>
                 </TabsList>
-                  <TabsTrigger value="settings" className="text-xs sm:text-sm">Settings</TabsTrigger>
-                </TabsList>
 
                 <TabsContent value="segments" className="space-y-6">
                   <AdminProjectSegments />
@@ -1487,13 +1485,10 @@ const AdminDashboard = () => {
               </Card>
             </div>
           </div>
-        </Tabs>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-</Layout>
-);
+    </Layout>
+  );
 };
 
 export default AdminDashboard;
