@@ -5,15 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const FloatingEnergyMetrics = () => {
-  const isMobile = useIsMobile();
-  const [isExpanded, setIsExpanded] = useState(false); // Always start collapsed on mobile
-
-  // Force collapsed state on mobile
-  React.useEffect(() => {
-    if (isMobile) {
-      setIsExpanded(false);
-    }
-  }, [isMobile]);
+  const [isExpanded, setIsExpanded] = useState(true); // Open on page load by default
 
   const metrics = [
     {

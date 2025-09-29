@@ -91,6 +91,7 @@ interface Commission {
 
 const PartnersDashboard = () => {
   const [activeView, setActiveView] = useState('dashboard');
+  const [onboarding, setOnboarding] = useState<any | null>(null);
   const [partnerProfile, setPartnerProfile] = useState<PartnerProfile>({
     id: 'PTNR-2024-1234',
     status: 'Active',
@@ -127,6 +128,51 @@ const PartnersDashboard = () => {
     referrals: 8,
     trainingCompleted: 5
   };
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('partnerOnboarding');
+      if (raw) setOnboarding(JSON.parse(raw));
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // Derived document links based on partner profile
+  const docLinks = (() => {
+    const country = partnerProfile.location.country.toLowerCase();
+    const isNigeria = country.includes('nigeria');
+    const isUK = country.includes('united kingdom') || country === 'uk' || country.includes('england') || country.includes('scotland') || country.includes('wales');
+    const providesInstall = partnerProfile.servicesProvided.includes('Installation services');
+    const providesSales = partnerProfile.servicesProvided.includes('Product sales');
+
+    const links: { label: string; href: string }[] = [];
+    if (isNigeria && providesInstall) {
+      links.push(
+        { label: 'Installer/Service Partner Registration Form (Nigeria)', href: '/partners/Eagle_Thistle_Installer_Service_Partner_Registration_Form_Nigeria.docx' },
+        { label: 'Installer/Service Partner Policy (Nigeria)', href: '/partners/Eagle_Thistle_Installer_Service_Partner_Policy_Nigeria.docx' }
+      );
+    }
+    if (isUK && providesInstall) {
+      links.push(
+        { label: 'Installer/Service Partner Registration Form (UK)', href: '/partners/Eagle_Thistle_Installer_Service_Partner_Registration_Form_UK.docx' },
+        { label: 'Installer/Service Partner Policy (UK)', href: '/partners/Eagle_Thistle_Installer_Service_Partner_Policy_UK.docx' }
+      );
+    }
+    if (isNigeria && providesSales) {
+      links.push(
+        { label: 'Sales Partner Registration Form (Nigeria)', href: '/partners/Eagle_Thistle_Sales_Partner_Registration_Form Nigeria.docx' },
+        { label: 'Sales Partner Policy (Nigeria)', href: '/partners/Eagle_Thistle_sales_Partner_Policy_One_Pager Nigeria.pdf' }
+      );
+    }
+    if (isUK && providesSales) {
+      links.push(
+        { label: 'Sales Partner Registration Form (UK)', href: '/partners/Eagle_Thistle_UK_Sales_Partner_Registration_Form.docx' },
+        { label: 'Sales Partner Policy (UK)', href: '/partners/Eagle_Thistle_UK_Sales_Partner_Policy_One_Pager.docx' }
+      );
+    }
+    return links;
+  })();
 
   const recentJobCodes: JobCode[] = [
     { 
@@ -440,6 +486,103 @@ const PartnersDashboard = () => {
                           </div>
                         ))}
                       </div>
+                    </CardContent>
+                  </Card>
+
+          {/* Onboarding Summary (read-only) */}
+          {onboarding && (
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Onboarding Selections
+                </CardTitle>
+                <CardDescription>Key details from your submitted application</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <div className="text-muted-foreground">Country</div>
+                    <div className="font-medium">{onboarding.partnerCountry || '-'}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Category</div>
+                    <div className="font-medium">{onboarding.partnerCategory || '-'}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Account Type</div>
+                    <div className="font-medium">{onboarding.partnerType || '-'}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Legal Name</div>
+                    <div className="font-medium break-words">{onboarding.legalName || '-'}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Trading Name</div>
+                    <div className="font-medium break-words">{onboarding.tradingName || '-'}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Registration No.</div>
+                    <div className="font-medium break-words">{onboarding.companyRegistration || '-'}</div>
+                  </div>
+                  <div className="md:col-span-3">
+                    <div className="text-muted-foreground">Registered Address</div>
+                    <div className="font-medium break-words">{onboarding.registeredAddress || '-'}</div>
+                  </div>
+                  <div className="md:col-span-3">
+                    <div className="text-muted-foreground">Services Provided</div>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {(onboarding.servicesProvided || []).map((s: string) => (
+                        <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="md:col-span-3">
+                    <div className="text-muted-foreground">Product Categories</div>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {(onboarding.specialties || []).map((s: string) => (
+                        <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Currency</div>
+                    <div className="font-medium">{onboarding.preferredCurrency || '-'}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Payment Terms</div>
+                    <div className="font-medium break-words">{onboarding.paymentTerms || '-'}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Partner ID</div>
+                    <div className="font-medium">{onboarding.partnerId || '-'}</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+                  {/* Partner Documents */}
+                  <Card className="bg-card border-border">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        Partner Forms & Policies
+                      </CardTitle>
+                      <CardDescription>Access the correct documents for your country and services</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {docLinks.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">Update your profile (country/services) to see the right documents.</p>
+                      ) : (
+                        <ul className="list-disc pl-5 space-y-1">
+                          {docLinks.map((l) => (
+                            <li key={l.href}>
+                              <a className="text-sm text-primary underline" href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </CardContent>
                   </Card>
                 </TabsContent>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X, ChevronDown, HelpCircle, Globe, UserCircle, ChevronRight } from 'lucide-react';
 import megaMenuReis from '@/assets/mega-menu-reis.jpg';
@@ -25,7 +26,7 @@ const Header = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      if (!target.closest('.mega-menu-container')) {
+      if (!target.closest('.mega-menu-container') && !target.closest('.mega-menu-portal')) {
         setActiveMega(null);
       }
     };
@@ -144,8 +145,8 @@ const Header = () => {
               </Link>
             </div>
 
-            {/* Desktop Navigation - Centered */}
-            <nav className="hidden lg:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center space-x-4 mx-6">
               {/* REIS Mega Menu */}
               <div className="relative mega-menu-container">
                 <button 
@@ -160,9 +161,9 @@ const Header = () => {
                   }`} />
                 </button>
                 
-                {activeMega === 'reis' && (
-                  <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="w-screen py-8">
+                {activeMega === 'reis' && typeof document !== 'undefined' && createPortal(
+                  <div className="mega-menu-portal fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
+                    <div className="w-full py-8">
                       <div className="grid grid-cols-4 gap-12 max-w-7xl mx-auto px-8">
                         {/* Solar Solutions */}
                         <div className="space-y-4">
@@ -237,9 +238,12 @@ const Header = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div>,
+                  document.body
                 )}
               </div>
+
+              
 
               {/* Data & AI Mega Menu */}
               <div className="relative mega-menu-container">
@@ -255,9 +259,9 @@ const Header = () => {
                   }`} />
                 </button>
                 
-                {activeMega === 'data-ai' && (
-                  <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="w-screen py-8">
+                {activeMega === 'data-ai' && typeof document !== 'undefined' && createPortal(
+                  <div className="mega-menu-portal fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
+                    <div className="w-full py-8">
                       <div className="grid grid-cols-3 gap-12 max-w-6xl mx-auto px-8">
                         {/* Analytics & Strategy */}
                         <div className="space-y-4">
@@ -311,7 +315,8 @@ const Header = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div>,
+                  document.body
                 )}
               </div>
 
@@ -329,9 +334,9 @@ const Header = () => {
                   }`} />
                 </button>
                 
-                {activeMega === 'training' && (
-                  <div className="fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
-                    <div className="w-screen py-8">
+                {activeMega === 'training' && typeof document !== 'undefined' && createPortal(
+                  <div className="mega-menu-portal fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
+                    <div className="w-full py-8">
                       <div className="grid grid-cols-3 gap-12 max-w-6xl mx-auto px-8">
                         {/* Learning Systems */}
                         <div className="space-y-4">
@@ -385,47 +390,98 @@ const Header = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div>,
+                  document.body
                 )}
               </div>
               
               <Link to="/partners" className={`hover:text-primary transition-colors font-medium ${
-                isScrolled ? 'text-foreground' : 'text-white'
+                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
               }`}>Partners</Link>
               <Link to="/services" className={`hover:text-primary transition-colors font-medium ${
-                isScrolled ? 'text-foreground' : 'text-white'
+                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
               }`}>Services</Link>
               <Link to="/projects" className={`hover:text-primary transition-colors font-medium ${
-                isScrolled ? 'text-foreground' : 'text-white'
+                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
               }`}>Projects</Link>
               <Link to="/calculators" className={`hover:text-primary transition-colors font-medium ${
-                isScrolled ? 'text-foreground' : 'text-white'
+                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
               }`}>Calculators</Link>
               <Link to="/shop" className={`hover:text-primary transition-colors font-medium ${
-                isScrolled ? 'text-foreground' : 'text-white'
+                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
               }`}>Shop</Link>
               <Link to="/support" className={`hover:text-primary transition-colors font-medium ${
-                isScrolled ? 'text-foreground' : 'text-white'
+                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
               }`}>Support</Link>
               <Link to="/about" className={`hover:text-primary transition-colors font-medium ${
-                isScrolled ? 'text-foreground' : 'text-white'
+                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
               }`}>About</Link>
+
+              {/* News & Updates Mega Menu - last */}
+              <div className="relative mega-menu-container">
+                <button 
+                  onClick={() => toggleMegaMenu('news')}
+                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
+                    (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                  }`}
+                >
+                  <span>News & Updates</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                    activeMega === 'news' ? 'rotate-180' : ''
+                  }`} />
+                </button>
+                {activeMega === 'news' && typeof document !== 'undefined' && createPortal(
+                  <div className="mega-menu-portal fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
+                    <div className="w-full py-8">
+                      <div className="grid grid-cols-3 gap-12 max-w-6xl mx-auto px-8">
+                        <div>
+                          <h3 className="font-bold text-foreground mb-3 text-base">Latest</h3>
+                          <ul className="space-y-2">
+                            <li><Link to="/news" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">News</Link></li>
+                            <li><Link to="/events" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Events</Link></li>
+                            <li><Link to="/case-studies" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Case Studies / Success Stories</Link></li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-foreground mb-3 text-base">Highlights</h3>
+                          <ul className="space-y-2">
+                            <li><Link to="/news" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Product Releases</Link></li>
+                            <li><Link to="/events" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Webinars & Demos</Link></li>
+                            <li><Link to="/case-studies" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">Customer Impact</Link></li>
+                          </ul>
+                        </div>
+                        <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg p-6 space-y-3">
+                          <h4 className="text-base font-bold text-foreground">Stay Informed</h4>
+                          <p className="text-foreground/70 text-xs leading-relaxed">Get the latest company news, upcoming events, and real-world results.</p>
+                          <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
+                            Explore Updates
+                          </Button>
+                          <div className="pt-3 border-t border-border/50">
+                            <p className="text-xs text-foreground/60">Updated weekly</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>,
+                  document.body
+                )}
+              </div>
             </nav>
 
             {/* Tesla-style Icons - Far Right */}
             <div className="hidden lg:flex items-center space-x-3 ml-auto">
               <Button variant="ghost" size="sm" className={`p-2 transition-colors ${
-                isScrolled ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
+                (isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
               }`} title="Support">
                 <HelpCircle className="w-5 h-5" />
               </Button>
               <Button variant="ghost" size="sm" className={`p-2 transition-colors ${
-                isScrolled ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
+                (isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
               }`} title="Region & Language">
                 <Globe className="w-5 h-5" />
               </Button>
               <Button variant="ghost" size="sm" className={`p-2 transition-colors ${
-                isScrolled ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
+                (isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
               }`} title="Account" asChild>
                 <Link to="/auth">
                   <UserCircle className="w-5 h-5" />

@@ -16,10 +16,17 @@ import Services from "./pages/Services";
 import Shop from "./pages/Shop";
 import Calculators from "./pages/Calculators";
 import REIS from "./pages/REIS";
+import News from "./pages/News";
+import Events from "./pages/Events";
+import CaseStudies from "./pages/CaseStudies";
 import DataAI from "./pages/DataAI";
 import LMS from "./pages/LMS";
 import Partners from "./pages/Partners";
 import BecomeAPartner from "./pages/BecomeAPartner";
+import PolicyInstallerNG from "./pages/policy/PolicyInstallerNG";
+import PolicyInstallerUK from "./pages/policy/PolicyInstallerUK";
+import PolicyMarketplaceNG from "./pages/policy/PolicyMarketplaceNG";
+import PolicyMarketplaceUK from "./pages/policy/PolicyMarketplaceUK";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "@/components/common/ScrollToTop";
 
@@ -51,6 +58,13 @@ const App = () => (
           <Route path="/partners-dashboard" element={<PartnersDashboard />} />
           <Route path="/partners" element={<Partners />} />
           <Route path="/become-a-partner" element={<BecomeAPartner />} />
+          <Route path="/policy/installer-ng" element={<PolicyInstallerNG />} />
+          <Route path="/policy/installer-uk" element={<PolicyInstallerUK />} />
+          <Route path="/policy/marketplace-ng" element={<PolicyMarketplaceNG />} />
+          <Route path="/policy/marketplace-uk" element={<PolicyMarketplaceUK />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/case-studies" element={<CaseStudies />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

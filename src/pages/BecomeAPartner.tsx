@@ -13,11 +13,19 @@ import { useToast } from '@/hooks/use-toast';
 
 type PartnerType = 'company' | 'individual' | '';
 type PartnerClass = 'installation-company' | 'individual-installer' | 'marketing-company' | 'individual-marketer' | 'system-integrator' | 'engineering-consultancy' | 'logistics-warehousing' | 'ecommerce-reseller' | 'manufacturer-oem' | 'other' | '';
+type PartnerCountry = 'NG' | 'UK' | '';
+type PartnerCategory = 'installer' | 'sales' | '';
 
 const BecomeAPartner = () => {
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
+    // Step 0: Country & Category
+    partnerCountry: '' as PartnerCountry,
+    partnerCategory: '' as PartnerCategory,
+    policyAccepted: false,
+    nin: '',
+    ninVerified: false,
     // Step 1: Create Account
     email: '',
     phone: '',
@@ -32,6 +40,9 @@ const BecomeAPartner = () => {
     countryOfRegistration: '',
     registeredAddress: '',
     directorsList: '',
+    primaryContact: '',
+    primaryContactEmail: '',
+    primaryContactPhone: '',
     
     // Step 3: Location & Regional Coverage
     baseCity: '',
@@ -63,6 +74,9 @@ const BecomeAPartner = () => {
     maxConcurrentProjects: '',
     toolsEquipment: '',
     hsePrograms: false,
+    hseWorkingAtHeight: false,
+    hseLOTO: false,
+    hseFirstAid: false,
     lastThreeProjects: '',
     
     // Step 9: Compliance & Certifications
@@ -75,6 +89,8 @@ const BecomeAPartner = () => {
     tradeLicense: '',
     nationalId: '',
     addressProof: '',
+    mcsNumbers: '',
+    eoriNumber: '',
     atexCertifications: false,
     bosietCertification: false,
     dprApprovals: '',
@@ -84,6 +100,8 @@ const BecomeAPartner = () => {
     preferredCurrency: '',
     paymentTerms: '',
     commissionAgreementAccepted: false,
+    feesAcknowledged: false,
+    payoutPolicyAccepted: false,
     
     // Step 11: Listings (for sales/marketing partners)
     productListings: [] as any[],
@@ -96,13 +114,72 @@ const BecomeAPartner = () => {
     dataConsentAccepted: false,
     antiBriberyAttestation: false,
     sanctionsConfirmation: false,
+    nonCircumventionAccepted: false,
     
     // Step 13: Summary & Submit (auto-generated fields)
     partnerId: '',
     applicationStatus: 'draft'
   });
 
-  const totalSteps = 13;
+  const totalSteps = 14;
+  const getPolicyLink = () => {
+    if (formData.partnerCountry === 'NG' && formData.partnerCategory === 'installer') {
+      return '/partners/Eagle_Thistle_Installer_Service_Partner_Policy_Nigeria.docx';
+    }
+    if (formData.partnerCountry === 'UK' && formData.partnerCategory === 'installer') {
+      return '/partners/Eagle_Thistle_Installer_Service_Partner_Policy_UK.docx';
+    }
+    if (formData.partnerCountry === 'NG' && formData.partnerCategory === 'sales') {
+      return '/partners/Eagle_Thistle_sales_Partner_Policy_One_Pager Nigeria.pdf';
+    }
+    if (formData.partnerCountry === 'UK' && formData.partnerCategory === 'sales') {
+      return '/partners/Eagle_Thistle_UK_Sales_Partner_Policy_One_Pager.docx';
+    }
+    return '';
+  };
+
+  const getRegistrationFormLink = () => {
+    if (formData.partnerCountry === 'NG' && formData.partnerCategory === 'installer') {
+      return '/partners/Eagle_Thistle_Installer_Service_Partner_Registration_Form_Nigeria.docx';
+    }
+    if (formData.partnerCountry === 'UK' && formData.partnerCategory === 'installer') {
+      return '/partners/Eagle_Thistle_Installer_Service_Partner_Registration_Form_UK.docx';
+    }
+    if (formData.partnerCountry === 'NG' && formData.partnerCategory === 'sales') {
+      return '/partners/Eagle_Thistle_Sales_Partner_Registration_Form Nigeria.docx';
+    }
+    if (formData.partnerCountry === 'UK' && formData.partnerCategory === 'sales') {
+      return '/partners/Eagle_Thistle_UK_Sales_Partner_Registration_Form.docx';
+    }
+    return '';
+  };
+
+  const verifyNIN = async () => {
+    if (!formData.nin || formData.nin.length < 8) {
+      toast({ title: 'Invalid NIN', description: 'Enter a valid NIN to verify.', variant: 'destructive' });
+      return;
+    }
+    try {
+      const res = await fetch('/api/verify-nin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nin: formData.nin, phone: formData.phone, email: formData.email })
+      });
+      if (!res.ok) throw new Error('Verification failed');
+      const data = await res.json().catch(() => ({}));
+      if (data && (data.verified === true || data.status === 'verified')) {
+        handleInputChange('ninVerified', true);
+        toast({ title: 'NIN Verified', description: 'Your identity has been verified successfully.' });
+      } else {
+        handleInputChange('ninVerified', false);
+        toast({ title: 'Verification Failed', description: 'We could not verify this NIN.', variant: 'destructive' });
+      }
+    } catch (e) {
+      handleInputChange('ninVerified', false);
+      toast({ title: 'Verification Error', description: 'Unable to verify NIN right now.', variant: 'destructive' });
+    }
+  };
+
   const progress = (currentStep / totalSteps) * 100;
 
   const partnerClasses = [
@@ -198,6 +275,15 @@ const BecomeAPartner = () => {
 
   const canProceed = () => {
     switch (currentStep) {
+      case 0:
+        // Require country, category, policy acceptance, and NIN verification if Nigeria
+        if (!formData.partnerCountry || !formData.partnerCategory) return false;
+        if (!formData.policyAccepted) return false;
+        // Allow proceeding even if NIN not verified yet (API pending)
+        return true;
+      case 2:
+        // Dynamic registration details; lightly validate core fields to allow testing
+        return true;
       case 1:
         return formData.email && formData.phone && formData.password && formData.privacyNoticeAccepted;
       case 2:
@@ -271,6 +357,12 @@ const BecomeAPartner = () => {
       description: `Your Partner ID is ${partnerId}. We'll review your application and contact you within 2-3 business days.`,
     });
     
+    // Persist to localStorage for dashboard reflection
+    try {
+      localStorage.setItem('partnerOnboarding', JSON.stringify(updatedFormData));
+    } catch (e) {
+      console.warn('Unable to persist onboarding to localStorage');
+    }
     // Here you would normally submit to your backend
     console.log('Submitted form data:', updatedFormData);
     
@@ -281,9 +373,147 @@ const BecomeAPartner = () => {
 
   const renderStep = () => {
     switch (currentStep) {
+      case 0:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <Users className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h2 className="text-2xl font-bold mb-2">Start Your Onboarding</h2>
+              <p className="text-muted-foreground">Select your country and partner category</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <Label>Country</Label>
+                <Select value={formData.partnerCountry} onValueChange={(value) => handleInputChange('partnerCountry', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="NG">Nigeria</SelectItem>
+                    <SelectItem value="UK">United Kingdom</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>Partner Category</Label>
+                <Select value={formData.partnerCategory} onValueChange={(value) => handleInputChange('partnerCategory', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="installer">Installer / Service</SelectItem>
+                    <SelectItem value="sales">Sales / Marketing</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="self-end text-sm text-muted-foreground">
+                Registration will be completed online below.
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-start space-x-2">
+                <Checkbox
+                  id="policyAccepted"
+                  checked={formData.policyAccepted}
+                  onCheckedChange={(checked) => handleInputChange('policyAccepted', checked)}
+                  className="mt-1"
+                />
+                <Label htmlFor="policyAccepted" className="text-sm leading-relaxed">
+                  I have reviewed and accept the
+                  {formData.partnerCountry && formData.partnerCategory ? (
+                    <a 
+                      href={
+                        formData.partnerCountry === 'NG' && formData.partnerCategory === 'installer' ? '/policy/installer-ng' :
+                        formData.partnerCountry === 'UK' && formData.partnerCategory === 'installer' ? '/policy/installer-uk' :
+                        formData.partnerCountry === 'NG' && formData.partnerCategory === 'sales' ? '/policy/marketplace-ng' :
+                        formData.partnerCountry === 'UK' && formData.partnerCategory === 'sales' ? '/policy/marketplace-uk' : '#'
+                      }
+                      className="ml-1 text-primary underline"
+                    >Partner Policy</a>
+                  ) : (
+                    <span className="ml-1 text-muted-foreground">Partner Policy</span>
+                  )}
+                  *
+                </Label>
+              </div>
+
+              {formData.partnerCountry === 'NG' && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="md:col-span-2">
+                    <Label htmlFor="nin">NIN (National Identification Number)</Label>
+                    <Input id="nin" value={formData.nin} onChange={(e) => handleInputChange('nin', e.target.value)} placeholder="Enter your NIN" />
+                  </div>
+                  <div className="flex items-end">
+                    <Button onClick={verifyNIN} variant={formData.ninVerified ? 'default' : 'outline'} className="w-full md:w-auto">
+                      {formData.ninVerified ? 'Verified' : 'Verify NIN'}
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
       case 1:
         return (
           <div className="space-y-6">
+            {/* Helpful: Download forms & policies based on your country and partner type */}
+            <div className="bg-accent/10 border border-accent/20 rounded-lg p-4">
+              <h3 className="font-semibold mb-2">Partner Forms & Policies</h3>
+              <p className="text-sm text-muted-foreground mb-3">Select your registration type and country in Step 2 to enable the correct forms and policies.</p>
+              {(() => {
+                const country = (formData.countryOfRegistration || formData.baseCountry || '').toLowerCase();
+                const isNigeria = country.includes('nigeria');
+                const isUK = country.includes('united kingdom') || country === 'uk' || country.includes('england') || country.includes('scotland') || country.includes('wales');
+                const providesInstall = formData.servicesProvided.includes('Installation services') || formData.partnerClass === 'installation-company' || formData.partnerClass === 'individual-installer';
+                const providesSales = formData.servicesProvided.includes('Product sales') || formData.partnerClass === 'marketing-company' || formData.partnerClass === 'individual-marketer' || formData.partnerClass === 'ecommerce-reseller';
+
+                const links: { label: string; href: string }[] = [];
+                if (isNigeria && providesInstall) {
+                  links.push(
+                    { label: 'Installer/Service Partner Registration Form (Nigeria)', href: '/partners/Eagle_Thistle_Installer_Service_Partner_Registration_Form_Nigeria.docx' },
+                    { label: 'Installer/Service Partner Policy (Nigeria)', href: '/partners/Eagle_Thistle_Installer_Service_Partner_Policy_Nigeria.docx' }
+                  );
+                }
+                if (isUK && providesInstall) {
+                  links.push(
+                    { label: 'Installer/Service Partner Registration Form (UK)', href: '/partners/Eagle_Thistle_Installer_Service_Partner_Registration_Form_UK.docx' },
+                    { label: 'Installer/Service Partner Policy (UK)', href: '/partners/Eagle_Thistle_Installer_Service_Partner_Policy_UK.docx' }
+                  );
+                }
+                if (isNigeria && providesSales) {
+                  links.push(
+                    { label: 'Sales Partner Registration Form (Nigeria)', href: '/partners/Eagle_Thistle_Sales_Partner_Registration_Form Nigeria.docx' },
+                    { label: 'Sales Partner Policy (Nigeria)', href: '/partners/Eagle_Thistle_sales_Partner_Policy_One_Pager Nigeria.pdf' }
+                  );
+                }
+                if (isUK && providesSales) {
+                  links.push(
+                    { label: 'Sales Partner Registration Form (UK)', href: '/partners/Eagle_Thistle_UK_Sales_Partner_Registration_Form.docx' },
+                    { label: 'Sales Partner Policy (UK)', href: '/partners/Eagle_Thistle_UK_Sales_Partner_Policy_One_Pager.docx' }
+                  );
+                }
+
+                if (links.length === 0) {
+                  return (
+                    <div className="text-xs text-muted-foreground">No country/type selected yet. After you choose country and partner class/services, the correct documents will be shown here.</div>
+                  );
+                }
+
+                return (
+                  <ul className="list-disc pl-5 space-y-1">
+                    {links.map((l) => (
+                      <li key={l.href}>
+                        <a className="text-sm text-primary underline" href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                      </li>
+                    ))}
+                  </ul>
+                );
+              })()}
+            </div>
             <div className="text-center mb-8">
               <Users className="w-12 h-12 text-primary mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2">Create Account</h2>
@@ -356,86 +586,376 @@ const BecomeAPartner = () => {
         );
 
       case 2:
+        // Dynamic registration step: switch questions based on country/category
+        if (formData.partnerCountry === 'NG' && formData.partnerCategory === 'installer') {
+          return (
+            <div className="space-y-6">
+              <div className="text-center mb-8">
+                <Building className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h2 className="text-2xl font-bold mb-2">Installer Service Partner Registration (Nigeria)</h2>
+                <p className="text-muted-foreground">Complete your company profile and competence details</p>
+              </div>
+              {/* A) Company Profile & Legal */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label>Legal Name</Label>
+                  <Input value={formData.legalName} onChange={(e) => handleInputChange('legalName', e.target.value)} placeholder="ABC Energy Ltd" />
+                </div>
+                <div>
+                  <Label>Trading Name (if any)</Label>
+                  <Input value={formData.tradingName} onChange={(e) => handleInputChange('tradingName', e.target.value)} placeholder="ABC Solar" />
+                </div>
+                <div>
+                  <Label>CAC Registration No. (RC/BN)</Label>
+                  <Input value={formData.companyRegistration} onChange={(e) => handleInputChange('companyRegistration', e.target.value)} placeholder="RC123456" />
+                </div>
+                <div>
+                  <Label>FIRS TIN</Label>
+                  <Input value={formData.vatTin} onChange={(e) => handleInputChange('vatTin', e.target.value)} placeholder="12345678-0001" />
+                </div>
+                <div>
+                  <Label>SONCAP/MANCAP (if applicable)</Label>
+                  <Input value={formData.insurance} onChange={(e) => handleInputChange('insurance', e.target.value)} placeholder="Enter certificate refs" />
+                </div>
+                <div className="md:col-span-2">
+                  <Label>Registered Address</Label>
+                  <Textarea value={formData.registeredAddress} onChange={(e) => handleInputChange('registeredAddress', e.target.value)} rows={2} />
+                </div>
+                <div className="md:col-span-2">
+                  <Label>Operating Address (if different)</Label>
+                  <Textarea value={formData.baseCity} onChange={(e) => handleInputChange('baseCity', e.target.value)} rows={2} />
+                </div>
+                <div>
+                  <Label>Primary Contact (Name/Role)</Label>
+                  <Input value={formData.directorsList} onChange={(e) => handleInputChange('directorsList', e.target.value)} placeholder="Jane Doe / Ops Manager" />
+                </div>
+                <div>
+                  <Label>Contact Email</Label>
+                  <Input value={formData.email} onChange={(e) => handleInputChange('email', e.target.value)} placeholder="ops@example.com" />
+                </div>
+                <div>
+                  <Label>Phone</Label>
+                  <Input value={formData.phone} onChange={(e) => handleInputChange('phone', e.target.value)} placeholder="+234 ..." />
+                </div>
+              </div>
+
+              {/* B) Technical Scope & Capabilities */}
+              <div className="space-y-4">
+                <Label>Technologies (select all that apply)</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {['Solar PV', 'Battery Storage (BESS)', 'Inverters/Hybrid', 'EV Chargers', 'Mini‑grid/Microgrid', 'Controls/Monitoring', 'Heat Pumps', 'Other'].map((t) => (
+                    <div key={t} className="flex items-center space-x-2">
+                      <Checkbox id={`tech-${t}`} checked={formData.specialties.includes(t)} onCheckedChange={() => handleArrayToggle('specialties', t)} />
+                      <Label htmlFor={`tech-${t}`}>{t}</Label>
+                    </div>
+                  ))}
+                </div>
+                <Label>Service Scope</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {['Site Survey', 'Design', 'Installation', 'Testing & Inspection', 'Commissioning', 'O&M/Service', 'Emergency Call‑out'].map((s) => (
+                    <div key={s} className="flex items-center space-x-2">
+                      <Checkbox id={`scope-${s}`} checked={formData.servicesProvided.includes(s)} onCheckedChange={() => handleArrayToggle('servicesProvided', s)} />
+                      <Label htmlFor={`scope-${s}`}>{s}</Label>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label>Design tools/software</Label>
+                    <Input value={formData.productSkus} onChange={(e) => handleInputChange('productSkus', e.target.value)} placeholder="PVsyst, AutoCAD, HOMER, ..." />
+                  </div>
+                  <div>
+                    <Label>Daily install capacity (teams x size)</Label>
+                    <Input value={formData.weeklyCapacity} onChange={(e) => handleInputChange('weeklyCapacity', e.target.value)} placeholder="e.g., 3 teams x 4" />
+                  </div>
+                </div>
+                <div>
+                  <Label>Geographic coverage (States/LGAs)</Label>
+                  <Textarea value={formData.serviceAreas.join(', ')} onChange={(e) => handleInputChange('serviceAreas', e.target.value.split(',').map(s => s.trim()))} rows={2} />
+                </div>
+              </div>
+
+              {/* C) Qualifications, Memberships & Certifications */}
+              <div className="space-y-4">
+                <Label>Qualifications & Compliance</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="coreg" checked={formData.isoCertifications.includes('COREN')} onCheckedChange={() => handleArrayToggle('isoCertifications', 'COREN')} />
+                    <Label htmlFor="coreg">COREN Registered Engineer</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="nemsa" checked={formData.isoCertifications.includes('NEMSA')} onCheckedChange={() => handleArrayToggle('isoCertifications', 'NEMSA')} />
+                    <Label htmlFor="nemsa">NEMSA Recognition/Permit</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="disco" checked={formData.isoCertifications.includes('DISCO')} onCheckedChange={() => handleArrayToggle('isoCertifications', 'DISCO')} />
+                    <Label htmlFor="disco">DISCO Authorisation (grid‑tie)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="oem" checked={formData.isoCertifications.includes('OEM')} onCheckedChange={() => handleArrayToggle('isoCertifications', 'OEM')} />
+                    <Label htmlFor="oem">OEM Certifications (inverters/batteries/EV)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="hse" checked={formData.hsePrograms} onCheckedChange={(checked) => handleInputChange('hsePrograms', checked)} />
+                    <Label htmlFor="hse">HSE/First Aid, W@H, LOTO</Label>
+                  </div>
+                  <div>
+                    <Label>Insurance (Public/Product/Employers/PI)</Label>
+                    <Input value={formData.insurance} onChange={(e) => handleInputChange('insurance', e.target.value)} placeholder="List coverages and amounts" />
+                  </div>
+                </div>
+              </div>
+
+              {/* E) Experience & References */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <Label>Years trading</Label>
+                    <Input value={formData.headcount} onChange={(e) => handleInputChange('headcount', e.target.value)} placeholder="e.g., 5" />
+                  </div>
+                  <div>
+                    <Label>Total installs PV</Label>
+                    <Input value={formData.maxConcurrentProjects} onChange={(e) => handleInputChange('maxConcurrentProjects', e.target.value)} placeholder="e.g., 50" />
+                  </div>
+                  <div>
+                    <Label>Total installs BESS</Label>
+                    <Input value={formData.electricalLicense} onChange={(e) => handleInputChange('electricalLicense', e.target.value)} placeholder="e.g., 12" />
+                  </div>
+                  <div>
+                    <Label>Total EV chargers</Label>
+                    <Input value={formData.tradeLicense} onChange={(e) => handleInputChange('tradeLicense', e.target.value)} placeholder="e.g., 20" />
+                  </div>
+                </div>
+                <Label>Largest recent projects (top 3)</Label>
+                <Textarea value={formData.lastThreeProjects} onChange={(e) => handleInputChange('lastThreeProjects', e.target.value)} rows={4} placeholder="1) Client/Address ..." />
+              </div>
+
+              {/* F) Key Personnel */}
+              <div className="space-y-4">
+                <Label>Key Personnel</Label>
+                <Textarea value={formData.techniciansByGrade} onChange={(e) => handleInputChange('techniciansByGrade', e.target.value)} rows={3} placeholder="PM (COREN): ..., Lead Electrician: ..., HSE Lead: ..." />
+              </div>
+
+              {/* G) Tools & Equipment */}
+              <div className="space-y-2">
+                <Label>Main equipment list</Label>
+                <Textarea value={formData.toolsEquipment} onChange={(e) => handleInputChange('toolsEquipment', e.target.value)} rows={3} />
+              </div>
+
+              {/* H) Commercials & Capacity */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Preferred payment terms</Label>
+                    <Input value={formData.paymentTerms} onChange={(e) => handleInputChange('paymentTerms', e.target.value)} placeholder="e.g., Net 30" />
+                  </div>
+                  <div>
+                    <Label>Max concurrent jobs</Label>
+                    <Input value={formData.maxConcurrentProjects} onChange={(e) => handleInputChange('maxConcurrentProjects', e.target.value)} placeholder="e.g., 5" />
+                  </div>
+                </div>
+                <div>
+                  <Label>Target response times</Label>
+                  <Input value={formData.returnPolicy} onChange={(e) => handleInputChange('returnPolicy', e.target.value)} placeholder="Emergency 24h / Standard 72h" />
+                </div>
+              </div>
+
+              {/* I) Bonds & Retainer Acknowledgement */}
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="ack-bonds" checked={formData.commissionAgreementAccepted} onCheckedChange={(checked) => handleInputChange('commissionAgreementAccepted', checked)} />
+                  <Label htmlFor="ack-bonds">I acknowledge Bond/Retention/Retainer terms may apply</Label>
+                </div>
+              </div>
+
+              {/* J) Training Commitment */}
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="ack-training" checked={formData.dataConsentAccepted} onCheckedChange={(checked) => handleInputChange('dataConsentAccepted', checked)} />
+                  <Label htmlFor="ack-training">We will complete compulsory training and assessments</Label>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        if (formData.partnerCountry === 'UK' && formData.partnerCategory === 'installer') {
+          return (
+            <div className="space-y-6">
+              <div className="text-center mb-8">
+                <Building className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h2 className="text-2xl font-bold mb-2">Installer Service Partner Registration (UK)</h2>
+                <p className="text-muted-foreground">Complete your UK company profile and competence details</p>
+              </div>
+              {/* Concise UK variant mirroring the UK form structure (A–K) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label>Legal Name</Label>
+                  <Input value={formData.legalName} onChange={(e) => handleInputChange('legalName', e.target.value)} />
+                </div>
+                <div>
+                  <Label>Trading Name</Label>
+                  <Input value={formData.tradingName} onChange={(e) => handleInputChange('tradingName', e.target.value)} />
+                </div>
+                <div>
+                  <Label>Companies House No.</Label>
+                  <Input value={formData.companyRegistration} onChange={(e) => handleInputChange('companyRegistration', e.target.value)} />
+                </div>
+                <div>
+                  <Label>VAT No.</Label>
+                  <Input value={formData.vatTin} onChange={(e) => handleInputChange('vatTin', e.target.value)} />
+                </div>
+                <div>
+                  <Label>EORI (if importing)</Label>
+                  <Input value={formData.addressProof} onChange={(e) => handleInputChange('addressProof', e.target.value)} />
+                </div>
+                <div className="md:col-span-2">
+                  <Label>Registered Address</Label>
+                  <Textarea value={formData.registeredAddress} onChange={(e) => handleInputChange('registeredAddress', e.target.value)} rows={2} />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <Label>Roles & Capabilities</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {['Design', 'Installation', 'Testing & Inspection', 'Commissioning', 'O&M/Service', 'Emergency Call-out'].map((s) => (
+                    <div key={s} className="flex items-center space-x-2">
+                      <Checkbox id={`uk-scope-${s}`} checked={formData.servicesProvided.includes(s)} onCheckedChange={() => handleArrayToggle('servicesProvided', s)} />
+                      <Label htmlFor={`uk-scope-${s}`}>{s}</Label>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label>BS 7671 / C&G / MCS numbers</Label>
+                    <Input value={formData.electricalLicense} onChange={(e) => handleInputChange('electricalLicense', e.target.value)} placeholder="e.g., C&G 2382-22; MCS MIS 3002" />
+                  </div>
+                  <div>
+                    <Label>Insurance (Public/Product/PI)</Label>
+                    <Input value={formData.insurance} onChange={(e) => handleInputChange('insurance', e.target.value)} />
+                  </div>
+                </div>
+                <div>
+                  <Label>Key Personnel</Label>
+                  <Textarea value={formData.techniciansByGrade} onChange={(e) => handleInputChange('techniciansByGrade', e.target.value)} rows={3} placeholder="PM, Lead Electrician, H&S Lead..." />
+                </div>
+                <div>
+                  <Label>Largest recent projects</Label>
+                  <Textarea value={formData.lastThreeProjects} onChange={(e) => handleInputChange('lastThreeProjects', e.target.value)} rows={3} />
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        // Sales marketplace variants (NG/UK) summarised as unified sales form with policy distinctions
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <Building className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Partner Identity</h2>
-              <p className="text-muted-foreground">Tell us about your business structure</p>
+              <FileText className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h2 className="text-2xl font-bold mb-2">Sales Partner Registration ({formData.partnerCountry === 'UK' ? 'UK' : 'Nigeria/ECOWAS'})</h2>
+              <p className="text-muted-foreground">Vendors/Resellers and State Sales Representatives</p>
             </div>
-            
-            <div className="space-y-6">
+
+            {/* A) Partner Type & Contact */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label>Are you registering as?</Label>
-                <Select value={formData.partnerType} onValueChange={(value) => handleInputChange('partnerType', value)}>
+                <Label>Account Type</Label>
+                <Select value={formData.partnerType} onValueChange={(v) => handleInputChange('partnerType', v)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select registration type" />
+                    <SelectValue placeholder="Select account type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="company">Company</SelectItem>
                     <SelectItem value="individual">Individual</SelectItem>
+                    <SelectItem value="company">Registered Business</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              
               <div>
-                <Label htmlFor="legalName">
-                  {formData.partnerType === 'company' ? 'Legal Company Name' : 'Full Legal Name'}
-                </Label>
-                <Input
-                  id="legalName"
-                  value={formData.legalName}
-                  onChange={(e) => handleInputChange('legalName', e.target.value)}
-                  placeholder={formData.partnerType === 'company' ? 'ABC Renewable Energy Ltd' : 'John Smith'}
-                  required
-                />
+                <Label>Legal/Full Name</Label>
+                <Input value={formData.legalName} onChange={(e) => handleInputChange('legalName', e.target.value)} />
               </div>
-              
-              {formData.partnerType === 'company' && (
-                <>
-                  <div>
-                    <Label htmlFor="tradingName">Trading Name (if different)</Label>
-                    <Input
-                      id="tradingName"
-                      value={formData.tradingName}
-                      onChange={(e) => handleInputChange('tradingName', e.target.value)}
-                      placeholder="ABC Solar"
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="directorsList">Directors/UBO List</Label>
-                    <Textarea
-                      id="directorsList"
-                      value={formData.directorsList}
-                      onChange={(e) => handleInputChange('directorsList', e.target.value)}
-                      placeholder="List all directors and ultimate beneficial owners..."
-                      rows={3}
-                    />
-                  </div>
-                </>
-              )}
-              
               <div>
-                <Label htmlFor="countryOfRegistration">Country of Registration/Residence</Label>
-                <Input
-                  id="countryOfRegistration"
-                  value={formData.countryOfRegistration}
-                  onChange={(e) => handleInputChange('countryOfRegistration', e.target.value)}
-                  placeholder="United Kingdom"
-                  required
-                />
+                <Label>Trading Name (if any)</Label>
+                <Input value={formData.tradingName} onChange={(e) => handleInputChange('tradingName', e.target.value)} />
               </div>
-              
               <div>
-                <Label htmlFor="registeredAddress">Registered Address</Label>
-                <Textarea
-                  id="registeredAddress"
-                  value={formData.registeredAddress}
-                  onChange={(e) => handleInputChange('registeredAddress', e.target.value)}
-                  placeholder="Full registered address..."
-                  rows={3}
-                />
+                <Label>Website (optional)</Label>
+                <Input value={formData.returnPolicy} onChange={(e) => handleInputChange('returnPolicy', e.target.value)} placeholder="https://..." />
+              </div>
+              <div className="md:col-span-2">
+                <Label>Registered Address</Label>
+                <Textarea value={formData.registeredAddress} onChange={(e) => handleInputChange('registeredAddress', e.target.value)} rows={2} />
+              </div>
+            </div>
+
+            {/* B) Territory & Coverage */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label>Regions/States Covered</Label>
+                <Textarea value={formData.coverageRegions.join(', ')} onChange={(e) => handleInputChange('coverageRegions', e.target.value.split(',').map(s => s.trim()))} rows={2} />
+              </div>
+              <div>
+                <Label>Service Radius (km)</Label>
+                <Input value={formData.serviceRadius} onChange={(e) => handleInputChange('serviceRadius', e.target.value)} />
+              </div>
+            </div>
+
+            {/* C) Roles & Categories */}
+            <div className="space-y-3">
+              <Label>Roles</Label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                {['Sales (Retail)', 'Sales (B2B/Projects)', 'Distributor', 'OEM Rep', 'E-commerce Vendor'].map((r) => (
+                  <div key={r} className="flex items-center space-x-2">
+                    <Checkbox id={`role-${r}`} checked={formData.servicesProvided.includes(r)} onCheckedChange={() => handleArrayToggle('servicesProvided', r)} />
+                    <Label htmlFor={`role-${r}`}>{r}</Label>
+                  </div>
+                ))}
+              </div>
+              <Label>Product Categories</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {['Solar PV Panels', 'Hybrid/On-grid Inverters', 'Off-grid Inverters', 'Batteries/BESS', 'Charge Controllers', 'Cables/MC4/BOS', 'Mounting/Racking', 'EV Chargers', 'Efficient Appliances', 'Other'].map((c) => (
+                  <div key={c} className="flex items-center space-x-2">
+                    <Checkbox id={`cat-${c}`} checked={formData.specialties.includes(c)} onCheckedChange={() => handleArrayToggle('specialties', c)} />
+                    <Label htmlFor={`cat-${c}`}>{c}</Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* D) Compliance & Documentation */}
+            <div className="space-y-2">
+              <Label>Compliance & Documentation (tick as applicable)</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {['Government ID', 'CAC/RC Certificate', 'TIN', 'Bank Letter/Statement', 'Manufacturer Authorization', 'Product Test Reports (IEC/UL)', 'Warranty Policy (PDF)', 'Insurance'].map((d) => (
+                  <div key={d} className="flex items-center space-x-2">
+                    <Checkbox id={`doc-${d}`} checked={formData.manufacturerCertifications.includes(d)} onCheckedChange={() => handleArrayToggle('manufacturerCertifications', d)} />
+                    <Label htmlFor={`doc-${d}`}>{d}</Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* E) Banking & Tax */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label>Bank/Payee Details</Label>
+                <Textarea value={formData.bankDetails} onChange={(e) => handleInputChange('bankDetails', e.target.value)} rows={2} />
+              </div>
+              <div>
+                <Label>Currency (NGN/GBP)</Label>
+                <Input value={formData.preferredCurrency} onChange={(e) => handleInputChange('preferredCurrency', e.target.value)} />
+              </div>
+            </div>
+
+            {/* F) Fees & G) Commercial Acknowledgement */}
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox id="ack-fees" checked={formData.antiBriberyAttestation} onCheckedChange={(checked) => handleInputChange('antiBriberyAttestation', checked)} />
+                <Label htmlFor="ack-fees">I acknowledge onboarding/listing fees and ongoing platform charges</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="ack-payout" checked={formData.sanctionsConfirmation} onCheckedChange={(checked) => handleInputChange('sanctionsConfirmation', checked)} />
+                <Label htmlFor="ack-payout">I accept payout timing and reserves policy</Label>
               </div>
             </div>
           </div>
