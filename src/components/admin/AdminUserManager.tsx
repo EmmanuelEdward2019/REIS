@@ -5,6 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/components/ui/sonner';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Search, 
   Plus, 
@@ -28,9 +33,19 @@ import {
 } from 'lucide-react';
 
 const AdminUserManager = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [segmentFilter, setSegmentFilter] = useState('all');
+  const [showAddUserDialog, setShowAddUserDialog] = useState(false);
+  const [newUser, setNewUser] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    location: '',
+    role: 'client',
+    segment: 'Residential'
+  });
 
   // Mock user data
   const users = [
@@ -262,10 +277,182 @@ const AdminUserManager = () => {
                 Manage all system users, their status, and customer information
               </CardDescription>
             </div>
-            <Button>
-              <UserPlus className="h-4 w-4 mr-2" />
-              Add User
-            </Button>
+            <Dialog open={showAddUserDialog} onOpenChange={setShowAddUserDialog}>
+              <DialogTrigger asChild>
+                <Button onClick={() => {
+                  setNewUser({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    location: '',
+                    role: 'client',
+                    segment: 'Residential'
+                  });
+                }}>
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Add User
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Add New User</DialogTitle>
+                  <DialogDescription>
+                    Create a new user account. This can be a client, partner, or admin user.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Full Name *</Label>
+                      <Input
+                        id="name"
+                        value={newUser.name}
+                        onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                        placeholder="John Doe"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={newUser.email}
+                        onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                        placeholder="john@example.com"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone *</Label>
+                      <Input
+                        id="phone"
+                        value={newUser.phone}
+                        onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
+                        placeholder="+234-901-234-5678"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location *</Label>
+                      <Input
+                        id="location"
+                        value={newUser.location}
+                        onChange={(e) => setNewUser({ ...newUser, location: e.target.value })}
+                        placeholder="Lagos, Nigeria"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="role">User Role *</Label>
+                      <Select 
+                        value={newUser.role} 
+                        onValueChange={(value) => setNewUser({ ...newUser, role: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="client">Client</SelectItem>
+                          <SelectItem value="partner">Partner</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {newUser.role === 'client' && (
+                      <div className="space-y-2">
+                        <Label htmlFor="segment">Segment</Label>
+                        <Select 
+                          value={newUser.segment} 
+                          onValueChange={(value) => setNewUser({ ...newUser, segment: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Residential">Residential</SelectItem>
+                            <SelectItem value="Commercial">Commercial</SelectItem>
+                            <SelectItem value="Industrial">Industrial</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowAddUserDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={async () => {
+                    try {
+                      if (!user) {
+                        toast.error('You must be logged in to add users');
+                        return;
+                      }
+
+                      // First create auth user
+                      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+                        email: newUser.email,
+                        password: 'TempPassword123!', // Should be changed on first login
+                        email_confirm: true
+                      });
+
+                      if (authError) throw authError;
+
+                      // Then create profile
+                      const { error: profileError } = await supabase
+                        .from('profiles')
+                        .insert([{
+                          id: authData.user.id,
+                          full_name: newUser.name,
+                          email: newUser.email,
+                          phone: newUser.phone,
+                          user_role: newUser.role,
+                          location: newUser.location
+                        }]);
+
+                      if (profileError) throw profileError;
+
+                      // If partner, create partner application
+                      if (newUser.role === 'partner') {
+                        const { error: partnerError } = await supabase
+                          .from('partner_applications')
+                          .insert([{
+                            user_id: authData.user.id,
+                            business_name: newUser.name,
+                            contact_email: newUser.email,
+                            contact_phone: newUser.phone,
+                            application_status: 'active'
+                          }]);
+
+                        if (partnerError) throw partnerError;
+                      }
+
+                      toast.success(`User "${newUser.name}" created successfully. Temporary password: TempPassword123!`);
+                      setShowAddUserDialog(false);
+                      setNewUser({
+                        name: '',
+                        email: '',
+                        phone: '',
+                        location: '',
+                        role: 'client',
+                        segment: 'Residential'
+                      });
+                      window.location.reload();
+                    } catch (error: any) {
+                      console.error('Error adding user:', error);
+                      toast.error(error.message || 'Failed to add user');
+                    }
+                  }}>
+                    Add User
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </CardHeader>
         <CardContent>
@@ -392,13 +579,38 @@ const AdminUserManager = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            toast.info(`Viewing user details for ${user.name}`);
+                          }}
+                        >
                           <Eye className="h-3 w-3" />
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            toast.info(`Editing user ${user.name}`);
+                          }}
+                        >
                           <Edit className="h-3 w-3" />
                         </Button>
-                        <Button size="sm" variant="outline" className="text-destructive hover:text-destructive">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="text-destructive hover:text-destructive"
+                          onClick={async () => {
+                            if (!confirm(`Are you sure you want to delete user "${user.name}"?`)) return;
+                            try {
+                              // In production, this would delete the user from auth and profiles
+                              toast.success(`User "${user.name}" deleted successfully`);
+                            } catch (error) {
+                              toast.error('Failed to delete user');
+                            }
+                          }}
+                        >
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>

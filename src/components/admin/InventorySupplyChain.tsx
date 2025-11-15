@@ -29,6 +29,76 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+// Warehouse Form Component
+const WarehouseForm: React.FC<{ warehouse?: any; onSave: (data: any) => void }> = ({ warehouse, onSave }) => {
+  const [formData, setFormData] = useState({
+    name: warehouse?.name || '',
+    code: warehouse?.code || '',
+    address: warehouse?.address || '',
+    capacity_sqm: warehouse?.capacity_sqm?.toString() || '',
+    location: warehouse?.location ? JSON.stringify(warehouse.location) : '',
+    is_active: warehouse?.is_active !== undefined ? warehouse.is_active : true
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Warehouse Name *</Label>
+        <Input
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="code">Warehouse Code *</Label>
+        <Input
+          id="code"
+          value={formData.code}
+          onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="address">Address</Label>
+        <Input
+          id="address"
+          value={formData.address}
+          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="capacity_sqm">Capacity (sqm)</Label>
+        <Input
+          id="capacity_sqm"
+          type="number"
+          value={formData.capacity_sqm}
+          onChange={(e) => setFormData({ ...formData, capacity_sqm: e.target.value })}
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="is_active"
+          checked={formData.is_active}
+          onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+          className="rounded"
+        />
+        <Label htmlFor="is_active">Active</Label>
+      </div>
+      <DialogFooter>
+        <Button variant="outline" type="button">
+          Cancel
+        </Button>
+        <Button onClick={() => onSave(formData)}>
+          {warehouse ? 'Update' : 'Create'}
+        </Button>
+      </DialogFooter>
+    </div>
+  );
+};
+
 interface Product {
   id: string;
   name: string;
@@ -544,27 +614,74 @@ const InventorySupplyChain = () => {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              {selectedItem ? 'Edit' : 'Add'} {dialogType.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              {selectedItem ? 'Edit' : 'Add'} {dialogType === 'warehouse' ? 'Warehouse' : dialogType === 'supplier' ? 'Supplier' : dialogType === 'po' ? 'Purchase Order' : 'BOM'}
             </DialogTitle>
             <DialogDescription>
-              {selectedItem ? 'Update the' : 'Create a new'} {dialogType.replace('-', ' ')} record
+              {selectedItem ? 'Update the' : 'Create a new'} {dialogType === 'warehouse' ? 'warehouse' : dialogType === 'supplier' ? 'supplier' : dialogType === 'po' ? 'purchase order' : 'BOM'} record
             </DialogDescription>
           </DialogHeader>
           
           <div className="py-4">
-            <p className="text-center text-muted-foreground">
-              Forms for {dialogType} management will be implemented here
-            </p>
+            {dialogType === 'warehouse' && (
+              <WarehouseForm 
+                warehouse={selectedItem}
+                onSave={async (data) => {
+                  try {
+                    if (selectedItem) {
+                      const { error } = await supabase
+                        .from('warehouses')
+                        .update({
+                          name: data.name,
+                          code: data.code,
+                          address: data.address,
+                          capacity_sqm: data.capacity_sqm ? parseFloat(data.capacity_sqm) : null,
+                          location: data.location ? JSON.parse(data.location) : { address: data.address },
+                          is_active: data.is_active !== undefined ? data.is_active : true,
+                          updated_at: new Date().toISOString()
+                        })
+                        .eq('id', selectedItem.id);
+                      if (error) throw error;
+                      toast({ title: 'Warehouse updated successfully' });
+                    } else {
+                      const { error } = await supabase
+                        .from('warehouses')
+                        .insert([{
+                          name: data.name,
+                          code: data.code,
+                          address: data.address,
+                          capacity_sqm: data.capacity_sqm ? parseFloat(data.capacity_sqm) : null,
+                          location: data.location ? JSON.parse(data.location) : { address: data.address },
+                          is_active: true
+                        }]);
+                      if (error) throw error;
+                      toast({ title: 'Warehouse created successfully' });
+                    }
+                    setDialogOpen(false);
+                    setSelectedItem(null);
+                    fetchWarehouses();
+                  } catch (error: any) {
+                    toast({ title: 'Error', description: error.message, variant: 'destructive' });
+                  }
+                }}
+              />
+            )}
+            {dialogType !== 'warehouse' && (
+              <p className="text-center text-muted-foreground">
+                Forms for {dialogType} management will be implemented here
+              </p>
+            )}
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button>
-              {selectedItem ? 'Update' : 'Create'}
-            </Button>
-          </DialogFooter>
+          {dialogType !== 'warehouse' && (
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button>
+                {selectedItem ? 'Update' : 'Create'}
+              </Button>
+            </DialogFooter>
+          )}
         </DialogContent>
       </Dialog>
     </div>

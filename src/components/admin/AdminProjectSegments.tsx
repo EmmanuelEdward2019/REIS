@@ -5,6 +5,12 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/components/ui/sonner';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Home, 
   Building2, 
@@ -21,12 +27,23 @@ import {
   CheckCircle,
   MapPin,
   Phone,
-  Mail
+  Mail,
+  Plus
 } from 'lucide-react';
 
 const AdminProjectSegments = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSegment, setSelectedSegment] = useState('residential');
+  const [showAddCustomerDialog, setShowAddCustomerDialog] = useState(false);
+  const [newCustomer, setNewCustomer] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    location: '',
+    systemSize: '',
+    segment: 'residential'
+  });
 
   // Mock data for customers by segment
   const segments = {
@@ -220,10 +237,145 @@ const AdminProjectSegments = () => {
                 Manage {currentSegment.title.toLowerCase()} segment customers and their solar installations
               </CardDescription>
             </div>
-            <Button>
-              <Users className="h-4 w-4 mr-2" />
-              Add Customer
-            </Button>
+            <Dialog open={showAddCustomerDialog} onOpenChange={setShowAddCustomerDialog}>
+              <DialogTrigger asChild>
+                <Button onClick={() => {
+                  setNewCustomer({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    location: '',
+                    systemSize: '',
+                    segment: selectedSegment
+                  });
+                }}>
+                  <Users className="h-4 w-4 mr-2" />
+                  Add Customer
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add New Customer</DialogTitle>
+                  <DialogDescription>
+                    Create a new customer profile for the {selectedSegment} segment
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input
+                      id="name"
+                      value={newCustomer.name}
+                      onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
+                      placeholder="John Doe"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={newCustomer.email}
+                      onChange={(e) => setNewCustomer({ ...newCustomer, email: e.target.value })}
+                      placeholder="john@example.com"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone *</Label>
+                    <Input
+                      id="phone"
+                      value={newCustomer.phone}
+                      onChange={(e) => setNewCustomer({ ...newCustomer, phone: e.target.value })}
+                      placeholder="+234-901-234-5678"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="location">Location *</Label>
+                    <Input
+                      id="location"
+                      value={newCustomer.location}
+                      onChange={(e) => setNewCustomer({ ...newCustomer, location: e.target.value })}
+                      placeholder="Lagos, Nigeria"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="systemSize">System Size</Label>
+                    <Input
+                      id="systemSize"
+                      value={newCustomer.systemSize}
+                      onChange={(e) => setNewCustomer({ ...newCustomer, systemSize: e.target.value })}
+                      placeholder="5.5kW"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="segment">Segment *</Label>
+                    <Select 
+                      value={newCustomer.segment} 
+                      onValueChange={(value) => setNewCustomer({ ...newCustomer, segment: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="residential">Residential</SelectItem>
+                        <SelectItem value="commercial">Commercial</SelectItem>
+                        <SelectItem value="industrial">Industrial</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowAddCustomerDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={async () => {
+                    try {
+                      if (!user) {
+                        toast.error('You must be logged in to add customers');
+                        return;
+                      }
+
+                      // Create user profile first
+                      const { data: profileData, error: profileError } = await supabase
+                        .from('profiles')
+                        .insert([{
+                          full_name: newCustomer.name,
+                          email: newCustomer.email,
+                          phone: newCustomer.phone,
+                          user_role: 'client',
+                          location: newCustomer.location
+                        }])
+                        .select()
+                        .single();
+
+                      if (profileError) throw profileError;
+
+                      toast.success(`Customer "${newCustomer.name}" added successfully`);
+                      setShowAddCustomerDialog(false);
+                      setNewCustomer({
+                        name: '',
+                        email: '',
+                        phone: '',
+                        location: '',
+                        systemSize: '',
+                        segment: selectedSegment
+                      });
+                      // Refresh the page or update local state
+                      window.location.reload();
+                    } catch (error: any) {
+                      console.error('Error adding customer:', error);
+                      toast.error(error.message || 'Failed to add customer');
+                    }
+                  }}>
+                    Add Customer
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </CardHeader>
         <CardContent>
@@ -311,10 +463,22 @@ const AdminProjectSegments = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            toast.info(`Viewing customer details for ${customer.name}`);
+                          }}
+                        >
                           <Eye className="h-3 w-3" />
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            toast.info(`Editing customer ${customer.name}`);
+                          }}
+                        >
                           <Edit className="h-3 w-3" />
                         </Button>
                       </div>

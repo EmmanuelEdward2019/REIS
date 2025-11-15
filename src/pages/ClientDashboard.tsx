@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
+import {
   Activity,
   CreditCard,
   Package
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import ModernEnergyMetrics from '@/components/dashboard/ModernEnergyMetrics';
 import MetricsWidget from '@/components/crm/MetricsWidget';
@@ -17,56 +18,58 @@ import TicketingSystem, { TicketData } from '@/components/crm/TicketingSystem';
 import ServiceCatalog from '@/components/crm/ServiceCatalog';
 import DocumentManager from '@/components/crm/DocumentManager';
 import { supabase } from '@/integrations/supabase/client';
-
-// Mock user role - in real app this would come from auth context
-type UserRole = 'client' | 'partner' | 'admin';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/components/ui/sonner';
 
 const ClientDashboard = () => {
-  const [userRole] = useState<UserRole>('client');
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
   const [currentView, setCurrentView] = useState<'overview' | 'controllers' | 'orders' | 'billing' | 'tickets' | 'services' | 'documents'>('overview');
   const [controllers, setControllers] = useState([]);
   const [energyMetrics, setEnergyMetrics] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
+  const [tickets, setTickets] = useState<TicketData[]>([]);
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserData();
-    fetchControllers();
-    fetchEnergyData();
-  }, []);
-
-  const fetchUserData = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-        
-        setUserProfile(profile);
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
+    if (user) {
+      fetchAllData();
     }
+  }, [user]);
+
+  const fetchAllData = async () => {
+    setLoading(true);
+    await Promise.all([
+      fetchControllers(),
+      fetchEnergyData(),
+      fetchTickets(),
+      fetchDocuments(),
+    ]);
+    setLoading(false);
   };
 
   const fetchControllers = async () => {
+    if (!user) return;
+
     try {
       const { data, error } = await supabase
         .from('controllers')
         .select('*')
+        .eq('user_id', user.id)
         .eq('is_active', true)
-        .limit(3);
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setControllers(data || []);
     } catch (error) {
       console.error('Error fetching controllers:', error);
+      toast.error('Failed to load controllers');
     }
   };
 
   const fetchEnergyData = async () => {
+    if (!user) return;
+
     try {
       const { data, error } = await supabase
         .from('energy_metrics')
@@ -79,12 +82,15 @@ const ClientDashboard = () => {
             last_heartbeat
           )
         `)
+        .eq('controllers.user_id', user.id)
         .order('timestamp', { ascending: false })
         .limit(1)
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
-      
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching energy data:', error);
+      }
+
       // If no data, create mock data for demo
       if (!data) {
         setEnergyMetrics({
@@ -114,69 +120,192 @@ const ClientDashboard = () => {
     }
   };
 
-  // Mock tickets data
-  const mockTickets: TicketData[] = [
-    {
-      ticketCode: 'TKT-2024-000001',
-      stage: 'INTAKE',
-      status: 'COMPLETED',
-      title: 'System Performance Question',
-      description: 'Customer inquiry about solar panel efficiency',
-      created: new Date('2024-01-15'),
-      updated: new Date('2024-01-15'),
-      priority: 'MEDIUM',
-      notes: ['Initial inquiry received'],
-      attachments: []
-    }
-  ];
+  const fetchTickets = async () => {
+    if (!user) return;
 
-  const handleTicketUpdate = (ticketCode: string, updates: Partial<TicketData>) => {
-    console.log('Updating ticket:', ticketCode, updates);
+    try {
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Transform data to match TicketData interface
+      const transformedTickets: TicketData[] = (data || []).map(ticket => ({
+        ticketCode: ticket.ticket_code || '',
+        stage: ticket.stage || 'INTAKE',
+        status: ticket.status || 'OPEN',
+        title: ticket.title || '',
+        description: ticket.description || '',
+        created: new Date(ticket.created_at),
+        updated: new Date(ticket.updated_at),
+        priority: ticket.priority || 'MEDIUM',
+        notes: [],
+        attachments: []
+      }));
+
+      setTickets(transformedTickets);
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      toast.error('Failed to load tickets');
+    }
   };
 
-  const handleTicketCreate = (ticket: {
+  const fetchDocuments = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('inventory')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Transform inventory data to documents format
+      const transformedDocs = (data || []).map(item => ({
+        id: item.id,
+        name: item.item_name || 'Unnamed Document',
+        type: 'other' as const,
+        category: 'system' as const,
+        size: 0,
+        uploadDate: new Date(item.created_at),
+        uploadedBy: 'System',
+        jobCode: item.job_code || '',
+        status: 'approved' as const
+      }));
+
+      setDocuments(transformedDocs);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      toast.error('Failed to load documents');
+    }
+  };
+
+  const handleTicketUpdate = async (ticketCode: string, updates: Partial<TicketData>) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('tickets')
+        .update({
+          status: updates.status,
+          stage: updates.stage,
+          priority: updates.priority,
+          updated_at: new Date().toISOString()
+        })
+        .eq('ticket_code', ticketCode)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast.success('Ticket updated successfully');
+      fetchTickets(); // Refresh tickets
+    } catch (error) {
+      console.error('Error updating ticket:', error);
+      toast.error('Failed to update ticket');
+    }
+  };
+
+  const handleTicketCreate = async (ticket: {
     title: string;
     description: string;
     priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
     category: string;
   }) => {
-    console.log('Creating ticket:', ticket);
-    // In a real app, this would create a new ticket in the database
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('tickets')
+        .insert([{
+          user_id: user.id,
+          title: ticket.title,
+          description: ticket.description,
+          priority: ticket.priority,
+          category: ticket.category,
+          status: 'OPEN',
+          stage: 'INTAKE',
+          hierarchy_level: 'L1',
+        }]);
+
+      if (error) throw error;
+
+      toast.success('Ticket created successfully');
+      fetchTickets(); // Refresh tickets
+    } catch (error) {
+      console.error('Error creating ticket:', error);
+      toast.error('Failed to create ticket');
+    }
   };
 
   const handleServiceSelect = (service: string) => {
     console.log('Service selected:', service);
+    toast.info(`Service "${service}" selected. Contact support for more information.`);
   };
 
-  const handleDocumentUpload = (files: FileList) => {
-    console.log('Uploading files:', Array.from(files));
+  const handleDocumentUpload = async (files: FileList) => {
+    if (!user) return;
+
+    try {
+      // In a real implementation, you would upload to Supabase Storage first
+      // For now, we'll just create inventory records
+      const fileArray = Array.from(files);
+
+      for (const file of fileArray) {
+        const { error } = await supabase
+          .from('inventory')
+          .insert([{
+            user_id: user.id,
+            item_name: file.name,
+            quantity: 1,
+            unit: 'file',
+            location: 'Documents',
+          }]);
+
+        if (error) throw error;
+      }
+
+      toast.success(`${fileArray.length} document(s) uploaded successfully`);
+      fetchDocuments(); // Refresh documents
+    } catch (error) {
+      console.error('Error uploading documents:', error);
+      toast.error('Failed to upload documents');
+    }
   };
 
   const handleDocumentDownload = (documentId: string) => {
     console.log(`Document download:`, documentId);
+    toast.info('Document download feature coming soon');
   };
 
-  const handleDocumentDelete = (documentId: string) => {
-    console.log(`Document delete:`, documentId);
+  const handleDocumentDelete = async (documentId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('inventory')
+        .delete()
+        .eq('id', documentId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast.success('Document deleted successfully');
+      fetchDocuments(); // Refresh documents
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      toast.error('Failed to delete document');
+    }
   };
 
   const handleDocumentView = (documentId: string) => {
     console.log(`Document view:`, documentId);
+    toast.info('Document preview feature coming soon');
   };
-
-  const mockDocuments = [
-    {
-      id: '1',
-      name: 'System Manual.pdf',
-      type: 'other' as const,
-      category: 'system' as const,
-      size: 2450000,
-      uploadDate: new Date('2024-01-16'),
-      uploadedBy: 'System',
-      jobCode: 'ET-REIS-RES-AUD-2024-0123',
-      status: 'approved' as const
-    }
-  ];
 
   return (
     <Layout>
@@ -187,18 +316,18 @@ const ClientDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-                  {userProfile?.full_name ? `Welcome, ${userProfile.full_name}` : 'Client Dashboard'}
+                  {profile?.full_name ? `Welcome, ${profile.full_name}` : 'Client Dashboard'}
                 </h1>
                 <p className="text-muted-foreground">
-                  {userProfile?.service_class 
-                    ? `${userProfile.service_class.charAt(0).toUpperCase() + userProfile.service_class.slice(1)} Energy System Dashboard`
+                  {profile?.service_class
+                    ? `${profile.service_class.charAt(0).toUpperCase() + profile.service_class.slice(1)} Energy System Dashboard`
                     : "Monitor your renewable energy systems in real-time"
                   }
                 </p>
               </div>
-              {userProfile?.service_class && (
+              {profile?.service_class && (
                 <Badge variant="outline" className="text-sm">
-                  {userProfile.service_class.charAt(0).toUpperCase() + userProfile.service_class.slice(1)} Customer
+                  {profile.service_class.charAt(0).toUpperCase() + profile.service_class.slice(1)} Customer
                 </Badge>
               )}
             </div>
@@ -220,7 +349,7 @@ const ClientDashboard = () => {
 
               <TabsContent value="overview" className="space-y-6">
                 {/* REIS Metrics Dashboard */}
-                <MetricsWidget 
+                <MetricsWidget
                   data={{
                     co2Saved: 15.2,
                     carbonCreditsEarned: 45,
@@ -237,7 +366,7 @@ const ClientDashboard = () => {
                     gridEquivalent: 0.142,
                     isLiveSystem: true
                   }}
-                  jobCode={userProfile?.service_class ? `ET-REIS-${userProfile.service_class.toUpperCase()}-2024-001` : undefined}
+                  jobCode={profile?.service_class ? `ET-REIS-${profile.service_class.toUpperCase()}-2024-001` : undefined}
                 />
 
                 {/* Modern Energy Metrics Dashboard */}
@@ -317,7 +446,7 @@ const ClientDashboard = () => {
                       <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                       <h3 className="text-lg font-semibold mb-2">No Orders Yet</h3>
                       <p className="text-muted-foreground mb-4">You haven't made any purchases yet.</p>
-                      <Button>Browse Shop</Button>
+                      <Button onClick={() => navigate('/shop')}>Browse Shop</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -328,11 +457,11 @@ const ClientDashboard = () => {
               </TabsContent>
 
               <TabsContent value="tickets" className="space-y-6">
-                <TicketingSystem 
-                  tickets={mockTickets}
+                <TicketingSystem
+                  tickets={tickets}
                   onTicketUpdate={handleTicketUpdate}
                   onTicketCreate={handleTicketCreate}
-                  userRole={userRole}
+                  userRole="client"
                 />
               </TabsContent>
 
@@ -341,9 +470,9 @@ const ClientDashboard = () => {
               </TabsContent>
 
               <TabsContent value="documents" className="space-y-6">
-                <DocumentManager 
-                  documents={mockDocuments}
-                  jobCode="ET-REIS-RES-AUD-2024-0123"
+                <DocumentManager
+                  documents={documents}
+                  jobCode={profile?.id || ''}
                   onUpload={handleDocumentUpload}
                   onDownload={handleDocumentDownload}
                   onDelete={handleDocumentDelete}

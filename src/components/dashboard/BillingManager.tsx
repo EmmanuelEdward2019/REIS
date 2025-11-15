@@ -484,9 +484,30 @@ const BillingManager: React.FC<BillingManagerProps> = ({ userRole = 'admin' }) =
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => {
-                            // In a real app, this would generate and download a PDF
-                            alert('Invoice download feature would be implemented here');
+                          onClick={async () => {
+                            try {
+                              const invoiceData = {
+                                invoice_number: record.invoice_number,
+                                service_type: record.service_type,
+                                description: record.description,
+                                amount: record.amount,
+                                currency: record.currency,
+                                status: record.status,
+                                due_date: record.due_date,
+                                paid_date: record.paid_date,
+                                payment_method: record.payment_method,
+                                created_at: record.created_at
+                              };
+                              const blob = new Blob([JSON.stringify(invoiceData, null, 2)], { type: 'application/json' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `invoice-${record.invoice_number}.json`;
+                              a.click();
+                              URL.revokeObjectURL(url);
+                            } catch (error) {
+                              console.error('Error downloading invoice:', error);
+                            }
                           }}
                         >
                           <Download className="h-4 w-4" />

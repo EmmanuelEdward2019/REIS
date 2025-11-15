@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { toast } from '@/components/ui/sonner';
 import { 
   Search,
   Cog,
@@ -247,15 +248,33 @@ const ServiceCatalog: React.FC<ServiceCatalogProps> = ({ selectedSegment = 'RES'
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button variant="outline" className="flex-1">
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={() => {
+                toast.info('Consultation scheduling feature coming soon');
+              }}
+            >
               <BookOpen className="h-4 w-4 mr-2" />
               Schedule Consultation
             </Button>
-            <Button variant="outline" className="flex-1">
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={() => {
+                toast.info('Service comparison feature coming soon');
+              }}
+            >
               <Search className="h-4 w-4 mr-2" />
               Compare Services
             </Button>
-            <Button variant="outline" className="flex-1">
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={() => {
+                toast.info('Demo videos coming soon');
+              }}
+            >
               <Monitor className="h-4 w-4 mr-2" />
               Watch Demo
             </Button>

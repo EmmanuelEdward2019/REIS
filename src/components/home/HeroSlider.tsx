@@ -130,20 +130,20 @@ const HeroSlider = () => {
                   </div>
 
                   <div className="flex flex-row gap-4 justify-center">
-                    <Button 
+                    <Button
                       asChild
-                      size="lg" 
+                      size="lg"
                       className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-primary text-white hover:bg-primary/90 rounded-md transition-colors"
                     >
-                      <Link to="/client-dashboard">{slide.cta1}</Link>
+                      <Link to="/auth">{slide.cta1}</Link>
                     </Button>
-                    <Button 
+                    <Button
                       asChild
-                      size="lg" 
+                      size="lg"
                       variant="outline"
                       className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-gray-200 hover:bg-gray-300 text-black border-gray-300 rounded-md transition-colors"
                     >
-                      <Link to="/partners">{slide.cta2}</Link>
+                      <Link to="/become-a-partner">{slide.cta2}</Link>
                     </Button>
                   </div>
                 </div>

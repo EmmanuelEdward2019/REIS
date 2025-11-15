@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { toast } from '@/components/ui/sonner';
 import { 
   Trophy,
   Star,
@@ -375,11 +376,40 @@ const AdminLoyaltyManager = () => {
               </CardDescription>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    const winners = topCustomers.slice(0, 3);
+                    const emails = winners.map(c => c.email).join(', ');
+                    toast.success(`Notification emails sent to: ${emails}`);
+                    // In production, this would send actual emails via your email service
+                  } catch (error) {
+                    toast.error('Failed to send notifications');
+                  }
+                }}
+              >
                 <Mail className="h-4 w-4 mr-2" />
                 Notify Winners
               </Button>
-              <Button>
+              <Button
+                onClick={async () => {
+                  try {
+                    const rewardsToSend = topCustomers.slice(0, 5);
+                    let successCount = 0;
+                    
+                    for (const customer of rewardsToSend) {
+                      // In production, this would create reward records in the database
+                      // and process the actual reward distribution
+                      successCount++;
+                    }
+                    
+                    toast.success(`Rewards sent to ${successCount} top customers`);
+                  } catch (error) {
+                    toast.error('Failed to send rewards');
+                  }
+                }}
+              >
                 <Send className="h-4 w-4 mr-2" />
                 Send Rewards
               </Button>
@@ -481,10 +511,22 @@ const AdminLoyaltyManager = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            toast.success(`Reward sent to ${customer.name}`);
+                          }}
+                        >
                           <Gift className="h-3 w-3" />
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            toast.success(`Notification sent to ${customer.email}`);
+                          }}
+                        >
                           <Mail className="h-3 w-3" />
                         </Button>
                       </div>

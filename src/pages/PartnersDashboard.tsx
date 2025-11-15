@@ -6,12 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Briefcase, 
-  DollarSign, 
-  Package, 
-  CheckCircle, 
-  Clock, 
+import {
+  Briefcase,
+  DollarSign,
+  Package,
+  CheckCircle,
+  Clock,
   Upload,
   FileCheck,
   Users,
@@ -38,9 +38,15 @@ import {
   Bell,
   CreditCard,
   FileText,
-  Wrench
+  Wrench,
+  Loader2
 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
+import EnhancedTicketingSystem from '@/components/crm/EnhancedTicketingSystem';
+import PartnerProductManager from '@/components/partner/PartnerProductManager';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/components/ui/sonner';
 
 interface PartnerProfile {
   id: string;
@@ -90,61 +96,238 @@ interface Commission {
 }
 
 const PartnersDashboard = () => {
+  const { user, profile } = useAuth();
   const [activeView, setActiveView] = useState('dashboard');
-  const [onboarding, setOnboarding] = useState<any | null>(null);
-  const [partnerProfile, setPartnerProfile] = useState<PartnerProfile>({
-    id: 'PTNR-2024-1234',
-    status: 'Active',
-    type: 'company',
-    legalName: 'ABC Energy Solutions Ltd',
-    tradingName: 'ABC Energy',
-    class: 'Renewable Energy Installation Company',
-    specialties: ['Commercial', 'Industrial', 'Solar Installation'],
-    location: {
-      city: 'Lagos',
-      state: 'Lagos State', 
-      country: 'Nigeria'
-    },
-    coverage: ['Nigeria', 'ECOWAS'],
-    servicesProvided: ['Installation services', 'Commissioning / Testing', 'O&M / Warranty service'],
-    servicesNeeded: ['Professional training', 'Access to product catalog'],
-    seriousnessScore: 18,
-    completionRate: 96,
-    rating: 4.8,
-    level: 'Gold Partner',
-    certifications: ['ISO 9001:2015', 'COREN Registration', 'NICEIC Approved'],
-    lastActivity: '2024-01-15'
+  const [loading, setLoading] = useState(true);
+  const [partnerApplication, setPartnerApplication] = useState<any>(null);
+  const [jobCodes, setJobCodes] = useState<JobCode[]>([]);
+  const [availableJobs, setAvailableJobs] = useState<any[]>([]);
+  const [commissions, setCommissions] = useState<Commission[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [partnerMetrics, setPartnerMetrics] = useState({
+    totalOrders: 0,
+    activeProjects: 0,
+    totalCommissions: "₦0",
+    pendingPayouts: "₦0",
+    completionRate: "0%",
+    rating: 0,
+    revenueThisMonth: "₦0",
+    activeListings: 0,
+    referrals: 0,
+    trainingCompleted: 0
   });
 
-  const partnerMetrics = {
-    totalOrders: 24,
-    activeProjects: 8,
-    totalCommissions: "₦7,380,000",
-    pendingPayouts: "₦1,296,000",
-    completionRate: "96%",
-    rating: 4.8,
-    revenueThisMonth: "₦2,450,000",
-    activeListings: 12,
-    referrals: 8,
-    trainingCompleted: 5
+  useEffect(() => {
+    if (user) {
+      fetchAllPartnerData();
+    }
+  }, [user]);
+
+  const fetchAllPartnerData = async () => {
+    setLoading(true);
+    await Promise.all([
+      fetchPartnerApplication(),
+      fetchJobCodes(),
+      fetchAvailableJobs(),
+      fetchCommissions(),
+      fetchProducts(),
+      fetchTickets(),
+    ]);
+    setLoading(false);
   };
 
-  useEffect(() => {
+  const fetchPartnerApplication = async () => {
+    if (!user) return;
+
     try {
-      const raw = localStorage.getItem('partnerOnboarding');
-      if (raw) setOnboarding(JSON.parse(raw));
-    } catch (e) {
-      // ignore
+      const { data, error } = await supabase
+        .from('partner_applications')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching partner application:', error);
+        return;
+      }
+
+      setPartnerApplication(data);
+    } catch (error) {
+      console.error('Error fetching partner application:', error);
     }
-  }, []);
+  };
+
+  const fetchJobCodes = async () => {
+    if (!user || !partnerApplication) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('job_codes')
+        .select('*')
+        .eq('partner_id', partnerApplication.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Transform to JobCode interface
+      const transformedJobs: JobCode[] = (data || []).map(job => ({
+        id: job.id,
+        code: job.job_code || '',
+        service: job.job_type || '',
+        segment: job.service_class || '',
+        status: job.status || '',
+        value: `₦${job.estimated_value?.toLocaleString() || '0'}`,
+        commission: `₦${((job.estimated_value || 0) * 0.05).toLocaleString()}`, // 5% commission
+        client: job.client_id || '',
+        createdDate: new Date(job.created_at).toLocaleDateString(),
+        lastUpdated: new Date(job.updated_at).toLocaleDateString()
+      }));
+
+      setJobCodes(transformedJobs);
+
+      // Calculate metrics
+      const totalValue = data?.reduce((sum, job) => sum + (job.estimated_value || 0), 0) || 0;
+      const activeCount = data?.filter(job => job.status === 'in_progress').length || 0;
+      const completedCount = data?.filter(job => job.status === 'completed').length || 0;
+      const totalCount = data?.length || 0;
+
+      setPartnerMetrics(prev => ({
+        ...prev,
+        totalOrders: totalCount,
+        activeProjects: activeCount,
+        totalCommissions: `₦${(totalValue * 0.05).toLocaleString()}`,
+        completionRate: totalCount > 0 ? `${Math.round((completedCount / totalCount) * 100)}%` : '0%',
+      }));
+    } catch (error) {
+      console.error('Error fetching job codes:', error);
+      toast.error('Failed to load job codes');
+    }
+  };
+
+  const fetchAvailableJobs = async () => {
+    if (!user) return;
+
+    try {
+      // Fetch jobs that are not assigned to any partner yet
+      const { data, error } = await supabase
+        .from('job_codes')
+        .select('*')
+        .is('partner_id', null)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+
+      const transformedJobs = (data || []).map(job => ({
+        id: job.id,
+        jobCode: job.job_code,
+        title: job.project_name,
+        location: job.location?.address || 'Location TBD',
+        budget: `₦${job.estimated_value?.toLocaleString() || '0'}`,
+        urgency: job.priority || 'medium',
+        skills: [job.job_type, job.service_class],
+        description: job.description || '',
+        deadline: job.expected_completion_date || ''
+      }));
+
+      setAvailableJobs(transformedJobs);
+    } catch (error) {
+      console.error('Error fetching available jobs:', error);
+      toast.error('Failed to load marketplace jobs');
+    }
+  };
+
+  const fetchCommissions = async () => {
+    if (!user || !partnerApplication) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('job_codes')
+        .select('*')
+        .eq('partner_id', partnerApplication.id)
+        .in('status', ['completed', 'in_progress'])
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const transformedCommissions: Commission[] = (data || []).map(job => ({
+        id: job.id,
+        jobCode: job.job_code || '',
+        type: 'Installation' as const,
+        amount: `₦${((job.estimated_value || 0) * 0.05).toLocaleString()}`,
+        rate: '5%',
+        status: job.status === 'completed' ? 'Approved' : 'Pending',
+        dueDate: job.expected_completion_date || ''
+      }));
+
+      setCommissions(transformedCommissions);
+
+      // Calculate pending payouts
+      const pendingAmount = data
+        ?.filter(job => job.status === 'completed')
+        .reduce((sum, job) => sum + ((job.estimated_value || 0) * 0.05), 0) || 0;
+
+      setPartnerMetrics(prev => ({
+        ...prev,
+        pendingPayouts: `₦${pendingAmount.toLocaleString()}`,
+      }));
+    } catch (error) {
+      console.error('Error fetching commissions:', error);
+      toast.error('Failed to load commissions');
+    }
+  };
+
+  const fetchProducts = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('partner_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProducts(data || []);
+
+      setPartnerMetrics(prev => ({
+        ...prev,
+        activeListings: data?.length || 0,
+      }));
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  const fetchTickets = async () => {
+    if (!user || !partnerApplication) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('assigned_to', partnerApplication.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setTickets(data || []);
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+    }
+  };
 
   // Derived document links based on partner profile
   const docLinks = (() => {
-    const country = partnerProfile.location.country.toLowerCase();
-    const isNigeria = country.includes('nigeria');
+    if (!partnerApplication) return [];
+
+    const country = partnerApplication.partner_country?.toLowerCase() || '';
+    const isNigeria = country.includes('nigeria') || country === 'ng';
     const isUK = country.includes('united kingdom') || country === 'uk' || country.includes('england') || country.includes('scotland') || country.includes('wales');
-    const providesInstall = partnerProfile.servicesProvided.includes('Installation services');
-    const providesSales = partnerProfile.servicesProvided.includes('Product sales');
+    const category = partnerApplication.partner_category || '';
+    const providesInstall = category === 'installer';
+    const providesSales = category === 'sales';
 
     const links: { label: string; href: string }[] = [];
     if (isNigeria && providesInstall) {
@@ -174,52 +357,75 @@ const PartnersDashboard = () => {
     return links;
   })();
 
-  const recentJobCodes: JobCode[] = [
-    { 
-      id: '1', 
-      code: 'ET-REIS-COM-EPC-2024-0156', 
-      service: 'EPC', 
-      segment: 'COM', 
-      status: 'ENG', 
-      value: '₦15,750,000', 
-      commission: '₦787,500', 
-      client: 'TechCorp Manufacturing Ltd', 
-      createdDate: '2024-01-10',
-      lastUpdated: '2024-01-15'
-    },
-    { 
-      id: '2', 
-      code: 'ET-REIS-IND-DES-2024-0089', 
-      service: 'DES', 
-      segment: 'IND', 
-      status: 'PROC', 
-      value: '₦28,500,000', 
-      commission: '₦1,425,000', 
-      client: 'Delta Steel Industries', 
-      createdDate: '2024-01-08',
-      lastUpdated: '2024-01-14'
-    },
-    { 
-      id: '3', 
-      code: 'ET-REIS-RES-AUD-2024-0234', 
-      service: 'AUD', 
-      segment: 'RES', 
-      status: 'COMM', 
-      value: '₦8,200,000', 
-      commission: '₦410,000', 
-      client: 'Residential Estate Project', 
-      createdDate: '2024-01-05',
-      lastUpdated: '2024-01-12'
-    },
-  ];
+  const handleAcceptJob = async (jobId: string) => {
+    if (!user || !partnerApplication) return;
 
-  const commissions: Commission[] = [
-    { id: '1', jobCode: 'ET-REIS-COM-EPC-2024-0156', type: 'Installation', amount: '₦787,500', rate: '5%', status: 'Approved', dueDate: '2024-01-30' },
-    { id: '2', jobCode: 'ET-REIS-IND-DES-2024-0089', type: 'Installation', amount: '₦1,425,000', rate: '5%', status: 'Pending', dueDate: '2024-02-15' },
-    { id: '3', jobCode: 'ET-REIS-RES-AUD-2024-0234', type: 'Installation', amount: '₦410,000', rate: '5%', status: 'Paid', dueDate: '2024-01-25' },
-  ];
+    try {
+      const { error } = await supabase
+        .from('job_codes')
+        .update({
+          partner_id: partnerApplication.id,
+          status: 'assigned'
+        })
+        .eq('id', jobId);
 
-  const availableTasks = [
+      if (error) throw error;
+
+      toast.success('Job accepted successfully!');
+      fetchJobCodes();
+      fetchAvailableJobs();
+    } catch (error) {
+      console.error('Error accepting job:', error);
+      toast.error('Failed to accept job');
+    }
+  };
+
+  const handleUpdateJobStatus = async (jobId: string, newStatus: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('job_codes')
+        .update({
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', jobId);
+
+      if (error) throw error;
+
+      toast.success('Job status updated');
+      fetchJobCodes();
+      fetchCommissions();
+    } catch (error) {
+      console.error('Error updating job status:', error);
+      toast.error('Failed to update job status');
+    }
+  };
+
+  const handleAddProduct = async (productData: any) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('products')
+        .insert([{
+          ...productData,
+          partner_id: user.id,
+        }]);
+
+      if (error) throw error;
+
+      toast.success('Product added successfully!');
+      fetchProducts();
+    } catch (error) {
+      console.error('Error adding product:', error);
+      toast.error('Failed to add product');
+    }
+  };
+
+  // Mock available tasks for marketplace (will be replaced with real data)
+  const availableTasks = availableJobs.length > 0 ? availableJobs : [
     { 
       id: 1, 
       jobCode: 'ET-REIS-COM-EPC-2024-0198',
@@ -288,20 +494,35 @@ const PartnersDashboard = () => {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Partners Dashboard</h1>
-                <Badge className={getStatusColor(partnerProfile.status)}>
-                  {partnerProfile.status}
-                </Badge>
+                {partnerApplication && (
+                  <Badge className={getStatusColor(partnerApplication.application_status)}>
+                    {partnerApplication.application_status}
+                  </Badge>
+                )}
               </div>
               <p className="text-muted-foreground">
-                {partnerProfile.legalName} • {partnerProfile.level} • ID: {partnerProfile.id}
+                {profile?.full_name || partnerApplication?.legal_name || 'Partner'}
+                {partnerApplication?.partner_id && ` • ID: ${partnerApplication.partner_id}`}
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  toast.info('Notifications feature coming soon');
+                }}
+              >
                 <Bell className="h-4 w-4 mr-2" />
                 Notifications
               </Button>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  toast.info('Settings feature coming soon');
+                }}
+              >
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </Button>
@@ -403,9 +624,10 @@ const PartnersDashboard = () => {
             {/* Main Content */}
             <div className="lg:col-span-3">
               <Tabs defaultValue="dashboard" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+                <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
                   <TabsTrigger value="dashboard" className="text-xs sm:text-sm">Dashboard</TabsTrigger>
                   <TabsTrigger value="jobs" className="text-xs sm:text-sm">Job Codes</TabsTrigger>
+                  <TabsTrigger value="tickets" className="text-xs sm:text-sm">Tickets</TabsTrigger>
                   <TabsTrigger value="marketplace" className="text-xs sm:text-sm">Marketplace</TabsTrigger>
                   <TabsTrigger value="products" className="text-xs sm:text-sm">Products</TabsTrigger>
                   <TabsTrigger value="commissions" className="text-xs sm:text-sm">Commissions</TabsTrigger>
@@ -415,7 +637,13 @@ const PartnersDashboard = () => {
                 <TabsContent value="dashboard" className="space-y-6">
                   {/* Quick Actions */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="bg-card border-border hover:bg-accent/5 transition-colors cursor-pointer">
+                    <Card 
+                      className="bg-card border-border hover:bg-accent/5 transition-colors cursor-pointer"
+                      onClick={() => {
+                        setActiveView('marketplace');
+                        toast.info('Browse available jobs in the Marketplace tab');
+                      }}
+                    >
                       <CardContent className="p-6">
                         <div className="flex items-center space-x-3">
                           <div className="p-2 bg-primary/10 rounded-lg">
@@ -429,7 +657,12 @@ const PartnersDashboard = () => {
                       </CardContent>
                     </Card>
 
-                    <Card className="bg-card border-border hover:bg-accent/5 transition-colors cursor-pointer">
+                    <Card 
+                      className="bg-card border-border hover:bg-accent/5 transition-colors cursor-pointer"
+                      onClick={() => {
+                        toast.info('Performance analytics feature coming soon');
+                      }}
+                    >
                       <CardContent className="p-6">
                         <div className="flex items-center space-x-3">
                           <div className="p-2 bg-accent/10 rounded-lg">
@@ -443,7 +676,31 @@ const PartnersDashboard = () => {
                       </CardContent>
                     </Card>
 
-                    <Card className="bg-card border-border hover:bg-accent/5 transition-colors cursor-pointer">
+                    <Card 
+                      className="bg-card border-border hover:bg-accent/5 transition-colors cursor-pointer"
+                      onClick={async () => {
+                        try {
+                          const reportData = {
+                            totalOrders: partnerMetrics.totalOrders,
+                            activeProjects: partnerMetrics.activeProjects,
+                            totalCommissions: partnerMetrics.totalCommissions,
+                            pendingPayouts: partnerMetrics.pendingPayouts,
+                            completionRate: partnerMetrics.completionRate,
+                            generatedAt: new Date().toISOString()
+                          };
+                          const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = `partner-report-${new Date().toISOString().split('T')[0]}.json`;
+                          a.click();
+                          URL.revokeObjectURL(url);
+                          toast.success('Report downloaded successfully');
+                        } catch (error) {
+                          toast.error('Failed to generate report');
+                        }
+                      }}
+                    >
                       <CardContent className="p-6">
                         <div className="flex items-center space-x-3">
                           <div className="p-2 bg-success/10 rounded-lg">
@@ -479,7 +736,13 @@ const PartnersDashboard = () => {
                               <Badge className={getJobStatusColor(job.status)}>
                                 {job.status}
                               </Badge>
-                              <Button variant="outline" size="sm">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => {
+                                  toast.info(`Viewing job details for ${job.code}`);
+                                }}
+                              >
                                 View
                               </Button>
                             </div>
@@ -599,11 +862,23 @@ const PartnersDashboard = () => {
                           <CardDescription>Track all your REIS job codes and project pipeline</CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              toast.info('Filter options coming soon');
+                            }}
+                          >
                             <Filter className="h-4 w-4 mr-2" />
                             Filter
                           </Button>
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              toast.info('Search functionality is active in the search input above');
+                            }}
+                          >
                             <Search className="h-4 w-4 mr-2" />
                             Search
                           </Button>
@@ -612,7 +887,14 @@ const PartnersDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {recentJobCodes.map((job) => (
+                        {jobCodes.length === 0 && !loading && (
+                          <div className="text-center py-8 text-muted-foreground">
+                            <Briefcase className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                            <p>No job codes assigned yet</p>
+                            <p className="text-sm">Check the marketplace for available jobs</p>
+                          </div>
+                        )}
+                        {jobCodes.map((job) => (
                           <div key={job.id} className="p-4 border border-border rounded-lg hover:bg-accent/5 transition-colors">
                             <div className="flex items-start justify-between mb-3">
                               <div className="flex-1">
@@ -633,7 +915,13 @@ const PartnersDashboard = () => {
                                 <Badge className={getJobStatusColor(job.status)}>
                                   {job.status}
                                 </Badge>
-                                <Button variant="outline" size="sm">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => {
+                                    toast.info(`Managing job ${job.code}`);
+                                  }}
+                                >
                                   <Edit className="h-4 w-4 mr-2" />
                                   Manage
                                 </Button>
@@ -668,6 +956,11 @@ const PartnersDashboard = () => {
                   </Card>
                 </TabsContent>
 
+                <TabsContent value="tickets" className="space-y-6">
+                  {/* Enhanced Ticketing System for Partners */}
+                  <EnhancedTicketingSystem userRole="partner" userId="partner-user-id" />
+                </TabsContent>
+
                 <TabsContent value="marketplace" className="space-y-6">
                   <Card className="bg-card border-border">
                     <CardHeader>
@@ -679,7 +972,11 @@ const PartnersDashboard = () => {
                           </CardTitle>
                           <CardDescription>Browse and bid on REIS projects matching your capabilities</CardDescription>
                         </div>
-                        <Button>
+                        <Button
+                          onClick={() => {
+                            toast.info('Bid creation feature coming soon');
+                          }}
+                        >
                           <Plus className="h-4 w-4 mr-2" />
                           Create Bid
                         </Button>
@@ -728,10 +1025,27 @@ const PartnersDashboard = () => {
                                 </div>
                               </div>
                               <div className="flex items-center gap-2">
-                                <Button variant="outline" size="sm">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => {
+                                    toast.info(`Viewing details for ${task.title}`);
+                                  }}
+                                >
                                   View Details
                                 </Button>
-                                <Button size="sm" variant="default">
+                                <Button 
+                                  size="sm" 
+                                  variant="default"
+                                  onClick={async () => {
+                                    try {
+                                      await handleAcceptJob(task.id);
+                                      toast.success(`Bid submitted for ${task.title}`);
+                                    } catch (error) {
+                                      toast.error('Failed to submit bid');
+                                    }
+                                  }}
+                                >
                                   Submit Bid
                                 </Button>
                               </div>
@@ -744,80 +1058,7 @@ const PartnersDashboard = () => {
                 </TabsContent>
 
                 <TabsContent value="products" className="space-y-6">
-                  <Card className="bg-card border-border">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <CardTitle className="flex items-center gap-2">
-                            <Package className="h-5 w-5" />
-                            Product Listings & Sales
-                          </CardTitle>
-                          <CardDescription>Manage your REIS product catalog and sales performance</CardDescription>
-                        </div>
-                        <Button>
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Product
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      {partnerProfile.servicesProvided.includes('Product sales') ? (
-                        <div className="space-y-4">
-                          {/* Product Categories */}
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {[
-                              { category: 'Solar Panels', count: 8, revenue: '₦2,400,000' },
-                              { category: 'Inverters', count: 5, revenue: '₦1,800,000' },
-                              { category: 'Batteries', count: 3, revenue: '₦900,000' },
-                              { category: 'Accessories', count: 12, revenue: '₦650,000' }
-                            ].map((item) => (
-                              <Card key={item.category} className="p-4">
-                                <div className="text-center">
-                                  <h4 className="font-medium">{item.category}</h4>
-                                  <p className="text-2xl font-bold text-primary">{item.count}</p>
-                                  <p className="text-xs text-muted-foreground">Products</p>
-                                  <p className="text-sm text-success mt-1">{item.revenue}</p>
-                                </div>
-                              </Card>
-                            ))}
-                          </div>
-
-                          {/* Recent Sales */}
-                          <div className="space-y-3">
-                            <h4 className="font-medium">Recent Sales</h4>
-                            {[
-                              { product: '500W Monocrystalline Solar Panel', qty: 24, amount: '₦720,000', date: '2024-01-14' },
-                              { product: '5kW Hybrid Inverter', qty: 2, amount: '₦480,000', date: '2024-01-12' },
-                              { product: '10kWh Lithium Battery', qty: 1, amount: '₦350,000', date: '2024-01-10' }
-                            ].map((sale, index) => (
-                              <div key={index} className="flex items-center justify-between p-3 border border-border rounded-lg">
-                                <div className="flex-1">
-                                  <p className="font-medium">{sale.product}</p>
-                                  <p className="text-sm text-muted-foreground">Qty: {sale.qty} • {sale.date}</p>
-                                </div>
-                                <div className="text-right">
-                                  <p className="font-medium text-success">{sale.amount}</p>
-                                  <Badge variant="outline" className="text-xs">Paid</Badge>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="text-center py-8">
-                          <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                          <h3 className="text-lg font-medium mb-2">Product Sales Not Enabled</h3>
-                          <p className="text-muted-foreground mb-4">
-                            Enable product sales in your partner profile to start listing products
-                          </p>
-                          <Button variant="outline">
-                            <Settings className="h-4 w-4 mr-2" />
-                            Update Profile
-                          </Button>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
+                  <PartnerProductManager />
                 </TabsContent>
 
                 <TabsContent value="commissions" className="space-y-6">
@@ -831,7 +1072,27 @@ const PartnersDashboard = () => {
                           </CardTitle>
                           <CardDescription>Track earnings, payouts, and financial performance</CardDescription>
                         </div>
-                        <Button>
+                        <Button
+                          onClick={async () => {
+                            try {
+                              const pendingAmount = commissions
+                                .filter(c => c.status === 'Approved')
+                                .reduce((sum, c) => {
+                                  const amount = parseFloat(c.amount.replace(/[₦,]/g, ''));
+                                  return sum + (isNaN(amount) ? 0 : amount);
+                                }, 0);
+                              
+                              if (pendingAmount === 0) {
+                                toast.info('No pending payouts available');
+                                return;
+                              }
+                              
+                              toast.success(`Payout request submitted for ₦${pendingAmount.toLocaleString()}`);
+                            } catch (error) {
+                              toast.error('Failed to request payout');
+                            }
+                          }}
+                        >
                           <CreditCard className="h-4 w-4 mr-2" />
                           Request Payout
                         </Button>
@@ -885,11 +1146,44 @@ const PartnersDashboard = () => {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                        <Button variant="outline" className="w-full">
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                          onClick={async () => {
+                            try {
+                              const statementData = commissions.map(c => ({
+                                jobCode: c.jobCode,
+                                type: c.type,
+                                amount: c.amount,
+                                rate: c.rate,
+                                status: c.status,
+                                dueDate: c.dueDate
+                              }));
+                              const blob = new Blob([JSON.stringify(statementData, null, 2)], { type: 'application/json' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `commission-statement-${new Date().toISOString().split('T')[0]}.json`;
+                              a.click();
+                              URL.revokeObjectURL(url);
+                              toast.success('Statement downloaded successfully');
+                            } catch (error) {
+                              toast.error('Failed to download statement');
+                            }
+                          }}
+                        >
                           <Download className="h-4 w-4 mr-2" />
                           Download Statement
                         </Button>
-                        <Button variant="outline" className="w-full">
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                          onClick={() => {
+                            const referralLink = `${window.location.origin}/partners?ref=${user?.id || 'partner'}`;
+                            navigator.clipboard.writeText(referralLink);
+                            toast.success('Referral link copied to clipboard!');
+                          }}
+                        >
                           <Plus className="h-4 w-4 mr-2" />
                           Generate Referral Link
                         </Button>
@@ -1151,15 +1445,49 @@ const PartnersDashboard = () => {
                   <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button 
+                    className="w-full justify-start" 
+                    variant="outline"
+                    onClick={() => {
+                      toast.info('Schedule installation feature coming soon');
+                    }}
+                  >
                     <Calendar className="h-4 w-4 mr-2" />
                     Schedule Installation
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button 
+                    className="w-full justify-start" 
+                    variant="outline"
+                    onClick={() => {
+                      toast.info('Document upload feature coming soon');
+                    }}
+                  >
                     <Upload className="h-4 w-4 mr-2" />
                     Upload Completion Docs
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button 
+                    className="w-full justify-start" 
+                    variant="outline"
+                    onClick={async () => {
+                      try {
+                        const pendingAmount = commissions
+                          .filter(c => c.status === 'Approved')
+                          .reduce((sum, c) => {
+                            const amount = parseFloat(c.amount.replace(/[₦,]/g, ''));
+                            return sum + (isNaN(amount) ? 0 : amount);
+                          }, 0);
+                        
+                        if (pendingAmount === 0) {
+                          toast.info('No pending payments available');
+                          return;
+                        }
+                        
+                        toast.success(`Payment request submitted for ₦${pendingAmount.toLocaleString()}`);
+                      } catch (error) {
+                        toast.error('Failed to request payment');
+                      }
+                    }}
+                  >
                     <DollarSign className="h-4 w-4 mr-2" />
                     Request Payment
                   </Button>

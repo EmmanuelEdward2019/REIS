@@ -1,8 +1,14 @@
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { RegionProvider } from "@/contexts/RegionContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import '@/i18n/config'; // Initialize i18n synchronously
 import Index from "./pages/Index";
 import Solutions from "./pages/Solutions";
 import AboutNew from "./pages/AboutNew";
@@ -14,6 +20,10 @@ import PartnersDashboard from "./pages/PartnersDashboard";
 import Auth from "./pages/Auth";
 import Services from "./pages/Services";
 import Shop from "./pages/Shop";
+import Cart from "./pages/Cart";
+import ProductDetail from "./pages/ProductDetail";
+import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
 import Calculators from "./pages/Calculators";
 import REIS from "./pages/REIS";
 import News from "./pages/News";
@@ -34,12 +44,15 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
+    <AuthProvider>
+      <RegionProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <ScrollToTop />
+              <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/solutions" element={<Solutions />} />
           <Route path="/Solutions" element={<Solutions />} />
@@ -53,9 +66,34 @@ const App = () => (
           <Route path="/reis" element={<REIS />} />
           <Route path="/data-and-ai" element={<DataAI />} />
           <Route path="/lms" element={<LMS />} />
-          <Route path="/client-dashboard" element={<ClientDashboard />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/partners-dashboard" element={<PartnersDashboard />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
+          <Route
+            path="/client-dashboard"
+            element={
+              <ProtectedRoute requiredRole="client">
+                <ClientDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/partners-dashboard"
+            element={
+              <ProtectedRoute requiredRole="partner">
+                <PartnersDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/partners" element={<Partners />} />
           <Route path="/become-a-partner" element={<BecomeAPartner />} />
           <Route path="/policy/installer-ng" element={<PolicyInstallerNG />} />
@@ -70,6 +108,9 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+    </CartProvider>
+    </RegionProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

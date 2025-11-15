@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,8 +8,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
-import { ArrowRight, ArrowLeft, Users, Building, MapPin, Wrench, ShieldCheck, DollarSign, FileText, CheckCircle, Upload, Zap, Globe, Award, Shield, Phone, Lock } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Users, Building, MapPin, Wrench, ShieldCheck, DollarSign, FileText, CheckCircle, Upload, Zap, Globe, Award, Shield, Phone, Lock, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { FileUpload } from '@/components/ui/file-upload';
+import { uploadMultipleFiles, UploadedFile } from '@/utils/fileUpload';
 
 type PartnerType = 'company' | 'individual' | '';
 type PartnerClass = 'installation-company' | 'individual-installer' | 'marketing-company' | 'individual-marketer' | 'system-integrator' | 'engineering-consultancy' | 'logistics-warehousing' | 'ecommerce-reseller' | 'manufacturer-oem' | 'other' | '';
@@ -18,7 +23,37 @@ type PartnerCategory = 'installer' | 'sales' | '';
 
 const BecomeAPartner = () => {
   const { toast } = useToast();
+  const { signUp, user } = useAuth();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [existingApplication, setExistingApplication] = useState<any>(null);
+
+  // Check if user is already logged in and has an application
+  useEffect(() => {
+    const checkExistingApplication = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from('partner_applications')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (data && !error) {
+          setExistingApplication(data);
+          // If application is already submitted, redirect to partner dashboard
+          if (data.application_status !== 'draft') {
+            toast({
+              title: "Application Already Submitted",
+              description: "Redirecting to your partner dashboard...",
+            });
+            setTimeout(() => navigate('/partners-dashboard'), 2000);
+          }
+        }
+      }
+    };
+    checkExistingApplication();
+  }, [user, navigate, toast]);
   const [formData, setFormData] = useState({
     // Step 0: Country & Category
     partnerCountry: '' as PartnerCountry,
@@ -89,6 +124,7 @@ const BecomeAPartner = () => {
     tradeLicense: '',
     nationalId: '',
     addressProof: '',
+    addressProofFiles: [] as UploadedFile[],
     mcsNumbers: '',
     eoriNumber: '',
     atexCertifications: false,
@@ -251,6 +287,13 @@ const BecomeAPartner = () => {
   const requiresOilGasFields = () => formData.specialties.includes('Oil & Gas sector');
   const requiresInstallationFields = () => formData.servicesProvided.includes('Installation services');
   const requiresSalesFields = () => formData.servicesProvided.includes('Product sales');
+  const requiresProductListings = () => {
+    // Show product listings for sales partners, manufacturers, and e-commerce resellers
+    return formData.partnerCategory === 'sales' ||
+           formData.partnerClass === 'manufacturer-oem' ||
+           formData.partnerClass === 'ecommerce-reseller' ||
+           formData.servicesProvided.includes('Product sales');
+  };
   const requiresNigeriaCompliance = () => formData.coverageRegions.includes('Nigeria');
   const requiresUKCompliance = () => formData.coverageRegions.includes('UK');
 
@@ -269,6 +312,40 @@ const BecomeAPartner = () => {
         [field]: currentArray.includes(value)
           ? currentArray.filter(item => item !== value)
           : [...currentArray, value]
+      };
+    });
+  };
+
+  const handleFileUpload = async (files: File[], field: string) => {
+    if (!user) {
+      toast({ title: 'Error', description: 'Please log in to upload files', variant: 'destructive' });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const uploadedFiles = await uploadMultipleFiles(files, 'partner-documents', user.id);
+
+      setFormData(prev => ({
+        ...prev,
+        [field]: [...(prev[field as keyof typeof prev] as UploadedFile[]), ...uploadedFiles]
+      }));
+
+      toast({ title: 'Success', description: `${files.length} file(s) uploaded successfully` });
+    } catch (error: any) {
+      console.error('File upload error:', error);
+      toast({ title: 'Upload Failed', description: error.message || 'Failed to upload files', variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFileRemove = (field: string, index: number) => {
+    setFormData(prev => {
+      const currentFiles = prev[field as keyof typeof prev] as UploadedFile[];
+      return {
+        ...prev,
+        [field]: currentFiles.filter((_, i) => i !== index)
       };
     });
   };
@@ -304,13 +381,13 @@ const BecomeAPartner = () => {
         if (requiresCompanyFields()) {
           return formData.companyRegistration && formData.vatTin && formData.insurance;
         } else {
-          return formData.nationalId && formData.addressProof;
+          return formData.nationalId && formData.addressProofFiles.length > 0;
         }
       case 10:
         return formData.bankDetails && formData.preferredCurrency && formData.commissionAgreementAccepted;
       case 11:
-        if (requiresSalesFields()) {
-          return formData.returnPolicy;
+        if (requiresProductListings()) {
+          return formData.productSkus && formData.returnPolicy;
         }
         return true;
       case 12:
@@ -332,7 +409,7 @@ const BecomeAPartner = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!canProceed()) {
       toast({
         title: "Incomplete Application",
@@ -342,26 +419,138 @@ const BecomeAPartner = () => {
       return;
     }
 
-    // Generate Partner ID
-    const partnerId = `PTNR-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`;
-    
-    // Update form data with generated Partner ID
-    const updatedFormData = {
-      ...formData,
-      partnerId,
-      applicationStatus: 'submitted'
-    };
+    setLoading(true);
 
-    toast({
-      title: "Partner Application Submitted Successfully!",
-      description: `Your Partner ID is ${partnerId}. We'll review your application and contact you within 2-3 business days.`,
-    });
-    
-    // Persist to localStorage for dashboard reflection
     try {
-      localStorage.setItem('partnerOnboarding', JSON.stringify(updatedFormData));
-    } catch (e) {
-      console.warn('Unable to persist onboarding to localStorage');
+      let userId = user?.id;
+
+      // Step 1: Create auth account if not logged in
+      if (!user) {
+        const { data: authData, error: authError } = await signUp(
+          formData.email,
+          formData.password,
+          {
+            full_name: formData.partnerType === 'individual'
+              ? `${formData.legalName}`
+              : formData.primaryContact,
+            user_role: 'partner',
+            phone: formData.phone,
+          }
+        );
+
+        if (authError) {
+          throw new Error(authError.message);
+        }
+
+        userId = authData?.user?.id;
+      }
+
+      if (!userId) {
+        throw new Error('Failed to create user account');
+      }
+
+      // Step 2: Prepare partner application data
+      const applicationData = {
+        user_id: userId,
+        application_status: 'submitted',
+        submission_date: new Date().toISOString(),
+
+        // Basic Information
+        partner_type: formData.partnerType,
+        partner_country: formData.partnerCountry,
+        partner_category: formData.partnerCategory,
+        legal_name: formData.legalName,
+        trading_name: formData.tradingName || null,
+
+        // Contact Information
+        email: formData.email,
+        phone: formData.phone,
+        website: null,
+        address: {
+          street: formData.registeredAddress,
+          city: formData.baseCity,
+          state: formData.baseState,
+          country: formData.baseCountry,
+        },
+
+        // Company Details
+        registration_number: formData.companyRegistration || null,
+        tax_id: formData.vatTin || null,
+
+        // Individual Details
+        first_name: formData.partnerType === 'individual' ? formData.legalName.split(' ')[0] : null,
+        last_name: formData.partnerType === 'individual' ? formData.legalName.split(' ').slice(1).join(' ') : null,
+        national_id: formData.nationalId || null,
+
+        // Business Profile
+        service_areas: formData.serviceAreas,
+
+        // Capabilities & Certifications
+        services_provided: formData.servicesProvided,
+        certifications: formData.isoCertifications.concat(formData.manufacturerCertifications),
+
+        // Financial Information
+        bank_account_number: formData.bankDetails || null,
+        payment_terms: formData.paymentTerms || null,
+
+        // Insurance & Compliance
+        health_safety_policy: formData.hsePrograms,
+
+        // Agreement & Terms
+        terms_accepted: formData.termsAccepted,
+        terms_accepted_at: formData.termsAccepted ? new Date().toISOString() : null,
+        privacy_accepted: formData.privacyNoticeAccepted,
+        privacy_accepted_at: formData.privacyNoticeAccepted ? new Date().toISOString() : null,
+        code_of_conduct_accepted: formData.antiBriberyAttestation,
+
+        // KYC Status
+        kyc_status: 'pending',
+      };
+
+      // Step 3: Insert partner application
+      const { data: partnerData, error: partnerError } = await supabase
+        .from('partner_applications')
+        .insert([applicationData])
+        .select()
+        .single();
+
+      if (partnerError) {
+        throw new Error(partnerError.message);
+      }
+
+      // Step 4: Update profile with partner role
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          user_role: 'partner',
+          partner_category: formData.partnerCategory,
+          is_verified: false,
+        })
+        .eq('user_id', userId);
+
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+      }
+
+      toast({
+        title: "Partner Application Submitted Successfully!",
+        description: `Your Partner ID is ${partnerData.partner_id}. We'll review your application and contact you within 2-3 business days.`,
+      });
+
+      // Redirect to partner dashboard after 2 seconds
+      setTimeout(() => {
+        navigate('/partners-dashboard');
+      }, 2000);
+
+    } catch (error: any) {
+      console.error('Submission error:', error);
+      toast({
+        title: "Submission Failed",
+        description: error.message || "Failed to submit application. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
     // Here you would normally submit to your backend
     console.log('Submitted form data:', updatedFormData);
@@ -1326,12 +1515,16 @@ const BecomeAPartner = () => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="addressProof">Proof of Address</Label>
-                    <Input
-                      id="addressProof"
-                      value={formData.addressProof}
-                      onChange={(e) => handleInputChange('addressProof', e.target.value)}
-                      placeholder="Upload utility bill or bank statement"
+                    <FileUpload
+                      label="Proof of Address"
+                      helperText="Upload utility bill, bank statement, or government-issued document (PDF, JPG, PNG - Max 10MB)"
+                      onFileSelect={(files) => handleFileUpload(files, 'addressProofFiles')}
+                      onFileRemove={(index) => handleFileRemove('addressProofFiles', index)}
+                      uploadedFiles={formData.addressProofFiles}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      multiple={true}
+                      maxFiles={3}
+                      disabled={loading}
                       required
                     />
                   </div>
@@ -1510,48 +1703,82 @@ const BecomeAPartner = () => {
             <div className="text-center mb-8">
               <FileText className="w-12 h-12 text-primary mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2">Product Listings</h2>
-              <p className="text-muted-foreground">For sales and marketing partners</p>
+              <p className="text-muted-foreground">
+                {requiresProductListings()
+                  ? 'List the products you can supply to our marketplace'
+                  : 'For sales, manufacturing, and e-commerce partners'}
+              </p>
             </div>
-            
-            {requiresSalesFields() ? (
+
+            {requiresProductListings() ? (
               <div className="space-y-6">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-800">
+                    <strong>Note:</strong> You can add detailed product listings after your application is approved.
+                    For now, please provide a general overview of the products you can supply.
+                  </p>
+                </div>
+
                 <div>
-                  <Label htmlFor="returnPolicy">Return Policy</Label>
+                  <Label htmlFor="productSkus">Product Categories & Brands</Label>
+                  <Textarea
+                    id="productSkus"
+                    value={formData.productSkus}
+                    onChange={(e) => handleInputChange('productSkus', e.target.value)}
+                    placeholder="Example:&#10;- Solar Panels: Canadian Solar, JA Solar, Trina Solar (250W-550W)&#10;- Inverters: Huawei, SMA, Fronius (3kW-100kW)&#10;- Batteries: BYD, Pylontech, Tesla Powerwall&#10;&#10;List product categories, brands, and capacity ranges you can supply..."
+                    rows={8}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="returnPolicy">Return & Warranty Policy</Label>
                   <Textarea
                     id="returnPolicy"
                     value={formData.returnPolicy}
                     onChange={(e) => handleInputChange('returnPolicy', e.target.value)}
-                    placeholder="Describe your return and warranty policy..."
+                    placeholder="Describe your return policy, warranty terms, and after-sales support..."
                     rows={4}
                     required
                   />
                 </div>
-                
+
                 <div>
-                  <Label htmlFor="slaCommitments">Service Level Commitments</Label>
+                  <Label htmlFor="slaCommitments">Delivery & Service Commitments</Label>
                   <Textarea
                     id="slaCommitments"
                     value={formData.slaCommitments}
                     onChange={(e) => handleInputChange('slaCommitments', e.target.value)}
-                    placeholder="Delivery times, response times, support commitments..."
+                    placeholder="Delivery times, minimum order quantities, lead times, support response times..."
                     rows={4}
                   />
                 </div>
-                
+
                 <div>
-                  <Label>Product Media Uploads</Label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-sm text-gray-600">Upload product images, datasheets, and documentation</p>
-                    <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, JPG, PNG (Max 5MB each)</p>
-                  </div>
+                  <Label>Product Catalog & Documentation (Optional)</Label>
+                  <FileUpload
+                    helperText="Upload product catalogs, datasheets, certifications (PDF, JPG, PNG - Max 10MB each)"
+                    onFileSelect={(files) => handleFileUpload(files, 'mediaUploads')}
+                    onFileRemove={(index) => handleFileRemove('mediaUploads', index)}
+                    uploadedFiles={formData.mediaUploads.map(url => ({ name: url.split('/').pop() || 'file', size: 0, url }))}
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    multiple={true}
+                    maxFiles={10}
+                    disabled={loading}
+                  />
                 </div>
               </div>
             ) : (
               <div className="text-center py-12">
                 <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-600 mb-2">No Product Listings Required</h3>
-                <p className="text-gray-500">Based on your selected services, product listings are not required.</p>
+                <p className="text-gray-500">
+                  Based on your selected partner category ({formData.partnerCategory}) and class ({formData.partnerClass}),
+                  product listings are not required for your application.
+                </p>
+                <p className="text-sm text-gray-400 mt-2">
+                  If you plan to sell products in the future, you can update your profile after approval.
+                </p>
               </div>
             )}
           </div>
@@ -1736,13 +1963,22 @@ const BecomeAPartner = () => {
                   )}
                   
                   {currentStep === 12 && (
-                    <Button 
-                      onClick={handleSubmit} 
-                      disabled={!canProceed()}
+                    <Button
+                      onClick={handleSubmit}
+                      disabled={!canProceed() || loading}
                       className="bg-gradient-to-r from-primary to-accent hover:shadow-lg"
                     >
-                      Submit Application
-                      <CheckCircle className="w-4 h-4 ml-2" />
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          Submit Application
+                          <CheckCircle className="w-4 h-4 ml-2" />
+                        </>
+                      )}
                     </Button>
                   )}
                 </div>

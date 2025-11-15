@@ -45,8 +45,8 @@ const FloatingEnergyMetrics = () => {
   if (!isExpanded) {
     return (
       <div className="fixed top-[70%] right-2 transform -translate-y-1/2 z-30">
-        <Card 
-          className="bg-slate-900/95 backdrop-blur-md border border-slate-700/50 shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300"
+        <Card
+          className="bg-slate-900/20 backdrop-blur-sm border border-slate-700/30 shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300"
           onClick={() => setIsExpanded(true)}
         >
           <CardContent className="p-2">
@@ -62,7 +62,7 @@ const FloatingEnergyMetrics = () => {
 
   return (
     <div className="fixed top-24 right-2 z-30 w-48">
-      <Card className="bg-slate-900/95 backdrop-blur-md border border-slate-700/50 shadow-xl">
+      <Card className="bg-slate-900/20 backdrop-blur-sm border border-slate-700/30 shadow-xl">
         <CardContent className="p-2">
           {/* Header */}
           <div className="flex items-center justify-between mb-2">
@@ -91,12 +91,12 @@ const FloatingEnergyMetrics = () => {
             {metrics.map((metric, index) => (
               <div
                 key={index}
-                className="flex items-start space-x-2 p-1.5 rounded bg-slate-800/50 border-l-2 border-transparent hover:border-emerald-400/50 transition-all"
+                className="flex items-start space-x-2 p-1.5 rounded bg-slate-800/30 border-l-2 border-transparent hover:border-emerald-400/50 transition-all"
                 style={{
-                  borderLeftColor: index === 0 ? '#10b981' : 
-                                  index === 1 ? '#3b82f6' : 
-                                  index === 2 ? '#8b5cf6' : 
-                                  index === 3 ? '#f59e0b' : 
+                  borderLeftColor: index === 0 ? '#10b981' :
+                                  index === 1 ? '#3b82f6' :
+                                  index === 2 ? '#8b5cf6' :
+                                  index === 3 ? '#f59e0b' :
                                   index === 4 ? '#ef4444' : '#06b6d4'
                 }}
               >
