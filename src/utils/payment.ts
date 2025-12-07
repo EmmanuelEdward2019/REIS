@@ -42,31 +42,69 @@ export const initializePaystackPayment = (
   onSuccess: (response: PaystackResponse) => void,
   onClose: () => void
 ) => {
-  // @ts-ignore - PaystackPop is loaded from CDN
-  if (typeof PaystackPop === 'undefined') {
-    console.error('Paystack script not loaded');
+  // Validate Paystack public key
+  if (!PAYSTACK_PUBLIC_KEY || PAYSTACK_PUBLIC_KEY === 'pk_test_your_paystack_public_key_here') {
+    console.error('❌ Paystack public key not configured!');
+    console.error('Please add your Paystack public key to .env file:');
+    console.error('VITE_PAYSTACK_PUBLIC_KEY="pk_test_your_actual_key"');
+    alert('Payment configuration error: Paystack public key not set. Please contact support.');
+    onClose();
     return;
   }
 
-  // @ts-ignore
-  const handler = PaystackPop.setup({
-    key: PAYSTACK_PUBLIC_KEY,
+  // Check if PaystackPop is loaded
+  // @ts-ignore - PaystackPop is loaded from CDN
+  if (typeof PaystackPop === 'undefined') {
+    console.error('❌ Paystack script not loaded!');
+    console.error('Make sure the Paystack script is in index.html:');
+    console.error('<script src="https://js.paystack.co/v1/inline.js"></script>');
+    alert('Payment system not ready. Please refresh the page and try again.');
+    onClose();
+    return;
+  }
+
+  // Validate payment data
+  if (!paymentData.email || !paymentData.amount || !paymentData.reference) {
+    console.error('❌ Invalid payment data:', paymentData);
+    alert('Payment data is incomplete. Please try again.');
+    onClose();
+    return;
+  }
+
+  console.log('✅ Initializing Paystack payment with:', {
     email: paymentData.email,
     amount: paymentData.amount,
+    reference: paymentData.reference,
     currency: paymentData.currency,
-    ref: paymentData.reference,
-    metadata: paymentData.metadata,
-    onClose: () => {
-      console.log('Payment window closed');
-      onClose();
-    },
-    callback: (response: PaystackResponse) => {
-      console.log('Payment successful:', response);
-      onSuccess(response);
-    },
+    key: PAYSTACK_PUBLIC_KEY.substring(0, 10) + '...'
   });
 
-  handler.openIframe();
+  try {
+    // @ts-ignore
+    const handler = PaystackPop.setup({
+      key: PAYSTACK_PUBLIC_KEY,
+      email: paymentData.email,
+      amount: paymentData.amount,
+      currency: paymentData.currency,
+      ref: paymentData.reference,
+      metadata: paymentData.metadata,
+      onClose: () => {
+        console.log('⚠️ Payment window closed by user');
+        onClose();
+      },
+      callback: (response: PaystackResponse) => {
+        console.log('✅ Payment successful:', response);
+        onSuccess(response);
+      },
+    });
+
+    console.log('🚀 Opening Paystack payment window...');
+    handler.openIframe();
+  } catch (error) {
+    console.error('❌ Error initializing Paystack:', error);
+    alert('Failed to open payment window. Please try again.');
+    onClose();
+  }
 };
 
 // Stripe Payment Interface

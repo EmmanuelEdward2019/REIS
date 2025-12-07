@@ -3,12 +3,12 @@ import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Wrench, 
-  BarChart3, 
-  Shield, 
-  Headphones, 
-  Settings, 
+import {
+  Wrench,
+  BarChart3,
+  Shield,
+  Headphones,
+  Settings,
   Zap,
   Award,
   Clock,
@@ -16,14 +16,31 @@ import {
   ArrowRight,
   CheckCircle
 } from 'lucide-react';
+import { useRegion } from '@/contexts/RegionContext';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { toast } from '@/components/ui/sonner';
 
 const Services = () => {
+  const { t } = useTranslation();
+  const { formatCurrency, convertPrice } = useRegion();
+  const navigate = useNavigate();
+
+  // Base prices in NGN
+  const basePrices = {
+    installation: 8330000, // ~$5,000 USD
+    training: 4165000,     // ~$2,500 USD
+    support: 1666000,      // ~$1,000 USD per month
+    basic: 833000,         // ~$500/month
+    premium: 2499000,      // ~$1,500/month
+  };
+
   const serviceCategories = [
     {
       id: 'performance',
-      title: 'Performance Services',
+      title: t('services.performance.title'),
       icon: BarChart3,
-      description: 'Optimize system performance and maximize energy output',
+      description: t('services.performance.description'),
       services: [
         'System Performance Analysis',
         'Energy Output Optimization',
@@ -34,9 +51,9 @@ const Services = () => {
     },
     {
       id: 'maintenance',
-      title: 'Maintenance & Support',
+      title: t('services.maintenance.title'),
       icon: Wrench,
-      description: 'Comprehensive maintenance and technical support services',
+      description: t('services.maintenance.description'),
       services: [
         'Preventive Maintenance',
         'Emergency Repairs',
@@ -47,9 +64,9 @@ const Services = () => {
     },
     {
       id: 'monitoring',
-      title: 'Monitoring & Analytics',
+      title: t('services.monitoring.title'),
       icon: Settings,
-      description: 'Real-time system monitoring and data analytics',
+      description: t('services.monitoring.description'),
       services: [
         'Real-time Monitoring',
         'Data Analytics Dashboard',
@@ -60,9 +77,9 @@ const Services = () => {
     },
     {
       id: 'consultation',
-      title: 'Consultation & Advisory',
+      title: t('services.consultation.title'),
       icon: Users,
-      description: 'Expert consultation and strategic advisory services',
+      description: t('services.consultation.description'),
       services: [
         'System Design Consultation',
         'Feasibility Studies',
@@ -75,32 +92,32 @@ const Services = () => {
 
   const specializedServices = [
     {
-      title: 'Installation Services',
-      description: 'Professional installation by certified technicians',
+      title: t('services.installation.title'),
+      description: t('services.installation.description'),
       icon: Zap,
       features: ['Site Assessment', 'Professional Installation', 'System Commissioning', 'Quality Assurance'],
-      price: 'Starting at $5,000'
+      price: basePrices.installation
     },
     {
-      title: 'Training & Certification',
-      description: 'Comprehensive training programs for your team',
+      title: t('services.training.title'),
+      description: t('services.training.description'),
       icon: Award,
       features: ['Technical Training', 'Safety Certification', 'Operational Training', 'Ongoing Support'],
-      price: 'Starting at $2,500'
+      price: basePrices.training
     },
     {
-      title: '24/7 Support',
-      description: 'Round-the-clock technical support and monitoring',
+      title: t('services.support_247.title'),
+      description: t('services.support_247.description'),
       icon: Headphones,
       features: ['24/7 Monitoring', 'Emergency Response', 'Remote Diagnostics', 'Priority Support'],
-      price: 'Starting at $1,000/mo'
+      price: basePrices.support
     }
   ];
 
   const supportTiers = [
     {
       name: 'Basic Support',
-      price: '$500/month',
+      price: basePrices.basic,
       features: [
         'Business hours support',
         'Email support',
@@ -110,7 +127,7 @@ const Services = () => {
     },
     {
       name: 'Premium Support',
-      price: '$1,500/month',
+      price: basePrices.premium,
       features: [
         '24/7 support',
         'Phone & email support',
@@ -123,7 +140,7 @@ const Services = () => {
     },
     {
       name: 'Enterprise Support',
-      price: 'Custom pricing',
+      price: null, // Custom pricing
       features: [
         'Dedicated support team',
         'On-site support',
@@ -135,37 +152,64 @@ const Services = () => {
     }
   ];
 
+  const handleLearnMore = (serviceId: string) => {
+    toast.info(`Learn more about ${serviceId} - Contact us for details`);
+    // Navigate to contact page or open modal
+    navigate('/support');
+  };
+
+  const handleGetQuote = (serviceName: string) => {
+    toast.success(`Quote request for ${serviceName} submitted! We'll contact you soon.`);
+    // Could open a quote request modal or navigate to contact form
+  };
+
+  const handleChoosePlan = (planName: string) => {
+    toast.success(`${planName} selected! Redirecting to checkout...`);
+    // Navigate to checkout or subscription page
+    setTimeout(() => {
+      navigate('/support');
+    }, 1500);
+  };
+
+  const handleContactSales = () => {
+    navigate('/support');
+  };
+
+  const handleScheduleConsultation = () => {
+    toast.success('Consultation request submitted! Our team will contact you within 24 hours.');
+    navigate('/support');
+  };
+
   return (
     <Layout>
       {/* Hero Section */}
       <section className="section-padding bg-gradient-to-br from-background to-primary/5 pt-24">
         <div className="max-w-7xl mx-auto text-center">
           <Badge variant="secondary" className="mb-6 px-4 py-2">
-            Professional Services
+            {t('services.badge')}
           </Badge>
-          
+
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-            Comprehensive
-            <span className="block text-primary">Energy Services</span>
+            {t('services.title').split(' ').slice(0, 1).join(' ')}
+            <span className="block text-primary">{t('services.title').split(' ').slice(1).join(' ')}</span>
           </h1>
-          
+
           <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto">
-            From installation to ongoing support, our comprehensive service portfolio ensures 
-            optimal performance and maximum return on your renewable energy investment.
+            {t('services.subtitle')}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12">
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">500+</div>
-              <div className="text-sm text-muted-foreground">Projects Completed</div>
+              <div className="text-sm text-muted-foreground">{t('services.projects_completed')}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">24/7</div>
-              <div className="text-sm text-muted-foreground">Support Available</div>
+              <div className="text-sm text-muted-foreground">{t('services.support_available')}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">99.9%</div>
-              <div className="text-sm text-muted-foreground">Uptime Guarantee</div>
+              <div className="text-sm text-muted-foreground">{t('services.uptime_guarantee')}</div>
             </div>
           </div>
         </div>
@@ -176,10 +220,10 @@ const Services = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Our Service Portfolio
+              {t('services.portfolio_title')}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Comprehensive services designed to maximize the performance and longevity of your renewable energy systems.
+              {t('services.portfolio_description')}
             </p>
           </div>
 
@@ -206,8 +250,12 @@ const Services = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button className="w-full mt-6" variant="outline">
-                      Learn More
+                    <Button
+                      className="w-full mt-6"
+                      variant="outline"
+                      onClick={() => handleLearnMore(category.id)}
+                    >
+                      {t('services.learn_more')}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </CardContent>
@@ -223,10 +271,10 @@ const Services = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Specialized Services
+              {t('services.specialized_title')}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Expert services tailored to your specific needs and requirements.
+              {t('services.specialized_description')}
             </p>
           </div>
 
@@ -253,10 +301,13 @@ const Services = () => {
                       ))}
                     </ul>
                     <div className="text-lg font-bold text-primary mb-4">
-                      {service.price}
+                      {t('services.starting_at')} {formatCurrency(convertPrice(service.price))}
                     </div>
-                    <Button className="w-full">
-                      Get Quote
+                    <Button
+                      className="w-full"
+                      onClick={() => handleGetQuote(service.title)}
+                    >
+                      {t('services.get_quote')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -271,10 +322,10 @@ const Services = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Support Plans
+              {t('services.support_plans_title')}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Choose the support level that best fits your needs and budget.
+              {t('services.support_plans_description')}
             </p>
           </div>
 
@@ -283,12 +334,21 @@ const Services = () => {
               <Card key={index} className={`relative ${tier.popular ? 'ring-2 ring-primary' : ''}`}>
                 {tier.popular && (
                   <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-white">
-                    Most Popular
+                    {t('services.most_popular')}
                   </Badge>
                 )}
                 <CardHeader className="text-center">
                   <CardTitle className="text-xl">{tier.name}</CardTitle>
-                  <div className="text-2xl font-bold text-primary mt-2">{tier.price}</div>
+                  <div className="text-2xl font-bold text-primary mt-2">
+                    {tier.price ? (
+                      <>
+                        {formatCurrency(convertPrice(tier.price))}
+                        <span className="text-sm font-normal text-muted-foreground">{t('services.per_month')}</span>
+                      </>
+                    ) : (
+                      t('services.custom_pricing')
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3 mb-6">
@@ -299,8 +359,12 @@ const Services = () => {
                       </li>
                     ))}
                   </ul>
-                  <Button className={`w-full ${tier.popular ? '' : 'variant-outline'}`}>
-                    Choose Plan
+                  <Button
+                    className={`w-full ${tier.popular ? '' : 'variant-outline'}`}
+                    variant={tier.popular ? 'default' : 'outline'}
+                    onClick={() => handleChoosePlan(tier.name)}
+                  >
+                    {t('services.choose_plan')}
                   </Button>
                 </CardContent>
               </Card>
@@ -313,18 +377,26 @@ const Services = () => {
       <section className="section-padding bg-gradient-to-r from-primary/5 to-accent/5">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
-            Ready to Get Started?
+            {t('services.cta_title')}
           </h2>
           <p className="text-muted-foreground mb-8 leading-relaxed">
-            Contact our team to discuss your service needs and get a customized solution that fits your requirements.
+            {t('services.cta_description')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" className="px-8">
-              Contact Sales Team
+            <Button
+              size="lg"
+              className="px-8"
+              onClick={handleContactSales}
+            >
+              {t('services.contact_sales')}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button variant="outline" size="lg">
-              Schedule Consultation
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handleScheduleConsultation}
+            >
+              {t('services.schedule_consultation')}
             </Button>
           </div>
         </div>

@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, BarChart3, Leaf, Zap, TrendingUp, DollarSign, Award, TreePine } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const FloatingEnergyMetrics = () => {
-  const [isExpanded, setIsExpanded] = useState(true); // Open on page load by default
+  const isMobile = useIsMobile();
+  const [isExpanded, setIsExpanded] = useState(!isMobile); // Open on page load by default for desktop, closed for mobile
 
   const metrics = [
     {
@@ -41,6 +42,11 @@ const FloatingEnergyMetrics = () => {
       subtitle: "System-wide impact"
     }
   ];
+
+  // Handle resize events to adjust initial state if needed
+  useEffect(() => {
+    setIsExpanded(!isMobile);
+  }, [isMobile]);
 
   if (!isExpanded) {
     return (
@@ -94,10 +100,10 @@ const FloatingEnergyMetrics = () => {
                 className="flex items-start space-x-2 p-1.5 rounded bg-slate-800/30 border-l-2 border-transparent hover:border-emerald-400/50 transition-all"
                 style={{
                   borderLeftColor: index === 0 ? '#10b981' :
-                                  index === 1 ? '#3b82f6' :
-                                  index === 2 ? '#8b5cf6' :
-                                  index === 3 ? '#f59e0b' :
-                                  index === 4 ? '#ef4444' : '#06b6d4'
+                    index === 1 ? '#3b82f6' :
+                      index === 2 ? '#8b5cf6' :
+                        index === 3 ? '#f59e0b' :
+                          index === 4 ? '#ef4444' : '#06b6d4'
                 }}
               >
                 <div className="flex-shrink-0 mt-0.5">

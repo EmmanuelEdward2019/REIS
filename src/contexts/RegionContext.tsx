@@ -16,6 +16,7 @@ interface RegionContextType {
   isLoading: boolean;
   formatCurrency: (amount: number) => string;
   changeLanguage: (languageCode: string) => void;
+  convertPrice: (amountInNGN: number) => number;
 }
 
 const defaultRegion: RegionData = {
@@ -110,12 +111,12 @@ export const RegionProvider: React.FC<RegionProviderProps> = ({ children }) => {
       // Using ipapi.co for geolocation (free tier: 1000 requests/day)
       const response = await fetch('https://ipapi.co/json/');
       const data = await response.json();
-      
+
       if (data.country_code) {
         const countryCode = data.country_code;
         const currencyData = countryToCurrency[countryCode] || countryToCurrency['NG'];
         const countryName = countryNames[countryCode] || data.country_name || 'Nigeria';
-        
+
         const detectedRegion: RegionData = {
           country: countryName,
           countryCode: countryCode,
@@ -124,7 +125,7 @@ export const RegionProvider: React.FC<RegionProviderProps> = ({ children }) => {
           language: currencyData.language,
           languageCode: currencyData.languageCode,
         };
-        
+
         setRegionState(detectedRegion);
       }
     } catch (error) {
@@ -152,6 +153,27 @@ export const RegionProvider: React.FC<RegionProviderProps> = ({ children }) => {
     localStorage.setItem('userRegion', JSON.stringify(updatedRegion));
   };
 
+  // Exchange rates (Base: NGN)
+  const exchangeRates: Record<string, number> = {
+    NGN: 1,
+    GBP: 0.0005, // 1 NGN = 0.0005 GBP (approx 1 GBP = 2000 NGN)
+    USD: 0.0006, // 1 NGN = 0.0006 USD (approx 1 USD = 1666 NGN)
+    EUR: 0.00055, // 1 NGN = 0.00055 EUR
+    CAD: 0.0008,
+    AUD: 0.0009,
+    JPY: 0.09,
+    CNY: 0.004,
+    INR: 0.05,
+    ZAR: 0.011,
+    KES: 0.08,
+    GHS: 0.008,
+  };
+
+  const convertPrice = (amountInNGN: number): number => {
+    const rate = exchangeRates[region.currency] || exchangeRates['NGN'];
+    return amountInNGN * rate;
+  };
+
   const formatCurrency = (amount: number): string => {
     return `${region.currencySymbol}${amount.toLocaleString(region.languageCode, {
       minimumFractionDigits: 0,
@@ -160,7 +182,7 @@ export const RegionProvider: React.FC<RegionProviderProps> = ({ children }) => {
   };
 
   return (
-    <RegionContext.Provider value={{ region, setRegion, isLoading, formatCurrency, changeLanguage }}>
+    <RegionContext.Provider value={{ region, setRegion, isLoading, formatCurrency, changeLanguage, convertPrice }}>
       {children}
     </RegionContext.Provider>
   );

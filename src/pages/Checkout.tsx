@@ -44,7 +44,7 @@ const Checkout = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState<'paystack' | 'stripe'>('paystack');
-  
+
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
     full_name: '',
     phone: '',
@@ -76,11 +76,7 @@ const Checkout = () => {
   useEffect(() => {
     // Redirect if cart is empty
     if (!loading && cartItemCount === 0) {
-      toast({
-        title: 'Cart is empty',
-        description: 'Please add items to your cart before checking out',
-        variant: 'destructive'
-      });
+      toast.error('Please add items to your cart before checking out');
       navigate('/shop');
     }
   }, [cartItemCount, loading]);
@@ -98,37 +94,29 @@ const Checkout = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
 
-      if (!user) {
-        toast({
-          title: 'Login Required',
-          description: 'Please log in to proceed with checkout',
-          variant: 'destructive'
-        });
-        navigate('/auth');
-        return;
-      }
+      if (user) {
+        setUserId(user.id);
+        setUserEmail(user.email || '');
 
-      setUserId(user.id);
-      setUserEmail(user.email || '');
+        // Load user profile data
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, phone_number')
+          .eq('user_id', user.id)
+          .single();
 
-      // Load user profile data
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name, phone_number')
-        .eq('user_id', user.id)
-        .single();
-
-      if (profile) {
-        setShippingAddress(prev => ({
-          ...prev,
-          full_name: profile.full_name || '',
-          phone: profile.phone_number || ''
-        }));
-        setBillingAddress(prev => ({
-          ...prev,
-          full_name: profile.full_name || '',
-          phone: profile.phone_number || ''
-        }));
+        if (profile) {
+          setShippingAddress(prev => ({
+            ...prev,
+            full_name: profile.full_name || '',
+            phone: profile.phone_number || ''
+          }));
+          setBillingAddress(prev => ({
+            ...prev,
+            full_name: profile.full_name || '',
+            phone: profile.phone_number || ''
+          }));
+        }
       }
     } catch (error) {
       console.error('Error checking auth:', error);
@@ -147,26 +135,18 @@ const Checkout = () => {
   };
 
   const validateForm = (): boolean => {
-    if (!shippingAddress.full_name || !shippingAddress.phone || 
-        !shippingAddress.address_line1 || !shippingAddress.city || 
-        !shippingAddress.state || !shippingAddress.country) {
-      toast({
-        title: 'Incomplete Information',
-        description: 'Please fill in all required shipping address fields',
-        variant: 'destructive'
-      });
+    if (!shippingAddress.full_name || !shippingAddress.phone ||
+      !shippingAddress.address_line1 || !shippingAddress.city ||
+      !shippingAddress.state || !shippingAddress.country) {
+      toast.error('Please fill in all required shipping address fields');
       return false;
     }
 
     if (!sameAsShipping) {
-      if (!billingAddress.full_name || !billingAddress.phone || 
-          !billingAddress.address_line1 || !billingAddress.city || 
-          !billingAddress.state || !billingAddress.country) {
-        toast({
-          title: 'Incomplete Information',
-          description: 'Please fill in all required billing address fields',
-          variant: 'destructive'
-        });
+      if (!billingAddress.full_name || !billingAddress.phone ||
+        !billingAddress.address_line1 || !billingAddress.city ||
+        !billingAddress.state || !billingAddress.country) {
+        toast.error('Please fill in all required billing address fields');
         return false;
       }
     }
@@ -176,8 +156,8 @@ const Checkout = () => {
 
   const generateOrderNumber = async (): Promise<string> => {
     // Get next sequence value
-    const { data, error } = await supabase.rpc('nextval', { 
-      sequence_name: 'order_number_seq' 
+    const { data, error } = await supabase.rpc('nextval', {
+      sequence_name: 'order_number_seq'
     });
 
     if (error) {
@@ -192,10 +172,59 @@ const Checkout = () => {
 
   const handlePlaceOrder = async () => {
     if (!validateForm()) return;
-    if (!userId || !userEmail) return;
+
+    // If guest, validate email
+    if (!userId && !userEmail) {
+      toast.error('Please provide an email address');
+      return;
+    }
 
     try {
       setLoading(true);
+
+      let currentUserId = userId;
+
+      // Auto-onboard if guest
+      if (!currentUserId) {
+        try {
+          // Create user
+          const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: userEmail,
+            password: 'MySoft@2025', // Default password
+            options: {
+              data: {
+                full_name: shippingAddress.full_name,
+                phone_number: shippingAddress.phone,
+              }
+            }
+          });
+
+          if (authError) {
+            if (authError.message.includes('already registered')) {
+              toast.error('Account already exists. Please log in to continue.');
+              setLoading(false);
+              return;
+            }
+            throw authError;
+          }
+
+          if (authData.user) {
+            currentUserId = authData.user.id;
+            toast.success('Account created! Check your email for login details.');
+          }
+        } catch (err: any) {
+          console.error('Error creating account:', err);
+          toast.error('Failed to create account. ' + err.message);
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (!currentUserId) {
+        toast.error('Could not verify user identity.');
+        setLoading(false);
+        return;
+      }
 
       // Calculate totals
       const subtotal = getCartTotal(region.currency as 'NGN' | 'GBP');
@@ -211,10 +240,13 @@ const Checkout = () => {
         .from('orders')
         .insert({
           order_number: orderNumber,
-          customer_id: userId,
+          customer_id: currentUserId,
           status: 'pending',
           payment_status: 'pending',
-          total_amount: total,
+          subtotal: subtotal,
+          tax: tax,
+          shipping_fee: shipping,
+          total: total,
           currency: region.currency,
           shipping_address: shippingAddress,
           billing_address: sameAsShipping ? shippingAddress : billingAddress,
@@ -295,10 +327,7 @@ const Checkout = () => {
             // Clear cart
             await clearCart();
 
-            toast({
-              title: 'Payment Successful',
-              description: `Order ${orderNumber} has been paid successfully`
-            });
+            toast.success(`Order ${orderNumber} has been paid successfully`);
 
             navigate(`/order-confirmation/${order.id}`);
           },
@@ -306,21 +335,14 @@ const Checkout = () => {
             // Payment cancelled or closed
             console.log('Payment cancelled');
 
-            toast({
-              title: 'Payment Cancelled',
-              description: 'You can complete payment later from your orders page',
-              variant: 'destructive'
-            });
+            toast.error('Payment cancelled. You can complete payment later from your orders page');
 
             setLoading(false);
           }
         );
       } else if (paymentMethod === 'stripe' && region.currency === 'GBP') {
         // Stripe payment for GBP
-        toast({
-          title: 'Stripe Integration',
-          description: 'Stripe payment integration coming soon. Order created successfully.',
-        });
+        toast.info('Stripe payment integration coming soon. Order created successfully.');
 
         // For now, just mark as pending and navigate to confirmation
         await clearCart();
@@ -329,21 +351,14 @@ const Checkout = () => {
         // Fallback - just create order without payment
         await clearCart();
 
-        toast({
-          title: 'Order Created',
-          description: `Order ${orderNumber} has been created successfully`
-        });
+        toast.success(`Order ${orderNumber} has been created successfully`);
 
         navigate(`/order-confirmation/${order.id}`);
       }
 
     } catch (error: any) {
       console.error('Error placing order:', error);
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to place order. Please try again.',
-        variant: 'destructive'
-      });
+      toast.error(error.message || 'Failed to place order. Please try again.');
       setLoading(false);
     }
   };
@@ -380,6 +395,31 @@ const Checkout = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Checkout Form */}
             <div className="lg:col-span-2 space-y-6">
+              {/* Contact Information (Guest) */}
+              {!userId && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Contact Information</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={userEmail}
+                        onChange={(e) => setUserEmail(e.target.value)}
+                        placeholder="Enter your email for order updates"
+                        required
+                      />
+                      <p className="text-sm text-muted-foreground">
+                        We'll create an account for you so you can track your order.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Shipping Address */}
               <Card>
                 <CardHeader>

@@ -15,7 +15,11 @@ interface Order {
   order_number: string;
   status: string;
   payment_status: string;
-  total_amount: number;
+  total?: number;  // Database column
+  total_amount?: number;  // Alias/computed column
+  subtotal?: number;
+  tax?: number;
+  shipping_fee?: number;
   currency: string;
   shipping_address: any;
   billing_address: any;
@@ -59,6 +63,12 @@ const OrderConfirmation = () => {
         .single();
 
       if (orderError) throw orderError;
+
+      // Handle both total and total_amount columns
+      if (orderData && !orderData.total_amount && orderData.total) {
+        orderData.total_amount = orderData.total;
+      }
+
       setOrder(orderData);
 
       // Fetch order items
@@ -72,11 +82,7 @@ const OrderConfirmation = () => {
 
     } catch (error: any) {
       console.error('Error fetching order:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load order details',
-        variant: 'destructive'
-      });
+      toast.error('Failed to load order details');
     } finally {
       setLoading(false);
     }
@@ -159,7 +165,7 @@ const OrderConfirmation = () => {
                   <p className="text-sm text-muted-foreground">Total Amount</p>
                   <p className="font-medium text-primary">
                     {order.currency === 'GBP' ? '£' : '₦'}
-                    {order.total_amount.toLocaleString()}
+                    {(order.total_amount || order.total || 0).toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -226,7 +232,7 @@ const OrderConfirmation = () => {
                     <span>Total</span>
                     <span className="text-primary">
                       {order.currency === 'GBP' ? '£' : '₦'}
-                      {order.total_amount.toLocaleString()}
+                      {(order.total_amount || order.total || 0).toLocaleString()}
                     </span>
                   </div>
                 </div>

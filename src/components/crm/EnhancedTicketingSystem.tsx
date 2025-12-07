@@ -9,10 +9,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Clock, 
-  AlertTriangle, 
-  CheckCircle, 
+import {
+  Clock,
+  AlertTriangle,
+  CheckCircle,
   ArrowUp,
   User,
   MessageSquare,
@@ -23,6 +23,8 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect } from 'react';
 
 interface InternalMemo {
   id: string;
@@ -55,62 +57,66 @@ interface EnhancedTicket {
 interface EnhancedTicketingSystemProps {
   userRole: 'client' | 'partner' | 'admin';
   userId: string;
+  filter?: 'all' | 'overdue' | 'high_priority';
 }
 
-const EnhancedTicketingSystem: React.FC<EnhancedTicketingSystemProps> = ({ userRole, userId }) => {
+const EnhancedTicketingSystem: React.FC<EnhancedTicketingSystemProps> = ({ userRole, userId, filter = 'all' }) => {
   const [selectedTicket, setSelectedTicket] = useState<EnhancedTicket | null>(null);
   const [memoDialogOpen, setMemoDialogOpen] = useState(false);
   const [newMemo, setNewMemo] = useState('');
   const [customerVisibleStatus, setCustomerVisibleStatus] = useState('');
 
   // Mock data - replace with actual Supabase queries
-  const [tickets, setTickets] = useState<EnhancedTicket[]>([
-    {
-      id: '1',
-      ticket_number: 'TKT-2025-000001',
-      title: 'Solar panel not generating power',
-      description: 'The solar panel system stopped generating power yesterday',
-      priority: 'high',
-      status: 'assigned',
-      hierarchy_level: 'L1',
-      sla_deadline: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
-      sla_status: 'within_sla',
-      assigned_to: 'partner-1',
-      assigned_to_name: 'John Technical',
-      escalated_from: null,
-      escalation_reason: null,
-      created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-      internal_memos: [
-        {
-          id: 'm1',
-          user_id: 'admin-1',
-          user_name: 'Admin Sarah',
-          memo_content: 'Assigned to John. Need to check inverter first.',
-          customer_visible_status: 'Technician assigned, investigating issue',
-          created_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-        }
-      ]
-    },
-    {
-      id: '2',
-      ticket_number: 'TKT-2025-000002',
-      title: 'Battery not charging',
-      description: 'Battery bank shows 0% charge despite sunny weather',
-      priority: 'critical',
-      status: 'work_in_progress',
-      hierarchy_level: 'L2',
-      sla_deadline: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
-      sla_status: 'approaching_breach',
-      assigned_to: 'partner-2',
-      assigned_to_name: 'Mike Field Agent',
-      escalated_from: 'TKT-2025-000001',
-      escalation_reason: 'L1 technician unable to resolve, requires specialist',
-      created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-      internal_memos: []
+  const [tickets, setTickets] = useState<EnhancedTicket[]>([]);
+
+  useEffect(() => {
+    fetchTickets();
+  }, [filter]);
+
+  const fetchTickets = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const transformedTickets: EnhancedTicket[] = (data || []).map(ticket => ({
+        id: ticket.id,
+        ticket_number: ticket.ticket_code || '',
+        title: ticket.title || '',
+        description: ticket.description || '',
+        priority: (ticket.priority?.toLowerCase() as any) || 'medium',
+        status: (ticket.status?.toLowerCase() as any) || 'open',
+        hierarchy_level: (ticket.hierarchy_level as any) || 'L1',
+        sla_deadline: new Date(new Date(ticket.created_at).getTime() + 24 * 60 * 60 * 1000).toISOString(), // Mock SLA for now
+        sla_status: 'within_sla', // Mock SLA status
+        assigned_to: ticket.assigned_to,
+        assigned_to_name: null, // Need to join with profiles to get name
+        escalated_from: null,
+        escalation_reason: null,
+        created_at: ticket.created_at,
+        updated_at: ticket.updated_at,
+        internal_memos: [] // Need to fetch memos separately
+      }));
+
+      let filteredTickets = transformedTickets;
+      if (filter === 'overdue') {
+        // Filter for tickets where SLA deadline is passed (mock logic for now as sla_deadline is mocked)
+        // Or simply check created_at > 7 days ago as per dashboard logic
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        filteredTickets = transformedTickets.filter(t => new Date(t.created_at) < sevenDaysAgo && t.status === 'open');
+      } else if (filter === 'high_priority') {
+        filteredTickets = transformedTickets.filter(t => t.priority === 'high' || t.priority === 'critical');
+      }
+
+      setTickets(filteredTickets);
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      toast.error('Failed to load tickets');
     }
-  ]);
+  };
 
   const getSLAColor = (status: string) => {
     switch (status) {
@@ -145,12 +151,12 @@ const EnhancedTicketingSystem: React.FC<EnhancedTicketingSystemProps> = ({ userR
     const now = new Date();
     const deadlineDate = new Date(deadline);
     const diff = deadlineDate.getTime() - now.getTime();
-    
+
     if (diff < 0) return 'Overdue';
-    
+
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     if (hours > 24) {
       const days = Math.floor(hours / 24);
       return `${days}d ${hours % 24}h`;
@@ -158,12 +164,27 @@ const EnhancedTicketingSystem: React.FC<EnhancedTicketingSystemProps> = ({ userR
     return `${hours}h ${minutes}m`;
   };
 
-  const handleEscalate = (ticket: EnhancedTicket) => {
-    const nextLevel = ticket.hierarchy_level === 'L1' ? 'L2' : 
-                      ticket.hierarchy_level === 'L2' ? 'L3' : 'L4';
-    
-    // In real implementation, this would call Supabase
-    toast.success(`Ticket ${ticket.ticket_number} escalated to ${nextLevel}`);
+  const handleEscalate = async (ticket: EnhancedTicket) => {
+    const nextLevel = ticket.hierarchy_level === 'L1' ? 'L2' :
+      ticket.hierarchy_level === 'L2' ? 'L3' : 'L4';
+
+    try {
+      const { error } = await supabase
+        .from('tickets')
+        .update({
+          hierarchy_level: nextLevel,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', ticket.id);
+
+      if (error) throw error;
+
+      toast.success(`Ticket ${ticket.ticket_number} escalated to ${nextLevel}`);
+      fetchTickets(); // Refresh list
+    } catch (error) {
+      console.error('Error escalating ticket:', error);
+      toast.error('Failed to escalate ticket');
+    }
   };
 
   const handleAssign = (ticketId: string, partnerId: string) => {
@@ -173,7 +194,7 @@ const EnhancedTicketingSystem: React.FC<EnhancedTicketingSystemProps> = ({ userR
 
   const handleAddMemo = () => {
     if (!selectedTicket || !newMemo.trim()) return;
-    
+
     // In real implementation, this would call Supabase
     toast.success('Internal memo added');
     setNewMemo('');
@@ -247,8 +268,8 @@ const EnhancedTicketingSystem: React.FC<EnhancedTicketingSystemProps> = ({ userR
               {tickets.map((ticket) => (
                 <TableRow key={ticket.id} className="cursor-pointer hover:bg-muted/50">
                   <TableCell>
-                    <Button 
-                      variant="link" 
+                    <Button
+                      variant="link"
                       className="p-0 h-auto font-mono"
                       onClick={() => setSelectedTicket(ticket)}
                     >
@@ -324,7 +345,7 @@ const EnhancedTicketingSystem: React.FC<EnhancedTicketingSystemProps> = ({ userR
                 Internal communication not visible to customers
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4">
               {/* Existing Memos */}
               <div>
@@ -370,7 +391,7 @@ const EnhancedTicketingSystem: React.FC<EnhancedTicketingSystemProps> = ({ userR
                     rows={4}
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="customer-status">Customer Visible Status (Optional)</Label>
                   <Select value={customerVisibleStatus} onValueChange={setCustomerVisibleStatus}>

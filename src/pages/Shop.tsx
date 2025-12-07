@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, ShoppingCart, Menu, Filter, X, Star, ChevronDown } from 'lucide-react';
+import { Search, ShoppingCart, Menu, Filter, X, Star, ChevronDown, Settings } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useRegion } from '@/contexts/RegionContext';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/components/ui/sonner';
 import { useTranslation } from 'react-i18next';
@@ -52,8 +53,9 @@ interface Product {
 
 const Shop = () => {
   const { t } = useTranslation();
-  const { region, formatCurrency } = useRegion();
+  const { region, formatCurrency, convertPrice } = useRegion();
   const { cartItemCount, addToCart } = useCart();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
 
   // State
@@ -85,35 +87,48 @@ const Shop = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
+
+      // First check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        console.log('No session, skipping product fetch');
+        setProducts([]);
+        setFilteredProducts([]);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch products with proper authentication
       const { data, error } = await supabase
         .from('products')
         .select('*')
         .eq('is_active', true)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
-      setProducts(data || []);
-      setFilteredProducts(data || []);
+      // For now, just set the data as-is and handle any type mismatches in the UI
+      setProducts(data as unknown as Product[] || []);
+      setFilteredProducts(data as unknown as Product[] || []);
 
-      // Set max price range based on products
+      // Set max price range based on products (converted to current currency)
       if (data && data.length > 0) {
-        const maxPrice = Math.max(...data.map(p => p.price_ngn));
-        setPriceRange([0, maxPrice]);
+        // Logic to calculate max price could go here if needed
       }
     } catch (error: any) {
       console.error('Error fetching products:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load products. Please try again.',
-        variant: 'destructive'
-      });
+      toast.error(`Failed to load products: ${error.message || 'Unknown error'}`);
+      // Still set empty arrays to prevent infinite loading state
+      setProducts([]);
+      setFilteredProducts([]);
     } finally {
       setLoading(false);
     }
   };
-
-
 
   // Filter and sort products
   useEffect(() => {
@@ -140,17 +155,17 @@ const Shop = () => {
 
     // Filter by price range
     filtered = filtered.filter(p => {
-      const price = region.currency === 'GBP' ? p.price_gbp : p.price_ngn;
+      const price = convertPrice(p.price_ngn);
       return price >= priceRange[0] && price <= priceRange[1];
     });
 
     // Sort products
     switch (sortBy) {
       case 'price_low':
-        filtered.sort((a, b) => a.price_ngn - b.price_ngn);
+        filtered.sort((a, b) => convertPrice(a.price_ngn) - convertPrice(b.price_ngn));
         break;
       case 'price_high':
-        filtered.sort((a, b) => b.price_ngn - a.price_ngn);
+        filtered.sort((a, b) => convertPrice(b.price_ngn) - convertPrice(a.price_ngn));
         break;
       case 'name':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
@@ -161,20 +176,22 @@ const Shop = () => {
     }
 
     setFilteredProducts(filtered);
-  }, [searchQuery, activeCategory, selectedBrands, priceRange, sortBy, products, region.currency]);
+  }, [searchQuery, activeCategory, selectedBrands, priceRange, sortBy, products, region.currency, convertPrice]);
 
   // Get unique brands
   const availableBrands = Array.from(new Set(products.map(p => p.brand).filter(Boolean)));
 
   // Get product price in current currency
   const getProductPrice = (product: Product) => {
-    return region.currency === 'GBP' ? product.price_gbp : product.price_ngn;
+    // Defensive check for price
+    const price = product.price_ngn || 0;
+    return convertPrice(price);
   };
 
   // Get product image
   const getProductImage = (product: Product) => {
-    if (product.images && product.images.length > 0) {
-      return product.images[0];
+    if (product.images && product.images.length > 0 && product.images[0]) {
+      return String(product.images[0]);
     }
     return productCommercialSolar; // Fallback image
   };
@@ -199,11 +216,10 @@ const Shop = () => {
                   <button
                     key={category.value}
                     onClick={() => setActiveCategory(category.value)}
-                    className={`text-sm font-medium transition-colors pb-1 ${
-                      activeCategory === category.value
-                        ? 'text-primary border-b-2 border-primary'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
+                    className={`text-sm font-medium transition-colors pb-1 ${activeCategory === category.value
+                      ? 'text-primary border-b-2 border-primary'
+                      : 'text-muted-foreground hover:text-foreground'
+                      }`}
                   >
                     {category.label}
                   </button>
@@ -213,6 +229,19 @@ const Shop = () => {
 
             {/* Right Side Controls */}
             <div className="flex items-center space-x-4">
+              {/* Admin/Partner Controls */}
+              {(profile?.user_role === 'admin' || profile?.user_role === 'partner') && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden sm:flex"
+                  onClick={() => navigate(profile.user_role === 'admin' ? '/admin-dashboard' : '/partners-dashboard')}
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Manage Products
+                </Button>
+              )}
+
               <div className="relative hidden md:block">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -258,11 +287,10 @@ const Shop = () => {
                           <button
                             key={category.value}
                             onClick={() => setActiveCategory(category.value)}
-                            className={`block w-full text-left px-3 py-2 rounded-md text-sm ${
-                              activeCategory === category.value
-                                ? 'bg-primary text-primary-foreground'
-                                : 'hover:bg-muted'
-                            }`}
+                            className={`block w-full text-left px-3 py-2 rounded-md text-sm ${activeCategory === category.value
+                              ? 'bg-primary text-primary-foreground'
+                              : 'hover:bg-muted'
+                              }`}
                           >
                             {category.label}
                           </button>
@@ -450,7 +478,7 @@ const Shop = () => {
                           <Badge variant="destructive">Out of Stock</Badge>
                         </div>
                       )}
-                      {product.stock_quantity > 0 && product.stock_quantity <= product.low_stock_threshold && (
+                      {product.stock_quantity > 0 && product.stock_quantity <= (product.specifications?.low_stock_threshold || 10) && (
                         <Badge className="absolute top-4 right-4 bg-orange-500 text-white">
                           Low Stock
                         </Badge>

@@ -11,14 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  Home, 
-  Building2, 
-  Factory, 
-  Users, 
-  Search, 
-  Eye, 
-  Edit, 
+import {
+  Home,
+  Building2,
+  Factory,
+  Users,
+  Search,
+  Eye,
+  Edit,
   Activity,
   Zap,
   Battery,
@@ -197,21 +197,18 @@ const AdminProjectSegments = () => {
           return (
             <Card
               key={key}
-              className={`cursor-pointer transition-all ${
-                selectedSegment === key 
-                  ? 'ring-2 ring-primary bg-primary/5' 
-                  : 'hover:bg-muted/50'
-              }`}
+              className={`cursor-pointer transition-all ${selectedSegment === key
+                ? 'ring-2 ring-primary bg-primary/5'
+                : 'hover:bg-muted/50'
+                }`}
               onClick={() => setSelectedSegment(key)}
             >
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${
-                    selectedSegment === key ? 'bg-primary/10' : 'bg-muted/50'
-                  }`}>
-                    <IconComponent className={`h-6 w-6 ${
-                      selectedSegment === key ? 'text-primary' : 'text-muted-foreground'
-                    }`} />
+                  <div className={`p-2 rounded-lg ${selectedSegment === key ? 'bg-primary/10' : 'bg-muted/50'
+                    }`}>
+                    <IconComponent className={`h-6 w-6 ${selectedSegment === key ? 'text-primary' : 'text-muted-foreground'
+                      }`} />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">{segment.title}</h3>
@@ -313,8 +310,8 @@ const AdminProjectSegments = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="segment">Segment *</Label>
-                    <Select 
-                      value={newCustomer.segment} 
+                    <Select
+                      value={newCustomer.segment}
                       onValueChange={(value) => setNewCustomer({ ...newCustomer, segment: value })}
                     >
                       <SelectTrigger>
@@ -339,18 +336,20 @@ const AdminProjectSegments = () => {
                         return;
                       }
 
-                      // Create user profile first
-                      const { data: profileData, error: profileError } = await supabase
+                      // Generate a mock ID since we can't create auth users from client
+                      const mockId = crypto.randomUUID();
+
+                      // Create user profile
+                      const { error: profileError } = await supabase
                         .from('profiles')
                         .insert([{
+                          id: mockId,
                           full_name: newCustomer.name,
                           email: newCustomer.email,
                           phone: newCustomer.phone,
                           user_role: 'client',
                           location: newCustomer.location
-                        }])
-                        .select()
-                        .single();
+                        }]);
 
                       if (profileError) throw profileError;
 
@@ -463,8 +462,8 @@ const AdminProjectSegments = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => {
                             toast.info(`Viewing customer details for ${customer.name}`);
@@ -472,8 +471,8 @@ const AdminProjectSegments = () => {
                         >
                           <Eye className="h-3 w-3" />
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => {
                             toast.info(`Editing customer ${customer.name}`);

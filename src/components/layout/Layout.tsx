@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import GlobalAddToCartDialog from '@/components/cart/GlobalAddToCartDialog';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ const Layout = ({ children, className = '' }: LayoutProps) => {
         {children}
       </main>
       <Footer />
+      <GlobalAddToCartDialog />
     </div>
   );
 };

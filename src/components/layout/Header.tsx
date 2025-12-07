@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X, ChevronDown, HelpCircle, Globe, UserCircle, ChevronRight, LogOut } from 'lucide-react';
@@ -8,7 +8,6 @@ import megaMenuTraining from '@/assets/mega-menu-training.jpg';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import RegionSelector from './RegionSelector';
-import LanguageSwitcher from './LanguageSwitcher';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import {
@@ -25,18 +24,16 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeMega, setActiveMega] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mobileMenuState, setMobileMenuState] = useState({
     reis: false,
     dataAi: false,
-    lms: false
+    lms: false,
+    news: false
   });
-
-  // Check if we're on the homepage
   const isHomePage = location.pathname === '/';
-
   // Handle click outside to close mega menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -140,22 +137,20 @@ const Header = () => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || !isHomePage
-          ? 'bg-background/95 backdrop-blur-md border-b border-border' 
-          : 'bg-transparent'
-      }`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || !isHomePage
+        ? 'bg-background/95 backdrop-blur-md border-b border-border'
+        : 'bg-transparent'
+        }`}>
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
             {/* Logo - Far Left */}
             <div className="flex items-center mr-auto">
               <Link to="/" className="flex items-center">
-                <img 
-                  src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png" 
-                  alt="Eagle & Thistle Group" 
-                  className={`h-10 w-auto transition-all duration-300 ${
-                    (isScrolled || !isHomePage) ? 'brightness-100' : 'brightness-0 invert'
-                  }`}
+                <img
+                  src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png"
+                  alt="Eagle & Thistle Group"
+                  className={`h-10 w-auto transition-all duration-300 ${(isScrolled || !isHomePage) ? 'brightness-100' : 'brightness-0 invert'
+                    }`}
                 />
               </Link>
             </div>
@@ -164,18 +159,16 @@ const Header = () => {
             <nav className="hidden lg:flex items-center space-x-4 mx-6">
               {/* REIS Mega Menu */}
               <div className="relative mega-menu-container">
-                <button 
+                <button
                   onClick={() => toggleMegaMenu('reis')}
-                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
-                    (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-                  }`}
+                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                    }`}
                 >
                   <span>{t('nav.reis')}</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                    activeMega === 'reis' ? 'rotate-180' : ''
-                  }`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeMega === 'reis' ? 'rotate-180' : ''
+                    }`} />
                 </button>
-                
+
                 {activeMega === 'reis' && typeof document !== 'undefined' && createPortal(
                   <div className="mega-menu-portal fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
                     <div className="w-full py-8">
@@ -183,8 +176,8 @@ const Header = () => {
                         {/* Solar Solutions */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
-                            <img 
-                              src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png" 
+                            <img
+                              src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png"
                               alt="Solar Solutions"
                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                             />
@@ -192,10 +185,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">{t('nav.solar_solutions')}</h3>
                             <ul className="space-y-2">
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.residential_solar')}</Link></li>
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.commercial_solar')}</Link></li>
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.utility_scale')}</Link></li>
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.solar_wind_hybrid')}</Link></li>
+                              <li><Link to="/reis/residential-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.residential_solar')}</Link></li>
+                              <li><Link to="/reis/commercial-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.commercial_solar')}</Link></li>
+                              <li><Link to="/reis/utility-scale" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.utility_scale')}</Link></li>
+                              <li><Link to="/reis/solar-wind-hybrid" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.solar_wind_hybrid')}</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -203,8 +196,8 @@ const Header = () => {
                         {/* Energy Storage */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
-                            <img 
-                              src="/lovable-uploads/a0b4d24a-a102-4800-8a4f-c35888e7c359.png" 
+                            <img
+                              src="/lovable-uploads/a0b4d24a-a102-4800-8a4f-c35888e7c359.png"
                               alt="Energy Storage"
                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                             />
@@ -212,10 +205,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">{t('nav.energy_storage')}</h3>
                             <ul className="space-y-2">
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.battery_systems')}</Link></li>
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.grid_storage')}</Link></li>
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.hydrogen_solutions')}</Link></li>
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.micro_storage')}</Link></li>
+                              <li><Link to="/reis/battery-systems" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.battery_systems')}</Link></li>
+                              <li><Link to="/reis/grid-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.grid_storage')}</Link></li>
+                              <li><Link to="/reis/hydrogen-solutions" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.hydrogen_solutions')}</Link></li>
+                              <li><Link to="/reis/micro-storage" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.micro_storage')}</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -223,8 +216,8 @@ const Header = () => {
                         {/* Marine Energy */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
-                            <img 
-                              src="/lovable-uploads/b6450dea-940c-4706-9e7b-3adfa0b8c3cb.png" 
+                            <img
+                              src="/lovable-uploads/b6450dea-940c-4706-9e7b-3adfa0b8c3cb.png"
                               alt="Marine Energy"
                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                             />
@@ -232,10 +225,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">{t('nav.marine_energy')}</h3>
                             <ul className="space-y-2">
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.offshore_wind')}</Link></li>
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.tidal_energy')}</Link></li>
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.wave_power')}</Link></li>
-<li><Link to="/reis" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.floating_solar')}</Link></li>
+                              <li><Link to="/reis/offshore-wind" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.offshore_wind')}</Link></li>
+                              <li><Link to="/reis/tidal-energy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.tidal_energy')}</Link></li>
+                              <li><Link to="/reis/wave-power" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.wave_power')}</Link></li>
+                              <li><Link to="/reis/floating-solar" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.floating_solar')}</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -265,22 +258,20 @@ const Header = () => {
                 )}
               </div>
 
-              
+
 
               {/* Data & AI Mega Menu */}
               <div className="relative mega-menu-container">
-                <button 
+                <button
                   onClick={() => toggleMegaMenu('data-ai')}
-                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium whitespace-nowrap ${
-                    (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-                  }`}
+                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium whitespace-nowrap ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                    }`}
                 >
                   <span>{t('nav.data_ai')}</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                    activeMega === 'data-ai' ? 'rotate-180' : ''
-                  }`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeMega === 'data-ai' ? 'rotate-180' : ''
+                    }`} />
                 </button>
-                
+
                 {activeMega === 'data-ai' && typeof document !== 'undefined' && createPortal(
                   <div className="mega-menu-portal fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
                     <div className="w-full py-8">
@@ -288,8 +279,8 @@ const Header = () => {
                         {/* Analytics & Strategy */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
-                            <img 
-                              src="/lovable-uploads/14519926-36cd-4536-893d-d86ae346591a.png" 
+                            <img
+                              src="/lovable-uploads/14519926-36cd-4536-893d-d86ae346591a.png"
                               alt="Analytics & Strategy"
                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                             />
@@ -297,10 +288,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">{t('nav.analytics_strategy')}</h3>
                             <ul className="space-y-2">
-<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.ai_strategy')}</Link></li>
-<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.data_analytics')}</Link></li>
-<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.machine_learning')}</Link></li>
-<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.data_engineering')}</Link></li>
+                              <li><Link to="/data-and-ai/ai-strategy" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.ai_strategy')}</Link></li>
+                              <li><Link to="/data-and-ai/data-analytics" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.data_analytics')}</Link></li>
+                              <li><Link to="/data-and-ai/machine-learning" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.machine_learning')}</Link></li>
+                              <li><Link to="/data-and-ai/data-engineering" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.data_engineering')}</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -308,8 +299,8 @@ const Header = () => {
                         {/* Solutions & Security */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
-                            <img 
-                              src="/lovable-uploads/c674919a-db90-4606-a986-db6447308d8f.png" 
+                            <img
+                              src="/lovable-uploads/c674919a-db90-4606-a986-db6447308d8f.png"
                               alt="Solutions & Security"
                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                             />
@@ -317,9 +308,9 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">{t('nav.solutions_security')}</h3>
                             <ul className="space-y-2">
-<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.ai_products')}</Link></li>
-<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.security_solutions')}</Link></li>
-<li><Link to="/data-and-ai" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.geospatial_analytics')}</Link></li>
+                              <li><Link to="/data-and-ai/ai-products" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.ai_products')}</Link></li>
+                              <li><Link to="/data-and-ai/security-solutions" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.security_solutions')}</Link></li>
+                              <li><Link to="/data-and-ai/geospatial-analytics" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.geospatial_analytics')}</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -351,18 +342,16 @@ const Header = () => {
 
               {/* Training Mega Menu */}
               <div className="relative mega-menu-container">
-                <button 
+                <button
                   onClick={() => toggleMegaMenu('training')}
-                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
-                    (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-                  }`}
+                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                    }`}
                 >
                   <span>{t('nav.lms')}</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                    activeMega === 'training' ? 'rotate-180' : ''
-                  }`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeMega === 'training' ? 'rotate-180' : ''
+                    }`} />
                 </button>
-                
+
                 {activeMega === 'training' && typeof document !== 'undefined' && createPortal(
                   <div className="mega-menu-portal fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
                     <div className="w-full py-8">
@@ -370,8 +359,8 @@ const Header = () => {
                         {/* Learning Systems */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
-                            <img 
-                              src="/lovable-uploads/71161c08-3920-48fd-aced-b2b0999ad040.png" 
+                            <img
+                              src="/lovable-uploads/71161c08-3920-48fd-aced-b2b0999ad040.png"
                               alt="Learning Systems"
                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                             />
@@ -379,10 +368,10 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">{t('nav.learning_systems')}</h3>
                             <ul className="space-y-2">
-<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.lms_platform')}</Link></li>
-<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.content_development')}</Link></li>
-<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.professional_programs')}</Link></li>
-<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.compliance_training')}</Link></li>
+                              <li><Link to="/lms/lms-platform" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.lms_platform')}</Link></li>
+                              <li><Link to="/lms/content-development" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.content_development')}</Link></li>
+                              <li><Link to="/lms/professional-programs" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.professional_programs')}</Link></li>
+                              <li><Link to="/lms/compliance-training" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.compliance_training')}</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -390,8 +379,8 @@ const Header = () => {
                         {/* Specialized Training */}
                         <div className="space-y-4">
                           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted/50">
-                            <img 
-                              src="/lovable-uploads/ed58d01d-4b26-4d11-9c91-d54c61f0fde0.png" 
+                            <img
+                              src="/lovable-uploads/ed58d01d-4b26-4d11-9c91-d54c61f0fde0.png"
                               alt="Specialized Training"
                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                             />
@@ -399,9 +388,9 @@ const Header = () => {
                           <div>
                             <h3 className="font-bold text-foreground mb-3 text-base">{t('nav.specialized_training')}</h3>
                             <ul className="space-y-2">
-<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.vocational_training')}</Link></li>
-<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.assessment_tools')}</Link></li>
-<li><Link to="/lms" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.advisory_services')}</Link></li>
+                              <li><Link to="/lms/vocational-training" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.vocational_training')}</Link></li>
+                              <li><Link to="/lms/assessment-tools" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.assessment_tools')}</Link></li>
+                              <li><Link to="/lms/advisory-services" className="text-foreground/80 hover:text-primary transition-colors font-medium block text-sm">{t('nav.advisory_services')}</Link></li>
                             </ul>
                           </div>
                         </div>
@@ -430,41 +419,32 @@ const Header = () => {
                   document.body
                 )}
               </div>
-              
-              <Link to="/partners" className={`hover:text-primary transition-colors font-medium ${
-                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-              }`}>{t('nav.partners')}</Link>
-              <Link to="/services" className={`hover:text-primary transition-colors font-medium ${
-                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-              }`}>{t('nav.services')}</Link>
-              <Link to="/projects" className={`hover:text-primary transition-colors font-medium ${
-                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-              }`}>{t('nav.projects')}</Link>
-              <Link to="/calculators" className={`hover:text-primary transition-colors font-medium ${
-                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-              }`}>{t('nav.calculators')}</Link>
-              <Link to="/shop" className={`hover:text-primary transition-colors font-medium ${
-                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-              }`}>{t('nav.shop')}</Link>
-              <Link to="/support" className={`hover:text-primary transition-colors font-medium ${
-                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-              }`}>{t('nav.support')}</Link>
-              <Link to="/about" className={`hover:text-primary transition-colors font-medium ${
-                (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-              }`}>{t('nav.about')}</Link>
+
+              <Link to="/partners" className={`hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                }`}>{t('nav.partners')}</Link>
+              <Link to="/services" className={`hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                }`}>{t('nav.services')}</Link>
+              <Link to="/projects" className={`hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                }`}>{t('nav.projects')}</Link>
+              <Link to="/calculators" className={`hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                }`}>{t('nav.calculators')}</Link>
+              <Link to="/shop" className={`hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                }`}>{t('nav.shop')}</Link>
+              <Link to="/support" className={`hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                }`}>{t('nav.support')}</Link>
+              <Link to="/about" className={`hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                }`}>{t('nav.about')}</Link>
 
               {/* News & Updates Mega Menu - last */}
               <div className="relative mega-menu-container">
-                <button 
+                <button
                   onClick={() => toggleMegaMenu('news')}
-                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${
-                    (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-                  }`}
+                  className={`flex items-center space-x-1 hover:text-primary transition-colors font-medium ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                    }`}
                 >
                   <span>{t('nav.news_updates')}</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                    activeMega === 'news' ? 'rotate-180' : ''
-                  }`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeMega === 'news' ? 'rotate-180' : ''
+                    }`} />
                 </button>
                 {activeMega === 'news' && typeof document !== 'undefined' && createPortal(
                   <div className="mega-menu-portal fixed top-16 left-0 right-0 w-screen bg-white border-t border-border shadow-2xl z-50">
@@ -506,15 +486,11 @@ const Header = () => {
 
             {/* Tesla-style Icons - Far Right */}
             <div className="hidden lg:flex items-center space-x-3 ml-auto">
-              <Button variant="ghost" size="sm" className={`p-2 transition-colors ${
-                (isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
-              }`} title="Support">
+              <Button variant="ghost" size="sm" className={`p-2 transition-colors ${(isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
+                }`} title="Support">
                 <HelpCircle className="w-5 h-5" />
               </Button>
-              <LanguageSwitcher
-                variant="icon"
-                className={`${(isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'}`}
-              />
+
               <RegionSelector
                 variant="icon"
                 className={`${(isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'}`}
@@ -522,9 +498,8 @@ const Header = () => {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className={`p-2 transition-colors ${
-                      (isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
-                    }`} title="Account">
+                    <Button variant="ghost" size="sm" className={`p-2 transition-colors ${(isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
+                      }`} title="Account">
                       <UserCircle className="w-5 h-5" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -550,9 +525,8 @@ const Header = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button variant="ghost" size="sm" className={`p-2 transition-colors ${
-                  (isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
-                }`} title="Account" asChild>
+                <Button variant="ghost" size="sm" className={`p-2 transition-colors ${(isScrolled || !isHomePage) ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
+                  }`} title="Account" asChild>
                   <Link to="/auth">
                     <UserCircle className="w-5 h-5" />
                   </Link>
@@ -560,17 +534,18 @@ const Header = () => {
               )}
             </div>
 
+
+
             {/* Mobile menu button and icons */}
             <div className="lg:hidden">
               {/* Menu button with text only */}
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="px-3 py-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                <span className={`text-sm font-medium transition-colors ${
-                  (isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
-                }`}>{t('nav.menu')}</span>
+                <span className={`text-sm font-medium transition-colors ${(isScrolled || !isHomePage) ? 'text-foreground' : 'text-white'
+                  }`}>{t('nav.menu')}</span>
               </Button>
             </div>
           </div>
@@ -580,8 +555,8 @@ const Header = () => {
             <div className="lg:hidden border-t border-border bg-background">
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {/* REIS Dropdown */}
-                <Collapsible 
-                  open={mobileMenuState.reis} 
+                <Collapsible
+                  open={mobileMenuState.reis}
                   onOpenChange={(open) => setMobileMenuState(prev => ({ ...prev, reis: open }))}
                 >
                   <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-foreground hover:text-primary font-medium">
@@ -589,16 +564,16 @@ const Header = () => {
                     <ChevronRight className={`w-4 h-4 transition-transform ${mobileMenuState.reis ? 'rotate-90' : ''}`} />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1">
-                    <Link to="/reis" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.residential_solar')}</Link>
-                    <Link to="/reis" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.commercial_solar')}</Link>
-                    <Link to="/reis" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.battery_systems')}</Link>
-                    <Link to="/reis" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.offshore_wind')}</Link>
+                    <Link to="/reis/residential-solar" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.residential_solar')}</Link>
+                    <Link to="/reis/commercial-solar" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.commercial_solar')}</Link>
+                    <Link to="/reis/battery-systems" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.battery_systems')}</Link>
+                    <Link to="/reis/offshore-wind" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.offshore_wind')}</Link>
                   </CollapsibleContent>
                 </Collapsible>
 
                 {/* Data & AI Dropdown */}
-                <Collapsible 
-                  open={mobileMenuState.dataAi} 
+                <Collapsible
+                  open={mobileMenuState.dataAi}
                   onOpenChange={(open) => setMobileMenuState(prev => ({ ...prev, dataAi: open }))}
                 >
                   <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-foreground hover:text-primary font-medium">
@@ -606,16 +581,16 @@ const Header = () => {
                     <ChevronRight className={`w-4 h-4 transition-transform ${mobileMenuState.dataAi ? 'rotate-90' : ''}`} />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1">
-                    <Link to="/data-and-ai" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.ai_strategy')}</Link>
-                    <Link to="/data-and-ai" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.data_analytics')}</Link>
-                    <Link to="/data-and-ai" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.ai_products')}</Link>
-                    <Link to="/data-and-ai" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.security_solutions')}</Link>
+                    <Link to="/data-and-ai/ai-strategy" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.ai_strategy')}</Link>
+                    <Link to="/data-and-ai/data-analytics" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.data_analytics')}</Link>
+                    <Link to="/data-and-ai/ai-products" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.ai_products')}</Link>
+                    <Link to="/data-and-ai/security-solutions" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.security_solutions')}</Link>
                   </CollapsibleContent>
                 </Collapsible>
 
                 {/* LMS Dropdown */}
-                <Collapsible 
-                  open={mobileMenuState.lms} 
+                <Collapsible
+                  open={mobileMenuState.lms}
                   onOpenChange={(open) => setMobileMenuState(prev => ({ ...prev, lms: open }))}
                 >
                   <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-foreground hover:text-primary font-medium">
@@ -623,10 +598,26 @@ const Header = () => {
                     <ChevronRight className={`w-4 h-4 transition-transform ${mobileMenuState.lms ? 'rotate-90' : ''}`} />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1">
-                    <Link to="/lms" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.lms_platform')}</Link>
-                    <Link to="/lms" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.content_development')}</Link>
-                    <Link to="/lms" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.professional_programs')}</Link>
-                    <Link to="/lms" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.vocational_training')}</Link>
+                    <Link to="/lms/lms-platform" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.lms_platform')}</Link>
+                    <Link to="/lms/content-development" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.content_development')}</Link>
+                    <Link to="/lms/professional-programs" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.professional_programs')}</Link>
+                    <Link to="/lms/vocational-training" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.vocational_training')}</Link>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                {/* News & Updates Dropdown */}
+                <Collapsible
+                  open={mobileMenuState.news}
+                  onOpenChange={(open) => setMobileMenuState(prev => ({ ...prev, news: open }))}
+                >
+                  <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-foreground hover:text-primary font-medium">
+                    <span>{t('nav.news_updates')}</span>
+                    <ChevronRight className={`w-4 h-4 transition-transform ${mobileMenuState.news ? 'rotate-90' : ''}`} />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-1">
+                    <Link to="/news" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.news')}</Link>
+                    <Link to="/events" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.events')}</Link>
+                    <Link to="/case-studies" className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary">{t('nav.case_studies')}</Link>
                   </CollapsibleContent>
                 </Collapsible>
 
@@ -637,7 +628,7 @@ const Header = () => {
                 <Link to="/shop" className="block px-3 py-2 text-foreground hover:text-primary font-medium">{t('nav.shop')}</Link>
                 <Link to="/support" className="block px-3 py-2 text-foreground hover:text-primary font-medium">{t('nav.support')}</Link>
                 <Link to="/about" className="block px-3 py-2 text-foreground hover:text-primary font-medium">{t('nav.about')}</Link>
-                
+
                 {/* Tesla-style Icons in mobile menu */}
                 <div className="border-t border-border mt-4 pt-4 px-3">
                   <div className="flex items-center justify-center space-x-6">
@@ -645,10 +636,7 @@ const Header = () => {
                       <HelpCircle className="w-6 h-6" />
                       <span className="text-xs">{t('nav.support')}</span>
                     </Button>
-                    <div className="flex flex-col items-center space-y-1">
-                      <LanguageSwitcher variant="icon" />
-                      <span className="text-xs">{t('nav.language')}</span>
-                    </div>
+
                     <div className="flex flex-col items-center space-y-1">
                       <RegionSelector variant="icon" />
                       <span className="text-xs">{t('nav.region')}</span>

@@ -1,4 +1,4 @@
--- Migration: Create IoT Controllers and Real-time Data tables
++-- Migration: Create IoT Controllers and Real-time Data tables
 -- This enables live monitoring of solar installations
 
 -- ============================================================================

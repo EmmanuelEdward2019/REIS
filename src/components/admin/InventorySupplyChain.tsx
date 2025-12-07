@@ -9,11 +9,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { 
-  Package, 
-  Warehouse, 
-  ShoppingCart, 
-  TrendingDown, 
+import {
+  Package,
+  Warehouse,
+  ShoppingCart,
+  TrendingDown,
   TrendingUp,
   AlertTriangle,
   Plus,
@@ -24,12 +24,111 @@ import {
   Building,
   Users,
   FileText,
-  Settings
+  Settings,
+  CheckCircle,
+  XCircle
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-// Warehouse Form Component
+// --- Forms ---
+
+const ProductForm: React.FC<{ product?: any; onSave: (data: any) => void }> = ({ product, onSave }) => {
+  const [formData, setFormData] = useState({
+    name: product?.name || '',
+    category: product?.category || 'solar_panels',
+    stock_quantity: product?.stock_quantity?.toString() || '0',
+    min_stock_level: product?.min_stock_level?.toString() || '10',
+    price: product?.price?.toString() || '0',
+    currency: product?.currency || 'NGN'
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Product Name *</Label>
+        <Input
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          required
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="category">Category</Label>
+          <Select
+            value={formData.category}
+            onValueChange={(value) => setFormData({ ...formData, category: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="solar_panels">Solar Panels</SelectItem>
+              <SelectItem value="inverters">Inverters</SelectItem>
+              <SelectItem value="batteries">Batteries</SelectItem>
+              <SelectItem value="cables">Cables</SelectItem>
+              <SelectItem value="mounting">Mounting</SelectItem>
+              <SelectItem value="accessories">Accessories</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="currency">Currency</Label>
+          <Select
+            value={formData.currency}
+            onValueChange={(value) => setFormData({ ...formData, currency: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="NGN">NGN</SelectItem>
+              <SelectItem value="USD">USD</SelectItem>
+              <SelectItem value="GBP">GBP</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="stock_quantity">Stock Quantity</Label>
+          <Input
+            id="stock_quantity"
+            type="number"
+            value={formData.stock_quantity}
+            onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="min_stock_level">Min Level</Label>
+          <Input
+            id="min_stock_level"
+            type="number"
+            value={formData.min_stock_level}
+            onChange={(e) => setFormData({ ...formData, min_stock_level: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="price">Unit Price</Label>
+          <Input
+            id="price"
+            type="number"
+            value={formData.price}
+            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+          />
+        </div>
+      </div>
+      <DialogFooter>
+        <Button onClick={() => onSave(formData)}>
+          {product ? 'Update' : 'Create'}
+        </Button>
+      </DialogFooter>
+    </div>
+  );
+};
+
 const WarehouseForm: React.FC<{ warehouse?: any; onSave: (data: any) => void }> = ({ warehouse, onSave }) => {
   const [formData, setFormData] = useState({
     name: warehouse?.name || '',
@@ -88,9 +187,6 @@ const WarehouseForm: React.FC<{ warehouse?: any; onSave: (data: any) => void }> 
         <Label htmlFor="is_active">Active</Label>
       </div>
       <DialogFooter>
-        <Button variant="outline" type="button">
-          Cancel
-        </Button>
         <Button onClick={() => onSave(formData)}>
           {warehouse ? 'Update' : 'Create'}
         </Button>
@@ -98,6 +194,271 @@ const WarehouseForm: React.FC<{ warehouse?: any; onSave: (data: any) => void }> 
     </div>
   );
 };
+
+const SupplierForm: React.FC<{ supplier?: any; onSave: (data: any) => void }> = ({ supplier, onSave }) => {
+  const [formData, setFormData] = useState({
+    name: supplier?.name || '',
+    code: supplier?.code || '',
+    contact_person: supplier?.contact_person || '',
+    email: supplier?.email || '',
+    phone: supplier?.phone || '',
+    rating: supplier?.rating?.toString() || '3',
+    is_active: supplier?.is_active !== undefined ? supplier.is_active : true
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">Supplier Name *</Label>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="code">Supplier Code *</Label>
+          <Input
+            id="code"
+            value={formData.code}
+            onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+            required
+          />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="contact_person">Contact Person</Label>
+        <Input
+          id="contact_person"
+          value={formData.contact_person}
+          onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="phone">Phone</Label>
+          <Input
+            id="phone"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="rating">Rating (1-5)</Label>
+        <Input
+          id="rating"
+          type="number"
+          min="1"
+          max="5"
+          value={formData.rating}
+          onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="is_active"
+          checked={formData.is_active}
+          onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+          className="rounded"
+        />
+        <Label htmlFor="is_active">Active</Label>
+      </div>
+      <DialogFooter>
+        <Button onClick={() => onSave(formData)}>
+          {supplier ? 'Update' : 'Create'}
+        </Button>
+      </DialogFooter>
+    </div>
+  );
+};
+
+const PurchaseOrderForm: React.FC<{ po?: any; suppliers: any[]; onSave: (data: any) => void }> = ({ po, suppliers, onSave }) => {
+  const [formData, setFormData] = useState({
+    supplier_id: po?.supplier_id || '',
+    po_number: po?.po_number || `PO-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
+    total_amount: po?.total_amount?.toString() || '0',
+    currency: po?.currency || 'NGN',
+    expected_delivery: po?.expected_delivery ? new Date(po.expected_delivery).toISOString().split('T')[0] : '',
+    status: po?.status || 'draft'
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="po_number">PO Number *</Label>
+          <Input
+            id="po_number"
+            value={formData.po_number}
+            onChange={(e) => setFormData({ ...formData, po_number: e.target.value })}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="supplier_id">Supplier *</Label>
+          <Select
+            value={formData.supplier_id}
+            onValueChange={(value) => setFormData({ ...formData, supplier_id: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select supplier" />
+            </SelectTrigger>
+            <SelectContent>
+              {suppliers.map(s => (
+                <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="total_amount">Total Amount</Label>
+          <Input
+            id="total_amount"
+            type="number"
+            value={formData.total_amount}
+            onChange={(e) => setFormData({ ...formData, total_amount: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="currency">Currency</Label>
+          <Select
+            value={formData.currency}
+            onValueChange={(value) => setFormData({ ...formData, currency: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="NGN">NGN</SelectItem>
+              <SelectItem value="USD">USD</SelectItem>
+              <SelectItem value="GBP">GBP</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="expected_delivery">Expected Delivery</Label>
+          <Input
+            id="expected_delivery"
+            type="date"
+            value={formData.expected_delivery}
+            onChange={(e) => setFormData({ ...formData, expected_delivery: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="status">Status</Label>
+          <Select
+            value={formData.status}
+            onValueChange={(value) => setFormData({ ...formData, status: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="draft">Draft</SelectItem>
+              <SelectItem value="sent">Sent</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="received">Received</SelectItem>
+              <SelectItem value="cancelled">Cancelled</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <DialogFooter>
+        <Button onClick={() => onSave(formData)}>
+          {po ? 'Update' : 'Create'}
+        </Button>
+      </DialogFooter>
+    </div>
+  );
+};
+
+const BOMForm: React.FC<{ bom?: any; onSave: (data: any) => void }> = ({ bom, onSave }) => {
+  const [formData, setFormData] = useState({
+    name: bom?.name || '',
+    code: bom?.code || '',
+    description: bom?.description || '',
+    version: bom?.version || '1.0',
+    is_active: bom?.is_active !== undefined ? bom.is_active : true
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">BOM Name *</Label>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="code">BOM Code *</Label>
+          <Input
+            id="code"
+            value={formData.code}
+            onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+            required
+          />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          rows={3}
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="version">Version</Label>
+          <Input
+            id="version"
+            value={formData.version}
+            onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+          />
+        </div>
+        <div className="flex items-center gap-2 pt-8">
+          <input
+            type="checkbox"
+            id="is_active"
+            checked={formData.is_active}
+            onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+            className="rounded"
+          />
+          <Label htmlFor="is_active">Active</Label>
+        </div>
+      </div>
+      <DialogFooter>
+        <Button onClick={() => onSave(formData)}>
+          {bom ? 'Update' : 'Create'}
+        </Button>
+      </DialogFooter>
+    </div>
+  );
+};
+
+// --- Main Component ---
 
 interface Product {
   id: string;
@@ -170,7 +531,7 @@ const InventorySupplyChain = () => {
   const [boms, setBoms] = useState<BOM[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState<'warehouse' | 'supplier' | 'po' | 'bom'>('warehouse');
+  const [dialogType, setDialogType] = useState<'product' | 'warehouse' | 'supplier' | 'po' | 'bom'>('warehouse');
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const { toast } = useToast();
 
@@ -200,7 +561,7 @@ const InventorySupplyChain = () => {
       .from('products')
       .select('*')
       .order('name');
-    
+
     if (error) throw error;
     setProducts(data || []);
   };
@@ -210,7 +571,7 @@ const InventorySupplyChain = () => {
       .from('warehouses')
       .select('*')
       .order('name');
-    
+
     if (error) throw error;
     setWarehouses(data || []);
   };
@@ -220,7 +581,7 @@ const InventorySupplyChain = () => {
       .from('suppliers')
       .select('*')
       .order('name');
-    
+
     if (error) throw error;
     setSuppliers(data || []);
   };
@@ -240,7 +601,7 @@ const InventorySupplyChain = () => {
         )
       `)
       .order('created_at', { ascending: false });
-    
+
     if (error) throw error;
     setPurchaseOrders(data || []);
   };
@@ -250,7 +611,7 @@ const InventorySupplyChain = () => {
       .from('boms')
       .select('*')
       .order('name');
-    
+
     if (error) throw error;
     setBoms(data || []);
   };
@@ -281,6 +642,154 @@ const InventorySupplyChain = () => {
       case 'received': return 'bg-success';
       case 'cancelled': return 'bg-destructive';
       default: return 'bg-muted';
+    }
+  };
+
+  const handleSaveProduct = async (data: any) => {
+    try {
+      if (selectedItem) {
+        const { error } = await supabase
+          .from('products')
+          .update({
+            name: data.name,
+            category: data.category,
+            stock_quantity: parseInt(data.stock_quantity),
+            min_stock_level: parseInt(data.min_stock_level),
+            price: parseFloat(data.price),
+            currency: data.currency,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', selectedItem.id);
+        if (error) throw error;
+        toast({ title: 'Product updated successfully' });
+      } else {
+        // Note: Products are usually created in ProductManager, but we allow edits here
+        // If we want to allow creation here, we need to handle all fields
+        toast({ title: 'Please use Product Manager to create new products', variant: 'destructive' });
+        return;
+      }
+      setDialogOpen(false);
+      setSelectedItem(null);
+      fetchProducts();
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const handleSaveSupplier = async (data: any) => {
+    try {
+      if (selectedItem) {
+        const { error } = await supabase
+          .from('suppliers')
+          .update({
+            name: data.name,
+            code: data.code,
+            contact_person: data.contact_person,
+            email: data.email,
+            phone: data.phone,
+            rating: parseInt(data.rating),
+            is_active: data.is_active,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', selectedItem.id);
+        if (error) throw error;
+        toast({ title: 'Supplier updated successfully' });
+      } else {
+        const { error } = await supabase
+          .from('suppliers')
+          .insert([{
+            name: data.name,
+            code: data.code,
+            contact_person: data.contact_person,
+            email: data.email,
+            phone: data.phone,
+            rating: parseInt(data.rating),
+            is_active: true
+          }]);
+        if (error) throw error;
+        toast({ title: 'Supplier created successfully' });
+      }
+      setDialogOpen(false);
+      setSelectedItem(null);
+      fetchSuppliers();
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const handleSavePO = async (data: any) => {
+    try {
+      if (selectedItem) {
+        const { error } = await supabase
+          .from('purchase_orders')
+          .update({
+            supplier_id: data.supplier_id,
+            po_number: data.po_number,
+            total_amount: parseFloat(data.total_amount),
+            currency: data.currency,
+            expected_delivery: data.expected_delivery || null,
+            status: data.status,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', selectedItem.id);
+        if (error) throw error;
+        toast({ title: 'Purchase Order updated successfully' });
+      } else {
+        const { error } = await supabase
+          .from('purchase_orders')
+          .insert([{
+            supplier_id: data.supplier_id,
+            po_number: data.po_number,
+            total_amount: parseFloat(data.total_amount),
+            currency: data.currency,
+            expected_delivery: data.expected_delivery || null,
+            status: data.status
+          }]);
+        if (error) throw error;
+        toast({ title: 'Purchase Order created successfully' });
+      }
+      setDialogOpen(false);
+      setSelectedItem(null);
+      fetchPurchaseOrders();
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const handleSaveBOM = async (data: any) => {
+    try {
+      if (selectedItem) {
+        const { error } = await supabase
+          .from('boms')
+          .update({
+            name: data.name,
+            code: data.code,
+            description: data.description,
+            version: data.version,
+            is_active: data.is_active,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', selectedItem.id);
+        if (error) throw error;
+        toast({ title: 'BOM updated successfully' });
+      } else {
+        const { error } = await supabase
+          .from('boms')
+          .insert([{
+            name: data.name,
+            code: data.code,
+            description: data.description,
+            version: data.version,
+            is_active: true
+          }]);
+        if (error) throw error;
+        toast({ title: 'BOM created successfully' });
+      }
+      setDialogOpen(false);
+      setSelectedItem(null);
+      fetchBOMs();
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
     }
   };
 
@@ -388,6 +897,7 @@ const InventorySupplyChain = () => {
                     <TableHead>Status</TableHead>
                     <TableHead>Unit Price</TableHead>
                     <TableHead>Total Value</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -414,6 +924,11 @@ const InventorySupplyChain = () => {
                         <TableCell>{product.currency} {Number(product.price).toLocaleString()}</TableCell>
                         <TableCell className="font-medium">
                           {product.currency} {(product.stock_quantity * Number(product.price)).toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="outline" size="sm" onClick={() => openDialog('product', product)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
                         </TableCell>
                       </TableRow>
                     );
@@ -557,7 +1072,7 @@ const InventorySupplyChain = () => {
                       <TableCell>
                         <div className="flex gap-2">
                           <Button variant="outline" size="sm" onClick={() => openDialog('po', po)}>
-                            <Eye className="h-4 w-4" />
+                            <Edit className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>
@@ -599,7 +1114,7 @@ const InventorySupplyChain = () => {
                   </p>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => openDialog('bom', bom)}>
-                      <Eye className="h-4 w-4" />
+                      <Edit className="h-4 w-4" />
                     </Button>
                   </div>
                 </CardContent>
@@ -611,19 +1126,29 @@ const InventorySupplyChain = () => {
 
       {/* Generic Dialog for CRUD operations */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {selectedItem ? 'Edit' : 'Add'} {dialogType === 'warehouse' ? 'Warehouse' : dialogType === 'supplier' ? 'Supplier' : dialogType === 'po' ? 'Purchase Order' : 'BOM'}
+              {selectedItem ? 'Edit' : 'Add'} {
+                dialogType === 'warehouse' ? 'Warehouse' :
+                  dialogType === 'supplier' ? 'Supplier' :
+                    dialogType === 'po' ? 'Purchase Order' :
+                      dialogType === 'bom' ? 'BOM' : 'Product'
+              }
             </DialogTitle>
             <DialogDescription>
-              {selectedItem ? 'Update the' : 'Create a new'} {dialogType === 'warehouse' ? 'warehouse' : dialogType === 'supplier' ? 'supplier' : dialogType === 'po' ? 'purchase order' : 'BOM'} record
+              {selectedItem ? 'Update the' : 'Create a new'} {
+                dialogType === 'warehouse' ? 'warehouse' :
+                  dialogType === 'supplier' ? 'supplier' :
+                    dialogType === 'po' ? 'purchase order' :
+                      dialogType === 'bom' ? 'BOM' : 'product'
+              } record
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="py-4">
             {dialogType === 'warehouse' && (
-              <WarehouseForm 
+              <WarehouseForm
                 warehouse={selectedItem}
                 onSave={async (data) => {
                   try {
@@ -665,23 +1190,34 @@ const InventorySupplyChain = () => {
                 }}
               />
             )}
-            {dialogType !== 'warehouse' && (
-              <p className="text-center text-muted-foreground">
-                Forms for {dialogType} management will be implemented here
-              </p>
+            {dialogType === 'product' && (
+              <ProductForm
+                product={selectedItem}
+                onSave={handleSaveProduct}
+              />
+            )}
+            {dialogType === 'supplier' && (
+              <SupplierForm
+                supplier={selectedItem}
+                onSave={handleSaveSupplier}
+              />
+            )}
+            {dialogType === 'po' && (
+              <PurchaseOrderForm
+                po={selectedItem}
+                suppliers={suppliers}
+                onSave={handleSavePO}
+              />
+            )}
+            {dialogType === 'bom' && (
+              <BOMForm
+                bom={selectedItem}
+                onSave={handleSaveBOM}
+              />
             )}
           </div>
 
-          {dialogType !== 'warehouse' && (
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button>
-                {selectedItem ? 'Update' : 'Create'}
-              </Button>
-            </DialogFooter>
-          )}
+          {/* DialogFooter is handled inside the forms */}
         </DialogContent>
       </Dialog>
     </div>

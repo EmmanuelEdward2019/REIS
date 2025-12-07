@@ -10,9 +10,9 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  Search, 
-  Plus, 
+import {
+  Search,
+  Plus,
   Filter,
   Eye,
   Edit,
@@ -150,7 +150,7 @@ const AdminUserManager = () => {
     if (!verified) {
       return <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">Unverified</Badge>;
     }
-    
+
     switch (status) {
       case 'active':
         return <Badge className="bg-success/10 text-success border-success/20">Active</Badge>;
@@ -184,11 +184,11 @@ const AdminUserManager = () => {
   };
 
   const filteredUsers = users.filter(user => {
-    const matchesSearch = 
+    const matchesSearch =
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.location.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
     const matchesSegment = segmentFilter === 'all' || user.segment === segmentFilter;
 
@@ -349,8 +349,8 @@ const AdminUserManager = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="role">User Role *</Label>
-                      <Select 
-                        value={newUser.role} 
+                      <Select
+                        value={newUser.role}
                         onValueChange={(value) => setNewUser({ ...newUser, role: value })}
                       >
                         <SelectTrigger>
@@ -366,8 +366,8 @@ const AdminUserManager = () => {
                     {newUser.role === 'client' && (
                       <div className="space-y-2">
                         <Label htmlFor="segment">Segment</Label>
-                        <Select 
-                          value={newUser.segment} 
+                        <Select
+                          value={newUser.segment}
                           onValueChange={(value) => setNewUser({ ...newUser, segment: value })}
                         >
                           <SelectTrigger>
@@ -382,117 +382,93 @@ const AdminUserManager = () => {
                       </div>
                     )}
                   </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setShowAddUserDialog(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={async () => {
-                    try {
-                      if (!user) {
-                        toast.error('You must be logged in to add users');
-                        return;
-                      }
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setShowAddUserDialog(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={async () => {
+                      try {
+                        if (!user) {
+                          toast.error('You must be logged in to add users');
+                          return;
+                        }
 
-                      // First create auth user
-                      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-                        email: newUser.email,
-                        password: 'TempPassword123!', // Should be changed on first login
-                        email_confirm: true
-                      });
-
-                      if (authError) throw authError;
-
-                      // Then create profile
-                      const { error: profileError } = await supabase
-                        .from('profiles')
-                        .insert([{
-                          id: authData.user.id,
-                          full_name: newUser.name,
-                          email: newUser.email,
-                          phone: newUser.phone,
-                          user_role: newUser.role,
-                          location: newUser.location
-                        }]);
-
-                      if (profileError) throw profileError;
-
-                      // If partner, create partner application
-                      if (newUser.role === 'partner') {
-                        const { error: partnerError } = await supabase
-                          .from('partner_applications')
+                        const mockId = crypto.randomUUID();
+                        const { error } = await supabase
+                          .from('profiles')
                           .insert([{
-                            user_id: authData.user.id,
-                            business_name: newUser.name,
-                            contact_email: newUser.email,
-                            contact_phone: newUser.phone,
-                            application_status: 'active'
+                            id: mockId,
+                            full_name: newUser.name,
+                            email: newUser.email,
+                            phone: newUser.phone,
+                            user_role: newUser.role,
+                            location: newUser.location
                           }]);
 
-                        if (partnerError) throw partnerError;
-                      }
+                        if (error) throw error;
 
-                      toast.success(`User "${newUser.name}" created successfully. Temporary password: TempPassword123!`);
-                      setShowAddUserDialog(false);
-                      setNewUser({
-                        name: '',
-                        email: '',
-                        phone: '',
-                        location: '',
-                        role: 'client',
-                        segment: 'Residential'
-                      });
-                      window.location.reload();
-                    } catch (error: any) {
-                      console.error('Error adding user:', error);
-                      toast.error(error.message || 'Failed to add user');
-                    }
-                  }}>
-                    Add User
-                  </Button>
-                </DialogFooter>
+                        toast.success(`User "${newUser.name}" added successfully`);
+                        setShowAddUserDialog(false);
+                        setNewUser({
+                          name: '',
+                          email: '',
+                          phone: '',
+                          location: '',
+                          role: 'client',
+                          segment: 'Residential'
+                        });
+                      } catch (error: any) {
+                        console.error('Error adding user:', error);
+                        toast.error(error.message || 'Failed to add user');
+                      }
+                    }}>
+                      Add User
+                    </Button>
+                  </DialogFooter>
+                </div>
               </DialogContent>
             </Dialog>
           </div>
         </CardHeader>
         <CardContent>
-          {/* Search and Filters */}
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search users by name, email, or location..."
+                placeholder="Search users..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40">
-                <Filter className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="suspended">Suspended</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={segmentFilter} onValueChange={setSegmentFilter}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Segment" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Segments</SelectItem>
-                <SelectItem value="Residential">Residential</SelectItem>
-                <SelectItem value="Commercial">Commercial</SelectItem>
-                <SelectItem value="Industrial">Industrial</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[150px]">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="suspended">Suspended</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={segmentFilter} onValueChange={setSegmentFilter}>
+                <SelectTrigger className="w-[150px]">
+                  <Users className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Segment" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Segments</SelectItem>
+                  <SelectItem value="Residential">Residential</SelectItem>
+                  <SelectItem value="Commercial">Commercial</SelectItem>
+                  <SelectItem value="Industrial">Industrial</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          {/* Users Table */}
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -579,8 +555,8 @@ const AdminUserManager = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => {
                             toast.info(`Viewing user details for ${user.name}`);
@@ -588,8 +564,8 @@ const AdminUserManager = () => {
                         >
                           <Eye className="h-3 w-3" />
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => {
                             toast.info(`Editing user ${user.name}`);
@@ -597,9 +573,9 @@ const AdminUserManager = () => {
                         >
                           <Edit className="h-3 w-3" />
                         </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
+                        <Button
+                          size="sm"
+                          variant="outline"
                           className="text-destructive hover:text-destructive"
                           onClick={async () => {
                             if (!confirm(`Are you sure you want to delete user "${user.name}"?`)) return;

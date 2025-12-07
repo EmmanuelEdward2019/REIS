@@ -10,12 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/sonner';
-import { 
-  Users, 
-  Building2, 
-  TrendingUp, 
-  AlertTriangle, 
-  CheckCircle, 
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Users,
+  Building2,
+  TrendingUp,
+  AlertTriangle,
+  CheckCircle,
   Clock,
   Database,
   Settings,
@@ -74,7 +75,6 @@ import {
 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import AdminProjectSegments from '@/components/admin/AdminProjectSegments';
-import AdminControllerManager from '@/components/admin/AdminControllerManager';
 import AdminUserManager from '@/components/admin/AdminUserManager';
 import AdminLoyaltyManager from '@/components/admin/AdminLoyaltyManager';
 import OrderManagement from '@/components/admin/OrderManagement';
@@ -82,12 +82,20 @@ import InventorySupplyChain from '@/components/admin/InventorySupplyChain';
 import PartnerCertificationsManager from '@/components/admin/PartnerCertificationsManager';
 import ProductApprovalManager from '@/components/admin/ProductApprovalManager';
 import EnhancedTicketingSystem from '@/components/crm/EnhancedTicketingSystem';
+import NewsManager from '@/components/admin/NewsManager';
+import EventsManager from '@/components/admin/EventsManager';
+import CaseStudiesManager from '@/components/admin/CaseStudiesManager';
+import ProductManager from '@/components/admin/ProductManager';
+import JobCodesManager from '@/components/admin/JobCodesManager';
+import IoTControllersManager from '@/components/admin/IoTControllersManager';
+import PartnerManager from '@/components/admin/PartnerManager';
 
 const AdminDashboard = () => {
   const { user, profile } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedTab, setSelectedTab] = useState('overview');
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   // State for real data
@@ -442,37 +450,37 @@ const AdminDashboard = () => {
 
   // Recent jobs with full CRM data
   const recentJobs = [
-    { 
-      id: 1, 
-      jobCode: "ET-REIS-RES-DES-2024-0001", 
-      client: "John Smith", 
-      service: "Design & Engineering", 
+    {
+      id: 1,
+      jobCode: "ET-REIS-RES-DES-2024-0001",
+      client: "John Smith",
+      service: "Design & Engineering",
       segment: "RES",
-      status: "ENG", 
+      status: "ENG",
       seriousness: 15,
       created: "2 hours ago",
       lastActivity: "30 min ago",
       assignedTo: "Sarah Connor"
     },
-    { 
-      id: 2, 
-      jobCode: "ET-REIS-COM-EPC-2024-0234", 
-      client: "TechCorp Ltd", 
-      service: "EPC", 
+    {
+      id: 2,
+      jobCode: "ET-REIS-COM-EPC-2024-0234",
+      client: "TechCorp Ltd",
+      service: "EPC",
       segment: "COM",
-      status: "PROC", 
+      status: "PROC",
       seriousness: 18,
       created: "1 day ago",
       lastActivity: "2 hours ago",
       assignedTo: "Mike Johnson"
     },
-    { 
-      id: 3, 
-      jobCode: "ET-REIS-IND-H2-2024-0445", 
-      client: "Industrial Energy", 
-      service: "Hydrogen Solutions", 
+    {
+      id: 3,
+      jobCode: "ET-REIS-IND-H2-2024-0445",
+      client: "Industrial Energy",
+      service: "Hydrogen Solutions",
       segment: "IND",
-      status: "COMM", 
+      status: "COMM",
       seriousness: 20,
       created: "3 days ago",
       lastActivity: "1 hour ago",
@@ -557,11 +565,93 @@ const AdminDashboard = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-secondary overflow-x-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">System Administration</h1>
             <p className="text-muted-foreground">Comprehensive CRM, Partner Network & System Management</p>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="flex flex-wrap gap-4 mb-8">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="relative bg-card border-border hover:bg-accent/10">
+                  Review KYC
+                  <Badge variant="destructive" className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center">
+                    {systemMetrics.pendingPartners}
+                  </Badge>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="top" className="w-full max-h-[80vh] overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>Pending KYC Reviews</SheetTitle>
+                </SheetHeader>
+                <div className="py-4">
+                  {partners.filter(p => ['submitted', 'under_review', 'kyc_pending'].includes(p.application_status)).length === 0 ? (
+                    <p className="text-muted-foreground">No pending KYC reviews.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {partners.filter(p => ['submitted', 'under_review', 'kyc_pending'].includes(p.application_status)).map(partner => (
+                        <div key={partner.id} className="flex justify-between items-center p-3 border rounded-lg bg-card">
+                          <div>
+                            <p className="font-medium">{partner.organization_name || partner.contact_name}</p>
+                            <p className="text-sm text-muted-foreground">{partner.application_status}</p>
+                          </div>
+                          <Button size="sm" onClick={() => setSelectedTab('partners')}>Review</Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="relative bg-card border-border hover:bg-accent/10">
+                  Overdue Tickets
+                  <Badge variant="destructive" className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center">
+                    0
+                  </Badge>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="top">
+                <SheetHeader>
+                  <SheetTitle>Overdue Tickets</SheetTitle>
+                </SheetHeader>
+                <div className="py-4">
+                  <p className="text-muted-foreground">No overdue tickets.</p>
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="relative bg-card border-border hover:bg-accent/10">
+                  Compliance Alerts
+                  <Badge variant="destructive" className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center">
+                    {systemAlerts.filter(a => a.type === 'compliance').length}
+                  </Badge>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="top">
+                <SheetHeader>
+                  <SheetTitle>Compliance Alerts</SheetTitle>
+                </SheetHeader>
+                <div className="py-4 space-y-2">
+                  {systemAlerts.filter(a => a.type === 'compliance').map(alert => (
+                    <div key={alert.id} className="p-3 bg-destructive/10 rounded-lg flex items-start gap-3">
+                      <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-destructive">{alert.message}</p>
+                        <p className="text-xs text-muted-foreground">{alert.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
 
           {/* Key Metrics */}
@@ -659,10 +749,9 @@ const AdminDashboard = () => {
             {/* Main Content */}
             <div className="lg:col-span-3">
               <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 h-auto">
+                <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 h-auto gap-4">
                   <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
                   <TabsTrigger value="segments" className="text-xs sm:text-sm">Segments</TabsTrigger>
-                  <TabsTrigger value="controllers" className="text-xs sm:text-sm">Controllers</TabsTrigger>
                   <TabsTrigger value="users" className="text-xs sm:text-sm">Users</TabsTrigger>
                   <TabsTrigger value="loyalty" className="text-xs sm:text-sm">Loyalty</TabsTrigger>
                   <TabsTrigger value="jobs" className="text-xs sm:text-sm">Jobs</TabsTrigger>
@@ -671,6 +760,10 @@ const AdminDashboard = () => {
                   <TabsTrigger value="tickets" className="text-xs sm:text-sm">Tickets</TabsTrigger>
                   <TabsTrigger value="orders" className="text-xs sm:text-sm">Orders</TabsTrigger>
                   <TabsTrigger value="inventory" className="text-xs sm:text-sm">Inventory</TabsTrigger>
+                  <TabsTrigger value="news" className="text-xs sm:text-sm">News</TabsTrigger>
+                  <TabsTrigger value="events" className="text-xs sm:text-sm">Events</TabsTrigger>
+                  <TabsTrigger value="case_studies" className="text-xs sm:text-sm px-3 py-2">Case Studies</TabsTrigger>
+                  <TabsTrigger value="iot_devices" className="text-xs sm:text-sm px-3 py-2">Controller</TabsTrigger>
                   <TabsTrigger value="metrics" className="text-xs sm:text-sm">Metrics</TabsTrigger>
                   <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
                   <TabsTrigger value="compliance" className="text-xs sm:text-sm">Compliance</TabsTrigger>
@@ -681,9 +774,6 @@ const AdminDashboard = () => {
                   <AdminProjectSegments />
                 </TabsContent>
 
-                <TabsContent value="controllers" className="space-y-6">
-                  <AdminControllerManager />
-                </TabsContent>
 
                 <TabsContent value="users" className="space-y-6">
                   <AdminUserManager />
@@ -694,7 +784,35 @@ const AdminDashboard = () => {
                 </TabsContent>
 
                 <TabsContent value="products" className="space-y-6">
-                  <ProductApprovalManager />
+                  <ProductManager />
+                </TabsContent>
+
+                <TabsContent value="news" className="space-y-6">
+                  <NewsManager />
+                </TabsContent>
+
+                <TabsContent value="events" className="space-y-6">
+                  <EventsManager />
+                </TabsContent>
+
+                <TabsContent value="case_studies" className="space-y-6">
+                  <CaseStudiesManager />
+                </TabsContent>
+
+                <TabsContent value="jobs" className="space-y-6">
+                  <JobCodesManager />
+                </TabsContent>
+
+                <TabsContent value="iot_devices" className="space-y-6">
+                  <IoTControllersManager />
+                </TabsContent>
+
+                <TabsContent value="orders" className="space-y-6">
+                  <OrderManagement />
+                </TabsContent>
+
+                <TabsContent value="inventory" className="space-y-6">
+                  <InventorySupplyChain />
                 </TabsContent>
 
                 <TabsContent value="overview" className="space-y-6">
@@ -711,8 +829,8 @@ const AdminDashboard = () => {
                       <CardContent>
                         <div className="space-y-4">
                           {recentJobs.map((job) => (
-                            <div 
-                              key={job.id} 
+                            <div
+                              key={job.id}
                               className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent/5 transition-colors cursor-pointer"
                               onClick={() => {
                                 setSelectedTab('jobs');
@@ -753,8 +871,8 @@ const AdminDashboard = () => {
                       <CardContent>
                         <div className="space-y-4">
                           {partnerApplications.map((partner) => (
-                            <div 
-                              key={partner.id} 
+                            <div
+                              key={partner.id}
                               className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent/5 transition-colors cursor-pointer"
                               onClick={() => {
                                 setSelectedTab('partners');
@@ -816,282 +934,18 @@ const AdminDashboard = () => {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="jobs" className="space-y-6">
-                  <Card className="bg-card border-border">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <CardTitle className="flex items-center gap-2">
-                            <Briefcase className="h-5 w-5" />
-                            Job Management
-                          </CardTitle>
-                          <CardDescription>All jobs across RES, COM, and IND segments</CardDescription>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Input 
-                            placeholder="Search jobs..." 
-                            value={searchTerm} 
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-64"
-                          />
-                          <Select value={filterStatus} onValueChange={setFilterStatus}>
-                            <SelectTrigger className="w-32">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="all">All Status</SelectItem>
-                              <SelectItem value="INTAKE">INTAKE</SelectItem>
-                              <SelectItem value="ENG">ENG</SelectItem>
-                              <SelectItem value="PROC">PROC</SelectItem>
-                              <SelectItem value="COMM">COMM</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={async () => {
-                              try {
-                                const exportData = recentJobs.map(job => ({
-                                  jobCode: job.jobCode,
-                                  client: job.client,
-                                  service: job.service,
-                                  status: job.status,
-                                  assignedTo: job.assignedTo
-                                }));
-                                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = `jobs-export-${new Date().toISOString().split('T')[0]}.json`;
-                                a.click();
-                                URL.revokeObjectURL(url);
-                                toast.success('Jobs exported successfully');
-                              } catch (error) {
-                                toast.error('Failed to export jobs');
-                              }
-                            }}
-                          >
-                            <Download className="h-4 w-4 mr-2" />
-                            Export
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Job Code</TableHead>
-                            <TableHead>Client</TableHead>
-                            <TableHead>Service</TableHead>
-                            <TableHead>Stage</TableHead>
-                            <TableHead>Seriousness</TableHead>
-                            <TableHead>Assigned To</TableHead>
-                            <TableHead>Last Activity</TableHead>
-                            <TableHead>Actions</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {recentJobs.map((job) => (
-                            <TableRow key={job.id}>
-                              <TableCell className="font-mono text-sm">{job.jobCode}</TableCell>
-                              <TableCell>{job.client}</TableCell>
-                              <TableCell>
-                                <Badge variant="outline">{job.service}</Badge>
-                              </TableCell>
-                              <TableCell>
-                                <Badge variant={getStatusBadgeVariant(job.status)}>{job.status}</Badge>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <div className={`w-2 h-2 rounded-full ${getSeriousnessColor(job.seriousness).replace('text-', 'bg-')}`} />
-                                  <span className={getSeriousnessColor(job.seriousness)}>{job.seriousness}</span>
-                                </div>
-                              </TableCell>
-                              <TableCell>{job.assignedTo}</TableCell>
-                              <TableCell className="text-muted-foreground">{job.lastActivity}</TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1">
-                                  <Button 
-                                    size="sm" 
-                                    variant="ghost"
-                                    onClick={() => {
-                                      toast.info(`Viewing job details for ${job.jobCode}`);
-                                    }}
-                                  >
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="ghost"
-                                    onClick={() => {
-                                      toast.info(`Editing job ${job.jobCode}`);
-                                    }}
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
 
                 <TabsContent value="partners" className="space-y-6">
-                  <Card className="bg-card border-border">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <CardTitle className="flex items-center gap-2">
-                            <UserCheck className="h-5 w-5" />
-                            Partner Network
-                          </CardTitle>
-                          <CardDescription>Manage partner onboarding, KYC, and compliance</CardDescription>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={async () => {
-                              try {
-                                const exportData = partners.map(p => ({
-                                  name: p.business_name || p.partnerName,
-                                  email: p.contact_email,
-                                  status: p.application_status || p.status,
-                                  region: p.region,
-                                  submitted: p.created_at
-                                }));
-                                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = `partners-export-${new Date().toISOString().split('T')[0]}.json`;
-                                a.click();
-                                URL.revokeObjectURL(url);
-                                toast.success('Partners exported successfully');
-                              } catch (error) {
-                                toast.error('Failed to export partners');
-                              }
-                            }}
-                          >
-                            <Download className="h-4 w-4 mr-2" />
-                            Export Partners
-                          </Button>
-                          <Button 
-                            size="sm"
-                            onClick={() => {
-                              const pendingPartners = partners.filter(p => 
-                                ['submitted', 'under_review', 'kyc_pending'].includes(p.application_status || p.status)
-                              );
-                              if (pendingPartners.length > 0) {
-                                toast.info(`Found ${pendingPartners.length} partners pending KYC review`);
-                              } else {
-                                toast.info('No partners pending KYC review');
-                              }
-                            }}
-                          >
-                            <UserCheck className="h-4 w-4 mr-2" />
-                            Review KYC ({systemMetrics.pendingPartners})
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Partner Name</TableHead>
-                            <TableHead>Class</TableHead>
-                            <TableHead>Region</TableHead>
-                            <TableHead>Specialty</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Completeness</TableHead>
-                            <TableHead>Submitted</TableHead>
-                            <TableHead>Actions</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {partnerApplications.map((partner) => (
-                            <TableRow key={partner.id}>
-                              <TableCell className="font-medium">{partner.partnerName}</TableCell>
-                              <TableCell>
-                                <Badge variant="outline">{partner.partnerClass}</Badge>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1">
-                                  <MapPin className="h-3 w-3" />
-                                  {partner.region}
-                                </div>
-                              </TableCell>
-                              <TableCell className="text-sm text-muted-foreground">{partner.specialist}</TableCell>
-                              <TableCell>
-                                <Badge variant={getStatusBadgeVariant(partner.status)}>{partner.status}</Badge>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <Progress value={partner.completeness} className="w-16 h-2" />
-                                  <span className="text-xs">{partner.completeness}%</span>
-                                </div>
-                              </TableCell>
-                              <TableCell className="text-muted-foreground">{partner.submitted}</TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1">
-                                  <Button 
-                                    size="sm" 
-                                    variant="ghost"
-                                    onClick={() => {
-                                      toast.info(`Viewing partner details for ${partner.partnerName}`);
-                                    }}
-                                  >
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="ghost"
-                                    onClick={async () => {
-                                      try {
-                                        await handleApprovePartner(partner.id);
-                                        toast.success(`Partner ${partner.partnerName} approved`);
-                                      } catch (error) {
-                                        toast.error('Failed to approve partner');
-                                      }
-                                    }}
-                                  >
-                                    <CheckCircle className="h-4 w-4" />
-                                  </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="ghost"
-                                    onClick={async () => {
-                                      const reason = prompt('Enter rejection reason:');
-                                      if (reason) {
-                                        try {
-                                          await handleRejectPartner(partner.id, reason);
-                                          toast.success(`Partner ${partner.partnerName} rejected`);
-                                        } catch (error) {
-                                          toast.error('Failed to reject partner');
-                                        }
-                                      }
-                                    }}
-                                  >
-                                    <XCircle className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </CardContent>
-                  </Card>
+                  <PartnerManager />
                 </TabsContent>
 
                 <TabsContent value="tickets" className="space-y-6">
                   {/* Enhanced Ticketing System with Hierarchy, SLA, and Internal Memos */}
-                  <EnhancedTicketingSystem userRole="admin" userId="admin-user-id" />
+                  <EnhancedTicketingSystem
+                    userRole="admin"
+                    userId="admin-user-id"
+                    filter={activeFilter === 'overdue' ? 'overdue' : 'all'}
+                  />
                 </TabsContent>
 
                 <TabsContent value="metrics" className="space-y-6">
@@ -1201,7 +1055,7 @@ const AdminDashboard = () => {
                             <span className="text-sm">Excellent (90-100)</span>
                             <div className="flex items-center gap-2">
                               <div className="w-24 bg-muted rounded-full h-2">
-                                <div className="bg-success h-2 rounded-full" style={{width: `${(environmentalMetrics.reisScore.distribution.excellent / systemMetrics.clients) * 100}%`}}></div>
+                                <div className="bg-success h-2 rounded-full" style={{ width: `${(environmentalMetrics.reisScore.distribution.excellent / systemMetrics.clients) * 100}%` }}></div>
                               </div>
                               <span className="text-sm font-medium text-success">{environmentalMetrics.reisScore.distribution.excellent}</span>
                             </div>
@@ -1210,7 +1064,7 @@ const AdminDashboard = () => {
                             <span className="text-sm">Good (80-89)</span>
                             <div className="flex items-center gap-2">
                               <div className="w-24 bg-muted rounded-full h-2">
-                                <div className="bg-primary h-2 rounded-full" style={{width: `${(environmentalMetrics.reisScore.distribution.good / systemMetrics.clients) * 100}%`}}></div>
+                                <div className="bg-primary h-2 rounded-full" style={{ width: `${(environmentalMetrics.reisScore.distribution.good / systemMetrics.clients) * 100}%` }}></div>
                               </div>
                               <span className="text-sm font-medium text-primary">{environmentalMetrics.reisScore.distribution.good}</span>
                             </div>
@@ -1219,7 +1073,7 @@ const AdminDashboard = () => {
                             <span className="text-sm">Average (70-79)</span>
                             <div className="flex items-center gap-2">
                               <div className="w-24 bg-muted rounded-full h-2">
-                                <div className="bg-accent h-2 rounded-full" style={{width: `${(environmentalMetrics.reisScore.distribution.average / systemMetrics.clients) * 100}%`}}></div>
+                                <div className="bg-accent h-2 rounded-full" style={{ width: `${(environmentalMetrics.reisScore.distribution.average / systemMetrics.clients) * 100}%` }}></div>
                               </div>
                               <span className="text-sm font-medium text-accent">{environmentalMetrics.reisScore.distribution.average}</span>
                             </div>
@@ -1228,7 +1082,7 @@ const AdminDashboard = () => {
                             <span className="text-sm">Needs Improvement (&lt;70)</span>
                             <div className="flex items-center gap-2">
                               <div className="w-24 bg-muted rounded-full h-2">
-                                <div className="bg-muted-foreground h-2 rounded-full" style={{width: `${(environmentalMetrics.reisScore.distribution.poor / systemMetrics.clients) * 100}%`}}></div>
+                                <div className="bg-muted-foreground h-2 rounded-full" style={{ width: `${(environmentalMetrics.reisScore.distribution.poor / systemMetrics.clients) * 100}%` }}></div>
                               </div>
                               <span className="text-sm font-medium text-muted-foreground">{environmentalMetrics.reisScore.distribution.poor}</span>
                             </div>
@@ -1299,8 +1153,8 @@ const AdminDashboard = () => {
                             <span className="text-sm">Preventive Maintenance</span>
                             <span className="text-sm font-medium text-primary">Up to date</span>
                           </div>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             className="w-full"
                             onClick={() => {
                               setSelectedTab('tickets');
@@ -1476,7 +1330,7 @@ const AdminDashboard = () => {
                             <span>High Quality (15-20)</span>
                             <div className="flex items-center gap-2">
                               <div className="w-16 bg-muted rounded-full h-2">
-                                <div className="bg-success h-2 rounded-full" style={{width: '78%'}}></div>
+                                <div className="bg-success h-2 rounded-full" style={{ width: '78%' }}></div>
                               </div>
                               <span className="text-sm">78%</span>
                             </div>
@@ -1485,7 +1339,7 @@ const AdminDashboard = () => {
                             <span>Medium Quality (10-14)</span>
                             <div className="flex items-center gap-2">
                               <div className="w-16 bg-muted rounded-full h-2">
-                                <div className="bg-primary h-2 rounded-full" style={{width: '45%'}}></div>
+                                <div className="bg-primary h-2 rounded-full" style={{ width: '45%' }}></div>
                               </div>
                               <span className="text-sm">45%</span>
                             </div>
@@ -1494,7 +1348,7 @@ const AdminDashboard = () => {
                             <span>Low Quality (6-9)</span>
                             <div className="flex items-center gap-2">
                               <div className="w-16 bg-muted rounded-full h-2">
-                                <div className="bg-accent h-2 rounded-full" style={{width: '23%'}}></div>
+                                <div className="bg-accent h-2 rounded-full" style={{ width: '23%' }}></div>
                               </div>
                               <span className="text-sm">23%</span>
                             </div>
@@ -1503,7 +1357,7 @@ const AdminDashboard = () => {
                             <span>Time Wasters (0-5)</span>
                             <div className="flex items-center gap-2">
                               <div className="w-16 bg-muted rounded-full h-2">
-                                <div className="bg-muted-foreground h-2 rounded-full" style={{width: '5%'}}></div>
+                                <div className="bg-muted-foreground h-2 rounded-full" style={{ width: '5%' }}></div>
                               </div>
                               <span className="text-sm">5%</span>
                             </div>
@@ -1602,14 +1456,6 @@ const AdminDashboard = () => {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="orders" className="space-y-6">
-                  <OrderManagement />
-                </TabsContent>
-
-                <TabsContent value="inventory" className="space-y-6">
-                  <InventorySupplyChain />
-                </TabsContent>
-
                 <TabsContent value="settings" className="space-y-6">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card className="bg-card border-border">
@@ -1621,8 +1467,8 @@ const AdminDashboard = () => {
                         <CardDescription>Manage CRM settings and automation rules</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={() => {
                             toast.info('Seriousness scoring rules configuration coming soon');
@@ -1631,8 +1477,8 @@ const AdminDashboard = () => {
                           <Target className="h-4 w-4 mr-2" />
                           Seriousness Scoring Rules
                         </Button>
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={() => {
                             toast.info('Automation workflows configuration coming soon');
@@ -1641,8 +1487,8 @@ const AdminDashboard = () => {
                           <RotateCcw className="h-4 w-4 mr-2" />
                           Automation Workflows
                         </Button>
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={() => {
                             toast.info('Service catalog management coming soon');
@@ -1651,8 +1497,8 @@ const AdminDashboard = () => {
                           <Globe className="h-4 w-4 mr-2" />
                           Service Catalog Management
                         </Button>
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={() => {
                             toast.info('Document templates management coming soon');
@@ -1661,8 +1507,8 @@ const AdminDashboard = () => {
                           <FileCheck className="h-4 w-4 mr-2" />
                           Document Templates
                         </Button>
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={() => {
                             toast.info('Email templates management coming soon');
@@ -1683,8 +1529,8 @@ const AdminDashboard = () => {
                         <CardDescription>Manage system access and permissions</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={() => {
                             setSelectedTab('users');
@@ -1694,8 +1540,8 @@ const AdminDashboard = () => {
                           <UserCheck className="h-4 w-4 mr-2" />
                           Internal Users ({systemMetrics.clients + systemMetrics.partners})
                         </Button>
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={() => {
                             toast.info('Role permissions management coming soon');
@@ -1704,8 +1550,8 @@ const AdminDashboard = () => {
                           <Shield className="h-4 w-4 mr-2" />
                           Role Permissions
                         </Button>
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={async () => {
                             try {
@@ -1733,8 +1579,8 @@ const AdminDashboard = () => {
                           <FileText className="h-4 w-4 mr-2" />
                           Audit Log Viewer
                         </Button>
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={async () => {
                             try {
@@ -1763,8 +1609,8 @@ const AdminDashboard = () => {
                           <Database className="h-4 w-4 mr-2" />
                           Data Export/Import
                         </Button>
-                        <Button 
-                          className="w-full justify-start" 
+                        <Button
+                          className="w-full justify-start"
                           variant="outline"
                           onClick={async () => {
                             try {
@@ -1836,10 +1682,9 @@ const AdminDashboard = () => {
                   <div className="space-y-3">
                     {systemAlerts.map((alert) => (
                       <div key={alert.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                        <div className={`w-2 h-2 rounded-full mt-2 ${
-                          alert.severity === 'high' ? 'bg-destructive animate-pulse' : 
+                        <div className={`w-2 h-2 rounded-full mt-2 ${alert.severity === 'high' ? 'bg-destructive animate-pulse' :
                           alert.severity === 'medium' ? 'bg-accent' : 'bg-primary'
-                        }`} />
+                          }`} />
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <Badge variant="outline" className="text-xs">
@@ -1852,9 +1697,9 @@ const AdminDashboard = () => {
                       </div>
                     ))}
                   </div>
-                  <Button 
-                    className="w-full mt-4" 
-                    size="sm" 
+                  <Button
+                    className="w-full mt-4"
+                    size="sm"
                     variant="outline"
                     onClick={() => {
                       setSelectedTab('tickets');
@@ -1872,44 +1717,48 @@ const AdminDashboard = () => {
                   <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button 
-                    className="w-full justify-start" 
-                    size="sm" 
+                  <Button
+                    className="w-full justify-start"
+                    size="sm"
                     variant="outline"
                     onClick={() => {
                       setSelectedTab('partners');
+                      setActiveFilter('kyc_pending');
                       toast.info('Navigating to partner KYC review');
                     }}
                   >
                     <UserCheck className="h-4 w-4 mr-2" />
                     Review KYC ({systemMetrics.pendingPartners})
                   </Button>
-                  <Button 
-                    className="w-full justify-start" 
-                    size="sm" 
+                  <Button
+                    className="w-full justify-start"
+                    size="sm"
                     variant="outline"
                     onClick={() => {
                       setSelectedTab('tickets');
+                      setActiveFilter('overdue');
                       toast.info('Viewing overdue tickets');
                     }}
                   >
                     <Clock className="h-4 w-4 mr-2" />
                     Overdue Tickets ({tickets.filter(t => t.status === 'OPEN' && new Date(t.created_at) < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length})
                   </Button>
-                  <Button 
-                    className="w-full justify-start" 
-                    size="sm" 
+                  <Button
+                    className="w-full justify-start"
+                    size="sm"
                     variant="outline"
                     onClick={() => {
-                      toast.info('Compliance alerts feature coming soon');
+                      setSelectedTab('compliance');
+                      setActiveFilter('alerts');
+                      toast.info('Viewing compliance alerts');
                     }}
                   >
                     <AlertCircle className="h-4 w-4 mr-2" />
                     Compliance Alerts (7)
                   </Button>
-                  <Button 
-                    className="w-full justify-start" 
-                    size="sm" 
+                  <Button
+                    className="w-full justify-start"
+                    size="sm"
                     variant="outline"
                     onClick={async () => {
                       try {

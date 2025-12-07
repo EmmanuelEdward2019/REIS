@@ -14,7 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { FileUpload } from '@/components/ui/file-upload';
-import { uploadMultipleFiles, UploadedFile } from '@/utils/fileUpload';
+import { uploadFiles, UploadedFile } from '@/utils/fileUpload';
 
 type PartnerType = 'company' | 'individual' | '';
 type PartnerClass = 'installation-company' | 'individual-installer' | 'marketing-company' | 'individual-marketer' | 'system-integrator' | 'engineering-consultancy' | 'logistics-warehousing' | 'ecommerce-reseller' | 'manufacturer-oem' | 'other' | '';
@@ -67,7 +67,7 @@ const BecomeAPartner = () => {
     password: '',
     enable2FA: false,
     privacyNoticeAccepted: false,
-    
+
     // Step 2: Partner Identity
     partnerType: '' as PartnerType,
     legalName: '',
@@ -78,7 +78,7 @@ const BecomeAPartner = () => {
     primaryContact: '',
     primaryContactEmail: '',
     primaryContactPhone: '',
-    
+
     // Step 3: Location & Regional Coverage
     baseCity: '',
     baseState: '',
@@ -86,22 +86,22 @@ const BecomeAPartner = () => {
     coverageRegions: [] as string[],
     serviceRadius: '',
     serviceAreas: [] as string[],
-    
+
     // Step 4: Partner Class
     partnerClass: '' as PartnerClass,
     otherClassDescription: '',
-    
+
     // Step 5: Field of Specialty
     specialties: [] as string[],
-    
+
     // Step 6: Services They Provide
     servicesProvided: [] as string[],
     productSkus: '',
-    
+
     // Step 7: Services They Need
     servicesNeeded: [] as string[],
     trainingCourses: [] as string[],
-    
+
     // Step 8: Competence & Capacity
     headcount: '',
     techniciansByGrade: '',
@@ -113,7 +113,7 @@ const BecomeAPartner = () => {
     hseLOTO: false,
     hseFirstAid: false,
     lastThreeProjects: '',
-    
+
     // Step 9: Compliance & Certifications
     companyRegistration: '',
     vatTin: '',
@@ -130,7 +130,7 @@ const BecomeAPartner = () => {
     atexCertifications: false,
     bosietCertification: false,
     dprApprovals: '',
-    
+
     // Step 10: Commercial
     bankDetails: '',
     preferredCurrency: '',
@@ -138,20 +138,20 @@ const BecomeAPartner = () => {
     commissionAgreementAccepted: false,
     feesAcknowledged: false,
     payoutPolicyAccepted: false,
-    
+
     // Step 11: Listings (for sales/marketing partners)
     productListings: [] as any[],
     returnPolicy: '',
     slaCommitments: '',
     mediaUploads: [] as string[],
-    
+
     // Step 12: Legal & Consent
     termsAccepted: false,
     dataConsentAccepted: false,
     antiBriberyAttestation: false,
     sanctionsConfirmation: false,
     nonCircumventionAccepted: false,
-    
+
     // Step 13: Summary & Submit (auto-generated fields)
     partnerId: '',
     applicationStatus: 'draft'
@@ -290,9 +290,9 @@ const BecomeAPartner = () => {
   const requiresProductListings = () => {
     // Show product listings for sales partners, manufacturers, and e-commerce resellers
     return formData.partnerCategory === 'sales' ||
-           formData.partnerClass === 'manufacturer-oem' ||
-           formData.partnerClass === 'ecommerce-reseller' ||
-           formData.servicesProvided.includes('Product sales');
+      formData.partnerClass === 'manufacturer-oem' ||
+      formData.partnerClass === 'ecommerce-reseller' ||
+      formData.servicesProvided.includes('Product sales');
   };
   const requiresNigeriaCompliance = () => formData.coverageRegions.includes('Nigeria');
   const requiresUKCompliance = () => formData.coverageRegions.includes('UK');
@@ -324,7 +324,7 @@ const BecomeAPartner = () => {
 
     setLoading(true);
     try {
-      const uploadedFiles = await uploadMultipleFiles(files, 'partner-documents', user.id);
+      const uploadedFiles = await uploadFiles(files, 'partner-documents', user.id);
 
       setFormData(prev => ({
         ...prev,
@@ -554,7 +554,7 @@ const BecomeAPartner = () => {
     }
     // Here you would normally submit to your backend
     console.log('Submitted form data:', updatedFormData);
-    
+
     // Move to summary step
     setCurrentStep(13);
     setFormData(updatedFormData);
@@ -614,12 +614,12 @@ const BecomeAPartner = () => {
                 <Label htmlFor="policyAccepted" className="text-sm leading-relaxed">
                   I have reviewed and accept the
                   {formData.partnerCountry && formData.partnerCategory ? (
-                    <a 
+                    <a
                       href={
                         formData.partnerCountry === 'NG' && formData.partnerCategory === 'installer' ? '/policy/installer-ng' :
-                        formData.partnerCountry === 'UK' && formData.partnerCategory === 'installer' ? '/policy/installer-uk' :
-                        formData.partnerCountry === 'NG' && formData.partnerCategory === 'sales' ? '/policy/marketplace-ng' :
-                        formData.partnerCountry === 'UK' && formData.partnerCategory === 'sales' ? '/policy/marketplace-uk' : '#'
+                          formData.partnerCountry === 'UK' && formData.partnerCategory === 'installer' ? '/policy/installer-uk' :
+                            formData.partnerCountry === 'NG' && formData.partnerCategory === 'sales' ? '/policy/marketplace-ng' :
+                              formData.partnerCountry === 'UK' && formData.partnerCategory === 'sales' ? '/policy/marketplace-uk' : '#'
                       }
                       className="ml-1 text-primary underline"
                     >Partner Policy</a>
@@ -708,7 +708,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Create Account</h2>
               <p className="text-muted-foreground">Start your partner journey with us</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
                 <Label htmlFor="email">Email Address (will be verified)</Label>
@@ -721,7 +721,7 @@ const BecomeAPartner = () => {
                   required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="phone">Phone Number (OTP verification)</Label>
                 <Input
@@ -733,7 +733,7 @@ const BecomeAPartner = () => {
                   required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -745,7 +745,7 @@ const BecomeAPartner = () => {
                   required
                 />
               </div>
-              
+
               <div className="md:col-span-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -756,7 +756,7 @@ const BecomeAPartner = () => {
                   <Label htmlFor="enable2FA">Enable Two-Factor Authentication (recommended)</Label>
                 </div>
               </div>
-              
+
               <div className="md:col-span-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -1158,7 +1158,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Location & Regional Coverage</h2>
               <p className="text-muted-foreground">Define your operational areas</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="baseCity">Base Location (City)</Label>
@@ -1170,7 +1170,7 @@ const BecomeAPartner = () => {
                   required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="baseState">State/Region</Label>
                 <Input
@@ -1180,7 +1180,7 @@ const BecomeAPartner = () => {
                   placeholder="England"
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="baseCountry">Country</Label>
                 <Input
@@ -1191,7 +1191,7 @@ const BecomeAPartner = () => {
                   required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="serviceRadius">Service Radius (km)</Label>
                 <Input
@@ -1203,7 +1203,7 @@ const BecomeAPartner = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label>Regional Coverage (Select all that apply)</Label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
@@ -1230,7 +1230,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Partner Class</h2>
               <p className="text-muted-foreground">What type of partner are you?</p>
             </div>
-            
+
             <div>
               <Label>Partner Class</Label>
               <Select value={formData.partnerClass} onValueChange={(value) => handleInputChange('partnerClass', value)}>
@@ -1246,7 +1246,7 @@ const BecomeAPartner = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             {formData.partnerClass === 'other' && (
               <div>
                 <Label htmlFor="otherClassDescription">Please specify your partner class</Label>
@@ -1270,7 +1270,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Field of Specialty</h2>
               <p className="text-muted-foreground">What sectors do you specialize in?</p>
             </div>
-            
+
             <div>
               <Label>Field of Specialty (Select all that apply)</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
@@ -1297,7 +1297,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Services You Provide</h2>
               <p className="text-muted-foreground">What services can you offer to us?</p>
             </div>
-            
+
             <div>
               <Label>Services You Provide (Select all that apply)</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
@@ -1313,7 +1313,7 @@ const BecomeAPartner = () => {
                 ))}
               </div>
             </div>
-            
+
             {requiresSalesFields() && (
               <div>
                 <Label htmlFor="productSkus">Product SKUs (list products you can sell)</Label>
@@ -1337,7 +1337,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Services You Need</h2>
               <p className="text-muted-foreground">What support do you need from us?</p>
             </div>
-            
+
             <div>
               <Label>Services You Need (Select all that apply)</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
@@ -1353,7 +1353,7 @@ const BecomeAPartner = () => {
                 ))}
               </div>
             </div>
-            
+
             {formData.servicesNeeded.includes('Professional training') && (
               <div>
                 <Label>Training Courses Needed</Label>
@@ -1382,7 +1382,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Competence & Capacity</h2>
               <p className="text-muted-foreground">Tell us about your capabilities</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="headcount">Team Size/Headcount</Label>
@@ -1395,7 +1395,7 @@ const BecomeAPartner = () => {
                   required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="techniciansByGrade">Technicians by Grade/Level</Label>
                 <Input
@@ -1405,7 +1405,7 @@ const BecomeAPartner = () => {
                   placeholder="L1: 5, L2: 3, L3: 2"
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="weeklyCapacity">Weekly Install Capacity (kW/MW)</Label>
                 <Input
@@ -1415,7 +1415,7 @@ const BecomeAPartner = () => {
                   placeholder="500 kW"
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="maxConcurrentProjects">Max Concurrent Projects</Label>
                 <Input
@@ -1427,7 +1427,7 @@ const BecomeAPartner = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="toolsEquipment">Tools & Equipment Owned</Label>
               <Textarea
@@ -1438,7 +1438,7 @@ const BecomeAPartner = () => {
                 rows={4}
               />
             </div>
-            
+
             <div>
               <Label htmlFor="lastThreeProjects">Last Three Projects (Name, Size, Date, Customer)</Label>
               <Textarea
@@ -1449,7 +1449,7 @@ const BecomeAPartner = () => {
                 rows={4}
               />
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="hsePrograms"
@@ -1469,7 +1469,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Compliance & Certifications</h2>
               <p className="text-muted-foreground">Legal and regulatory requirements</p>
             </div>
-            
+
             {requiresCompanyFields() ? (
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold">Company Requirements</h3>
@@ -1486,7 +1486,7 @@ const BecomeAPartner = () => {
                       required
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="vatTin">VAT/TIN Number</Label>
                     <Input
@@ -1513,7 +1513,7 @@ const BecomeAPartner = () => {
                       required
                     />
                   </div>
-                  
+
                   <div>
                     <FileUpload
                       label="Proof of Address"
@@ -1531,7 +1531,7 @@ const BecomeAPartner = () => {
                 </div>
               </div>
             )}
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="insurance">Insurance Coverage</Label>
@@ -1543,7 +1543,7 @@ const BecomeAPartner = () => {
                   required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="electricalLicense">Electrical License (if applicable)</Label>
                 <Input
@@ -1554,7 +1554,7 @@ const BecomeAPartner = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label>ISO Certifications</Label>
               <div className="grid grid-cols-3 gap-4 mt-2">
@@ -1570,7 +1570,7 @@ const BecomeAPartner = () => {
                 ))}
               </div>
             </div>
-            
+
             <div>
               <Label>Manufacturer Certifications</Label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
@@ -1586,11 +1586,11 @@ const BecomeAPartner = () => {
                 ))}
               </div>
             </div>
-            
+
             {(requiresOffshoreFields() || requiresOilGasFields()) && (
               <div className="space-y-4 border-t pt-6">
                 <h3 className="text-lg font-semibold">Sector-Specific Requirements</h3>
-                
+
                 {requiresOffshoreFields() && (
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -1601,7 +1601,7 @@ const BecomeAPartner = () => {
                     <Label htmlFor="bosietCertification">BOSIET/FOET Certification</Label>
                   </div>
                 )}
-                
+
                 {(requiresOffshoreFields() || requiresOilGasFields()) && (
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -1612,7 +1612,7 @@ const BecomeAPartner = () => {
                     <Label htmlFor="atexCertifications">ATEX/IECEx Certifications</Label>
                   </div>
                 )}
-                
+
                 {requiresOilGasFields() && (
                   <div>
                     <Label htmlFor="dprApprovals">DPR/NUC Approvals (if applicable)</Label>
@@ -1637,7 +1637,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Commercial Terms</h2>
               <p className="text-muted-foreground">Payment and commercial arrangements</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="bankDetails">Bank/Payee Details</Label>
@@ -1650,7 +1650,7 @@ const BecomeAPartner = () => {
                   required
                 />
               </div>
-              
+
               <div>
                 <Label>Preferred Currency</Label>
                 <Select value={formData.preferredCurrency} onValueChange={(value) => handleInputChange('preferredCurrency', value)}>
@@ -1666,7 +1666,7 @@ const BecomeAPartner = () => {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="md:col-span-2">
                 <Label htmlFor="paymentTerms">Preferred Payment Terms</Label>
                 <Select value={formData.paymentTerms} onValueChange={(value) => handleInputChange('paymentTerms', value)}>
@@ -1683,7 +1683,7 @@ const BecomeAPartner = () => {
                 </Select>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="commissionAgreementAccepted"
@@ -1696,7 +1696,7 @@ const BecomeAPartner = () => {
             </div>
           </div>
         );
-        
+
       case 11:
         return (
           <div className="space-y-6">
@@ -1792,7 +1792,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Legal & Consent</h2>
               <p className="text-muted-foreground">Final legal confirmations</p>
             </div>
-            
+
             <div className="space-y-6">
               <div className="flex items-start space-x-2">
                 <Checkbox
@@ -1805,7 +1805,7 @@ const BecomeAPartner = () => {
                   I accept the <span className="text-primary underline cursor-pointer">Partner Terms & Conditions</span> *
                 </Label>
               </div>
-              
+
               <div className="flex items-start space-x-2">
                 <Checkbox
                   id="dataConsentAccepted"
@@ -1817,7 +1817,7 @@ const BecomeAPartner = () => {
                   I consent to the processing of my data as described in the <span className="text-primary underline cursor-pointer">Data Processing Agreement</span> *
                 </Label>
               </div>
-              
+
               <div className="flex items-start space-x-2">
                 <Checkbox
                   id="antiBriberyAttestation"
@@ -1829,7 +1829,7 @@ const BecomeAPartner = () => {
                   I attest that my organization complies with all applicable anti-bribery and anti-money laundering laws *
                 </Label>
               </div>
-              
+
               <div className="flex items-start space-x-2">
                 <Checkbox
                   id="sanctionsConfirmation"
@@ -1842,7 +1842,7 @@ const BecomeAPartner = () => {
                 </Label>
               </div>
             </div>
-            
+
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
               <p className="text-sm text-amber-800">
                 <strong>Important:</strong> All fields marked with * are mandatory. Your application will be reviewed by our compliance team within 2-3 business days. You will receive email updates on your application status.
@@ -1859,7 +1859,7 @@ const BecomeAPartner = () => {
               <h2 className="text-2xl font-bold mb-2">Application Submitted Successfully!</h2>
               <p className="text-muted-foreground">Your partner application has been received</p>
             </div>
-            
+
             <div className="bg-green-50 border border-green-200 rounded-lg p-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-800 mb-2">
@@ -1869,20 +1869,20 @@ const BecomeAPartner = () => {
                   Please save this Partner ID for your records. You will need it for all future communications.
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 <div className="text-center p-4 bg-white rounded-lg">
                   <Phone className="w-8 h-8 text-blue-500 mx-auto mb-2" />
                   <h3 className="font-semibold">Email Verification</h3>
                   <p className="text-sm text-gray-600">Check your email for verification link</p>
                 </div>
-                
+
                 <div className="text-center p-4 bg-white rounded-lg">
                   <Shield className="w-8 h-8 text-amber-500 mx-auto mb-2" />
                   <h3 className="font-semibold">KYC Review</h3>
                   <p className="text-sm text-gray-600">1-2 business days</p>
                 </div>
-                
+
                 <div className="text-center p-4 bg-white rounded-lg">
                   <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
                   <h3 className="font-semibold">Account Activation</h3>
@@ -1890,7 +1890,7 @@ const BecomeAPartner = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-4">
                 Questions about your application? Contact our partner support team.
@@ -1918,11 +1918,11 @@ const BecomeAPartner = () => {
                 <Users className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">Partner Registration</span>
               </div>
-              
+
               <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
                 Become a Partner
               </h1>
-              
+
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Join our global network of renewable energy professionals and grow your business with industry-leading support.
               </p>
@@ -1941,7 +1941,7 @@ const BecomeAPartner = () => {
             <Card className="border-0 shadow-xl">
               <CardContent className="p-8">
                 {renderStep()}
-                
+
                 {/* Navigation Buttons */}
                 <div className="flex justify-between mt-8 pt-6 border-t">
                   {currentStep > 1 && currentStep < 13 && (
@@ -1950,10 +1950,10 @@ const BecomeAPartner = () => {
                       Previous
                     </Button>
                   )}
-                  
+
                   {currentStep < 12 && (
-                    <Button 
-                      onClick={nextStep} 
+                    <Button
+                      onClick={nextStep}
                       disabled={!canProceed()}
                       className={currentStep === 1 ? "ml-auto" : ""}
                     >
@@ -1961,7 +1961,7 @@ const BecomeAPartner = () => {
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   )}
-                  
+
                   {currentStep === 12 && (
                     <Button
                       onClick={handleSubmit}

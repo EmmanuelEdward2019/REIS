@@ -11,11 +11,11 @@ import { useCart } from '@/contexts/CartContext';
 import { useRegion } from '@/contexts/RegionContext';
 import { toast } from '@/components/ui/sonner';
 import { useTranslation } from 'react-i18next';
-import { 
-  ShoppingCart, 
-  Star, 
-  Truck, 
-  Shield, 
+import {
+  ShoppingCart,
+  Star,
+  Truck,
+  Shield,
   ArrowLeft,
   Check,
   Package,
@@ -61,7 +61,7 @@ const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const { region, formatCurrency } = useRegion();
+  const { region, formatCurrency, convertPrice } = useRegion();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -87,9 +87,9 @@ const ProductDetail = () => {
         .single();
 
       if (error) throw error;
-      
+
       setProduct(data);
-      
+
       // Fetch related products
       if (data) {
         const { data: related } = await supabase
@@ -99,7 +99,7 @@ const ProductDetail = () => {
           .eq('is_active', true)
           .neq('id', id)
           .limit(4);
-        
+
         setRelatedProducts(related || []);
       }
     } catch (error: any) {
@@ -141,7 +141,7 @@ const ProductDetail = () => {
 
   const getProductPrice = () => {
     if (!product) return 0;
-    return region.currency === 'GBP' ? product.price_gbp : product.price_ngn;
+    return convertPrice(product.price_ngn);
   };
 
   const getProductImage = (images: string[], index: number = 0) => {
@@ -238,7 +238,7 @@ const ProductDetail = () => {
                   }}
                 />
               </div>
-              
+
               {/* Image Thumbnails */}
               {product.images && product.images.length > 1 && (
                 <div className="grid grid-cols-4 gap-2">
@@ -246,9 +246,8 @@ const ProductDetail = () => {
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`aspect-square rounded-md overflow-hidden border-2 ${
-                        selectedImage === index ? 'border-primary' : 'border-transparent'
-                      }`}
+                      className={`aspect-square rounded-md overflow-hidden border-2 ${selectedImage === index ? 'border-primary' : 'border-transparent'
+                        }`}
                     >
                       <img
                         src={image}
@@ -286,11 +285,10 @@ const ProductDetail = () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-5 h-5 ${
-                        i < Math.floor(Number(calculateAverageRating()))
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
-                      }`}
+                      className={`w-5 h-5 ${i < Math.floor(Number(calculateAverageRating()))
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-gray-300'
+                        }`}
                     />
                   ))}
                 </div>
@@ -300,8 +298,25 @@ const ProductDetail = () => {
               </div>
 
               {/* Price */}
-              <div className="text-4xl font-bold text-primary">
-                {formatCurrency(getProductPrice())}
+              <div className="space-y-2">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Unit Price</p>
+                  <div className="text-3xl font-bold text-primary">
+                    {formatCurrency(getProductPrice())}
+                  </div>
+                </div>
+
+                {/* Total Price (shown when quantity > 1) */}
+                {quantity > 1 && (
+                  <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">
+                      Total Price ({quantity} {quantity === 1 ? 'item' : 'items'})
+                    </p>
+                    <div className="text-2xl font-bold text-primary">
+                      {formatCurrency(getProductPrice() * quantity)}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Stock Status */}
@@ -336,6 +351,9 @@ const ProductDetail = () => {
                       +
                     </Button>
                   </div>
+                  <span className="text-sm text-muted-foreground">
+                    {product.stock_quantity} available
+                  </span>
                 </div>
               </div>
 
@@ -427,11 +445,10 @@ const ProductDetail = () => {
                                 {[...Array(5)].map((_, i) => (
                                   <Star
                                     key={i}
-                                    className={`w-4 h-4 ${
-                                      i < review.rating
-                                        ? 'fill-yellow-400 text-yellow-400'
-                                        : 'text-gray-300'
-                                    }`}
+                                    className={`w-4 h-4 ${i < review.rating
+                                      ? 'fill-yellow-400 text-yellow-400'
+                                      : 'text-gray-300'
+                                      }`}
                                   />
                                 ))}
                               </div>
@@ -484,11 +501,7 @@ const ProductDetail = () => {
                         <p className="text-sm text-muted-foreground mb-2">{relatedProduct.brand}</p>
                       )}
                       <p className="text-lg font-bold text-primary">
-                        {formatCurrency(
-                          region.currency === 'GBP'
-                            ? relatedProduct.price_gbp
-                            : relatedProduct.price_ngn
-                        )}
+                        {formatCurrency(convertPrice(relatedProduct.price_ngn))}
                       </p>
                     </CardContent>
                   </Card>

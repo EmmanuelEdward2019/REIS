@@ -43,7 +43,7 @@ import {
 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import EnhancedTicketingSystem from '@/components/crm/EnhancedTicketingSystem';
-import PartnerProductManager from '@/components/partner/PartnerProductManager';
+import ProductManager from '@/components/admin/ProductManager';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/sonner';
@@ -426,35 +426,35 @@ const PartnersDashboard = () => {
 
   // Mock available tasks for marketplace (will be replaced with real data)
   const availableTasks = availableJobs.length > 0 ? availableJobs : [
-    { 
-      id: 1, 
+    {
+      id: 1,
       jobCode: 'ET-REIS-COM-EPC-2024-0198',
-      title: "Commercial Solar EPC Project", 
-      location: "Victoria Island, Lagos", 
-      budget: "₦42,000,000", 
-      urgency: "high", 
+      title: "Commercial Solar EPC Project",
+      location: "Victoria Island, Lagos",
+      budget: "₦42,000,000",
+      urgency: "high",
       skills: ["Solar EPC", "Grid Connection", "Commercial"],
       description: "500kW rooftop solar installation for office complex",
       deadline: "2024-03-15"
     },
-    { 
-      id: 2, 
+    {
+      id: 2,
       jobCode: 'ET-REIS-IND-O&M-2024-0205',
-      title: "Industrial BESS Maintenance", 
-      location: "Onne, Rivers State", 
-      budget: "₦12,800,000", 
-      urgency: "medium", 
+      title: "Industrial BESS Maintenance",
+      location: "Onne, Rivers State",
+      budget: "₦12,800,000",
+      urgency: "medium",
       skills: ["Battery Storage", "O&M", "Industrial"],
       description: "Quarterly maintenance of 2MW battery storage system",
       deadline: "2024-02-28"
     },
-    { 
-      id: 3, 
+    {
+      id: 3,
       jobCode: 'ET-REIS-OFF-CNSL-2024-0189',
-      title: "Offshore Wind Assessment", 
-      location: "Lagos Continental Shelf", 
-      budget: "₺18,500,000", 
-      urgency: "medium", 
+      title: "Offshore Wind Assessment",
+      location: "Lagos Continental Shelf",
+      budget: "₺18,500,000",
+      urgency: "medium",
       skills: ["Offshore", "Wind", "Consulting"],
       description: "Feasibility study for 50MW offshore wind farm",
       deadline: "2024-04-20"
@@ -488,7 +488,7 @@ const PartnersDashboard = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-secondary overflow-x-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -506,8 +506,8 @@ const PartnersDashboard = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => {
                   toast.info('Notifications feature coming soon');
@@ -516,8 +516,8 @@ const PartnersDashboard = () => {
                 <Bell className="h-4 w-4 mr-2" />
                 Notifications
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => {
                   toast.info('Settings feature coming soon');
@@ -637,7 +637,7 @@ const PartnersDashboard = () => {
                 <TabsContent value="dashboard" className="space-y-6">
                   {/* Quick Actions */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card 
+                    <Card
                       className="bg-card border-border hover:bg-accent/5 transition-colors cursor-pointer"
                       onClick={() => {
                         setActiveView('marketplace');
@@ -657,7 +657,7 @@ const PartnersDashboard = () => {
                       </CardContent>
                     </Card>
 
-                    <Card 
+                    <Card
                       className="bg-card border-border hover:bg-accent/5 transition-colors cursor-pointer"
                       onClick={() => {
                         toast.info('Performance analytics feature coming soon');
@@ -676,7 +676,7 @@ const PartnersDashboard = () => {
                       </CardContent>
                     </Card>
 
-                    <Card 
+                    <Card
                       className="bg-card border-border hover:bg-accent/5 transition-colors cursor-pointer"
                       onClick={async () => {
                         try {
@@ -736,8 +736,8 @@ const PartnersDashboard = () => {
                               <Badge className={getJobStatusColor(job.status)}>
                                 {job.status}
                               </Badge>
-                              <Button 
-                                variant="outline" 
+                              <Button
+                                variant="outline"
                                 size="sm"
                                 onClick={() => {
                                   toast.info(`Viewing job details for ${job.code}`);
@@ -752,78 +752,78 @@ const PartnersDashboard = () => {
                     </CardContent>
                   </Card>
 
-          {/* Onboarding Summary (read-only) */}
-          {onboarding && (
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Onboarding Selections
-                </CardTitle>
-                <CardDescription>Key details from your submitted application</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <div className="text-muted-foreground">Country</div>
-                    <div className="font-medium">{onboarding.partnerCountry || '-'}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Category</div>
-                    <div className="font-medium">{onboarding.partnerCategory || '-'}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Account Type</div>
-                    <div className="font-medium">{onboarding.partnerType || '-'}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Legal Name</div>
-                    <div className="font-medium break-words">{onboarding.legalName || '-'}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Trading Name</div>
-                    <div className="font-medium break-words">{onboarding.tradingName || '-'}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Registration No.</div>
-                    <div className="font-medium break-words">{onboarding.companyRegistration || '-'}</div>
-                  </div>
-                  <div className="md:col-span-3">
-                    <div className="text-muted-foreground">Registered Address</div>
-                    <div className="font-medium break-words">{onboarding.registeredAddress || '-'}</div>
-                  </div>
-                  <div className="md:col-span-3">
-                    <div className="text-muted-foreground">Services Provided</div>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {(onboarding.servicesProvided || []).map((s: string) => (
-                        <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="md:col-span-3">
-                    <div className="text-muted-foreground">Product Categories</div>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {(onboarding.specialties || []).map((s: string) => (
-                        <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Currency</div>
-                    <div className="font-medium">{onboarding.preferredCurrency || '-'}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Payment Terms</div>
-                    <div className="font-medium break-words">{onboarding.paymentTerms || '-'}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Partner ID</div>
-                    <div className="font-medium">{onboarding.partnerId || '-'}</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                  {/* Onboarding Summary (read-only) */}
+                  {onboarding && (
+                    <Card className="bg-card border-border">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <FileText className="h-5 w-5" />
+                          Onboarding Selections
+                        </CardTitle>
+                        <CardDescription>Key details from your submitted application</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <div className="text-muted-foreground">Country</div>
+                            <div className="font-medium">{onboarding.partnerCountry || '-'}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Category</div>
+                            <div className="font-medium">{onboarding.partnerCategory || '-'}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Account Type</div>
+                            <div className="font-medium">{onboarding.partnerType || '-'}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Legal Name</div>
+                            <div className="font-medium break-words">{onboarding.legalName || '-'}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Trading Name</div>
+                            <div className="font-medium break-words">{onboarding.tradingName || '-'}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Registration No.</div>
+                            <div className="font-medium break-words">{onboarding.companyRegistration || '-'}</div>
+                          </div>
+                          <div className="md:col-span-3">
+                            <div className="text-muted-foreground">Registered Address</div>
+                            <div className="font-medium break-words">{onboarding.registeredAddress || '-'}</div>
+                          </div>
+                          <div className="md:col-span-3">
+                            <div className="text-muted-foreground">Services Provided</div>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {(onboarding.servicesProvided || []).map((s: string) => (
+                                <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="md:col-span-3">
+                            <div className="text-muted-foreground">Product Categories</div>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {(onboarding.specialties || []).map((s: string) => (
+                                <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Currency</div>
+                            <div className="font-medium">{onboarding.preferredCurrency || '-'}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Payment Terms</div>
+                            <div className="font-medium break-words">{onboarding.paymentTerms || '-'}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Partner ID</div>
+                            <div className="font-medium">{onboarding.partnerId || '-'}</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
 
                   {/* Partner Documents */}
                   <Card className="bg-card border-border">
@@ -862,8 +862,8 @@ const PartnersDashboard = () => {
                           <CardDescription>Track all your REIS job codes and project pipeline</CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
                             onClick={() => {
                               toast.info('Filter options coming soon');
@@ -872,8 +872,8 @@ const PartnersDashboard = () => {
                             <Filter className="h-4 w-4 mr-2" />
                             Filter
                           </Button>
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
                             onClick={() => {
                               toast.info('Search functionality is active in the search input above');
@@ -915,8 +915,8 @@ const PartnersDashboard = () => {
                                 <Badge className={getJobStatusColor(job.status)}>
                                   {job.status}
                                 </Badge>
-                                <Button 
-                                  variant="outline" 
+                                <Button
+                                  variant="outline"
                                   size="sm"
                                   onClick={() => {
                                     toast.info(`Managing job ${job.code}`);
@@ -927,26 +927,26 @@ const PartnersDashboard = () => {
                                 </Button>
                               </div>
                             </div>
-                            
+
                             {/* Job Progress Indicator */}
                             <div className="space-y-2">
                               <div className="flex justify-between text-xs text-muted-foreground">
                                 <span>Progress</span>
                                 <span>{job.status}</span>
                               </div>
-                              <Progress 
+                              <Progress
                                 value={
                                   job.status === 'INTAKE' ? 10 :
-                                  job.status === 'CONSULT' ? 20 :
-                                  job.status === 'DATA-REVIEW' ? 30 :
-                                  job.status === 'SITE-AUDIT' ? 40 :
-                                  job.status === 'ENG' ? 60 :
-                                  job.status === 'PROC' ? 70 :
-                                  job.status === 'CONSTR' ? 85 :
-                                  job.status === 'COMM' ? 95 :
-                                  job.status === 'O&M' ? 100 : 0
-                                } 
-                                className="h-2" 
+                                    job.status === 'CONSULT' ? 20 :
+                                      job.status === 'DATA-REVIEW' ? 30 :
+                                        job.status === 'SITE-AUDIT' ? 40 :
+                                          job.status === 'ENG' ? 60 :
+                                            job.status === 'PROC' ? 70 :
+                                              job.status === 'CONSTR' ? 85 :
+                                                job.status === 'COMM' ? 95 :
+                                                  job.status === 'O&M' ? 100 : 0
+                                }
+                                className="h-2"
                               />
                             </div>
                           </div>
@@ -1008,7 +1008,7 @@ const PartnersDashboard = () => {
                               </div>
                               <Badge variant={
                                 task.urgency === 'high' ? 'destructive' :
-                                task.urgency === 'medium' ? 'secondary' : 'outline'
+                                  task.urgency === 'medium' ? 'secondary' : 'outline'
                               }>
                                 {task.urgency} priority
                               </Badge>
@@ -1025,8 +1025,8 @@ const PartnersDashboard = () => {
                                 </div>
                               </div>
                               <div className="flex items-center gap-2">
-                                <Button 
-                                  variant="outline" 
+                                <Button
+                                  variant="outline"
                                   size="sm"
                                   onClick={() => {
                                     toast.info(`Viewing details for ${task.title}`);
@@ -1034,8 +1034,8 @@ const PartnersDashboard = () => {
                                 >
                                   View Details
                                 </Button>
-                                <Button 
-                                  size="sm" 
+                                <Button
+                                  size="sm"
                                   variant="default"
                                   onClick={async () => {
                                     try {
@@ -1058,7 +1058,7 @@ const PartnersDashboard = () => {
                 </TabsContent>
 
                 <TabsContent value="products" className="space-y-6">
-                  <PartnerProductManager />
+                  <ProductManager />
                 </TabsContent>
 
                 <TabsContent value="commissions" className="space-y-6">
@@ -1081,12 +1081,12 @@ const PartnersDashboard = () => {
                                   const amount = parseFloat(c.amount.replace(/[₦,]/g, ''));
                                   return sum + (isNaN(amount) ? 0 : amount);
                                 }, 0);
-                              
+
                               if (pendingAmount === 0) {
                                 toast.info('No pending payouts available');
                                 return;
                               }
-                              
+
                               toast.success(`Payout request submitted for ₦${pendingAmount.toLocaleString()}`);
                             } catch (error) {
                               toast.error('Failed to request payout');
@@ -1136,7 +1136,7 @@ const PartnersDashboard = () => {
                               <p className="font-medium text-lg">{commission.amount}</p>
                               <Badge variant={
                                 commission.status === 'Paid' ? 'default' :
-                                commission.status === 'Approved' ? 'secondary' : 'outline'
+                                  commission.status === 'Approved' ? 'secondary' : 'outline'
                               }>
                                 {commission.status}
                               </Badge>
@@ -1146,8 +1146,8 @@ const PartnersDashboard = () => {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="w-full"
                           onClick={async () => {
                             try {
@@ -1175,8 +1175,8 @@ const PartnersDashboard = () => {
                           <Download className="h-4 w-4 mr-2" />
                           Download Statement
                         </Button>
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="w-full"
                           onClick={() => {
                             const referralLink = `${window.location.origin}/partners?ref=${user?.id || 'partner'}`;
@@ -1215,7 +1215,7 @@ const PartnersDashboard = () => {
                               Accepted
                             </Badge>
                           </div>
-                          
+
                           <div className="flex items-center justify-between p-3 border border-border rounded-lg">
                             <div>
                               <h4 className="font-medium">KYC Verification</h4>
@@ -1374,7 +1374,7 @@ const PartnersDashboard = () => {
                         {partnerProfile.status}
                       </Badge>
                     </div>
-                    
+
                     <div className="space-y-3">
                       <div className="text-sm">
                         <div className="flex items-center gap-2 text-muted-foreground mb-1">
@@ -1445,8 +1445,8 @@ const PartnersDashboard = () => {
                   <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button 
-                    className="w-full justify-start" 
+                  <Button
+                    className="w-full justify-start"
                     variant="outline"
                     onClick={() => {
                       toast.info('Schedule installation feature coming soon');
@@ -1455,8 +1455,8 @@ const PartnersDashboard = () => {
                     <Calendar className="h-4 w-4 mr-2" />
                     Schedule Installation
                   </Button>
-                  <Button 
-                    className="w-full justify-start" 
+                  <Button
+                    className="w-full justify-start"
                     variant="outline"
                     onClick={() => {
                       toast.info('Document upload feature coming soon');
@@ -1465,8 +1465,8 @@ const PartnersDashboard = () => {
                     <Upload className="h-4 w-4 mr-2" />
                     Upload Completion Docs
                   </Button>
-                  <Button 
-                    className="w-full justify-start" 
+                  <Button
+                    className="w-full justify-start"
                     variant="outline"
                     onClick={async () => {
                       try {
@@ -1476,12 +1476,12 @@ const PartnersDashboard = () => {
                             const amount = parseFloat(c.amount.replace(/[₦,]/g, ''));
                             return sum + (isNaN(amount) ? 0 : amount);
                           }, 0);
-                        
+
                         if (pendingAmount === 0) {
                           toast.info('No pending payments available');
                           return;
                         }
-                        
+
                         toast.success(`Payment request submitted for ₦${pendingAmount.toLocaleString()}`);
                       } catch (error) {
                         toast.error('Failed to request payment');

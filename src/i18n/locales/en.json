@@ -130,14 +130,26 @@
   "cart": {
     "title": "Shopping Cart",
     "empty": "Your cart is empty",
+    "empty_description": "Add some products to get started",
+    "browse_products": "Browse Products",
     "subtotal": "Subtotal",
+    "tax": "Tax (7.5%)",
+    "shipping": "Shipping",
     "total": "Total",
     "checkout": "Proceed to Checkout",
     "continue_shopping": "Continue Shopping",
     "remove": "Remove",
     "quantity": "Quantity",
-    "item": "Item",
-    "items": "Items"
+    "item": "item",
+    "items": "items",
+    "in_cart": "in your cart",
+    "max_stock": "Max stock reached",
+    "order_summary": "Order Summary",
+    "prices_in": "Prices in",
+    "secure_checkout": "Secure Checkout",
+    "free_shipping": "Free shipping over",
+    "return_policy": "30-day return policy",
+    "warranty": "1-year warranty"
   },
   "product": {
     "description": "Description",
@@ -150,9 +162,16 @@
     "sku": "SKU",
     "category": "Category",
     "brand": "Brand",
-    "warranty": "Warranty",
+    "warranty": "1-Year Warranty",
     "in_stock": "In Stock",
-    "out_of_stock": "Out of Stock"
+    "out_of_stock": "Out of Stock",
+    "low_stock": "Only {{count}} left in stock",
+    "no_description": "No description available",
+    "no_specifications": "No specifications available",
+    "no_reviews": "No reviews yet. Be the first to review this product!",
+    "verified_purchase": "Verified Purchase",
+    "free_shipping": "Free Shipping",
+    "easy_returns": "Easy Returns"
   },
   "checkout": {
     "title": "Checkout",
@@ -246,6 +265,59 @@
     "validation": "Please check your input and try again.",
     "server": "Server error. Please try again later."
   },
+  "services": {
+    "title": "Comprehensive Energy Services",
+    "subtitle": "From installation to ongoing support, our comprehensive service portfolio ensures optimal performance and maximum return on your renewable energy investment.",
+    "badge": "Professional Services",
+    "projects_completed": "Projects Completed",
+    "support_available": "Support Available",
+    "uptime_guarantee": "Uptime Guarantee",
+    "portfolio_title": "Our Service Portfolio",
+    "portfolio_description": "Comprehensive services designed to maximize the performance and longevity of your renewable energy systems.",
+    "specialized_title": "Specialized Services",
+    "specialized_description": "Expert services tailored to your specific needs and requirements.",
+    "support_plans_title": "Support Plans",
+    "support_plans_description": "Choose the support level that best fits your needs and budget.",
+    "cta_title": "Ready to Get Started?",
+    "cta_description": "Contact our team to discuss your service needs and get a customized solution that fits your requirements.",
+    "contact_sales": "Contact Sales Team",
+    "schedule_consultation": "Schedule Consultation",
+    "learn_more": "Learn More",
+    "get_quote": "Get Quote",
+    "choose_plan": "Choose Plan",
+    "starting_at": "Starting at",
+    "per_month": "/month",
+    "custom_pricing": "Custom pricing",
+    "most_popular": "Most Popular",
+    "performance": {
+      "title": "Performance Services",
+      "description": "Optimize system performance and maximize energy output"
+    },
+    "maintenance": {
+      "title": "Maintenance \u0026 Support",
+      "description": "Comprehensive maintenance and technical support services"
+    },
+    "monitoring": {
+      "title": "Monitoring \u0026 Analytics",
+      "description": "Real-time system monitoring and data analytics"
+    },
+    "consultation": {
+      "title": "Consultation \u0026 Advisory",
+      "description": "Expert consultation and strategic advisory services"
+    },
+    "installation": {
+      "title": "Installation Services",
+      "description": "Professional installation by certified technicians"
+    },
+    "training": {
+      "title": "Training \u0026 Certification",
+      "description": "Comprehensive training programs for your team"
+    },
+    "support_247": {
+      "title": "24/7 Support",
+      "description": "Round-the-clock technical support and monitoring"
+    }
+  },
   "success": {
     "saved": "Saved successfully",
     "updated": "Updated successfully",
@@ -254,4 +326,3 @@
     "sent": "Sent successfully"
   }
 }
-

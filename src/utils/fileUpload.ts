@@ -13,13 +13,13 @@ export interface UploadedFile {
  * @param file - The file to upload
  * @param bucket - The storage bucket name (default: 'partner-documents')
  * @param folder - Optional folder path within the bucket
- * @returns The public URL of the uploaded file
+ * @returns The uploaded file object with metadata
  */
 export async function uploadFile(
   file: File,
   bucket: string = 'partner-documents',
   folder?: string
-): Promise<string> {
+): Promise<UploadedFile> {
   try {
     // Validate file size (max 10MB)
     const maxSize = 10 * 1024 * 1024; // 10MB in bytes
@@ -49,7 +49,7 @@ export async function uploadFile(
     const randomString = Math.random().toString(36).substring(2, 15);
     const fileExt = file.name.split('.').pop();
     const fileName = `${timestamp}_${randomString}.${fileExt}`;
-    
+
     // Construct file path
     const filePath = folder ? `${folder}/${fileName}` : fileName;
 
@@ -67,71 +67,110 @@ export async function uploadFile(
     }
 
     // Get public URL
-    const { data: urlData } = supabase.storage
-      .from(bucket)
-      .getPublicUrl(filePath);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(bucket).getPublicUrl(filePath);
 
-    return urlData.publicUrl;
+    return {
+      name: file.name,
+      url: publicUrl,
+      size: file.size,
+      type: file.type,
+      uploadedAt: new Date(),
+    };
   } catch (error) {
-    console.error('File upload error:', error);
-    throw error;
+    console.error('Error uploading file:', error);
+    throw error instanceof Error ? error : new Error('Failed to upload file');
   }
 }
 
 /**
  * Upload multiple files to Supabase Storage
- * @param files - Array of files or FileList to upload
+ * @param files - Array of files to upload
  * @param bucket - The storage bucket name
- * @param folder - Optional folder path within the bucket
- * @returns Array of uploaded file information
+ * @param path - Optional path within the bucket
+ * @param options - Upload options
+ * @returns Array of uploaded file objects
  */
-export async function uploadMultipleFiles(
-  files: File[] | FileList,
-  bucket: string = 'partner-documents',
-  folder?: string
+export async function uploadFiles(
+  files: File[],
+  bucket: string,
+  path: string = '',
+  options?: {
+    allowedTypes?: string[];
+    maxSize?: number;
+    onProgress?: (fileIndex: number, progress: number) => void;
+  }
 ): Promise<UploadedFile[]> {
-  const fileArray = Array.from(files);
-  const uploadPromises = fileArray.map(async (file) => {
-    const url = await uploadFile(file, bucket, folder);
-    return {
-      name: file.name,
-      url,
-      size: file.size,
-      type: file.type,
-      uploadedAt: new Date(),
-    };
-  });
+  const uploadPromises = files.map((file) =>
+    uploadFile(file, bucket, path)
+  );
 
   return Promise.all(uploadPromises);
 }
 
 /**
  * Delete a file from Supabase Storage
- * @param filePath - The path of the file to delete
  * @param bucket - The storage bucket name
+ * @param filePath - The path to the file within the bucket
  */
-export async function deleteFile(
-  filePath: string,
-  bucket: string = 'partner-documents'
-): Promise<void> {
+export async function deleteFile(bucket: string, filePath: string): Promise<void> {
   try {
-    const { error } = await supabase.storage
-      .from(bucket)
-      .remove([filePath]);
+    const { error } = await supabase.storage.from(bucket).remove([filePath]);
 
     if (error) {
-      throw new Error(`Delete failed: ${error.message}`);
+      throw error;
     }
   } catch (error) {
-    console.error('File delete error:', error);
-    throw error;
+    console.error('Error deleting file:', error);
+    throw error instanceof Error ? error : new Error('Failed to delete file');
   }
 }
 
 /**
- * Format file size to human-readable format
- * @param bytes - File size in bytes
- * @returns Formatted file size string
+ * Delete multiple files from Supabase Storage
+ * @param bucket - The storage bucket name
+ * @param filePaths - Array of file paths to delete
+ */
+export async function deleteFiles(bucket: string, filePaths: string[]): Promise<void> {
+  try {
+    const { error } = await supabase.storage.from(bucket).remove(filePaths);
+
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error deleting files:', error);
+    throw error instanceof Error ? error : new Error('Failed to delete files');
+  }
+}
+
+/**
+ * Extract file path from Supabase public URL
+ * @param publicUrl - The public URL from Supabase storage
+ * @param bucket - The storage bucket name
+ * @returns The file path within the bucket
+ */
+export function extractFilePathFromUrl(publicUrl: string, bucket: string): string {
+  try {
+    const url = new URL(publicUrl);
+    const pathParts = url.pathname.split(`/storage/v1/object/public/${bucket}/`);
+    return pathParts[1] || '';
+  } catch (error) {
+    console.error('Error extracting file path:', error);
+    return '';
+  }
+}
+
+/**
+ * Get file extension from filename
+ */
+export function getFileExtension(filename: string): string {
+  return filename.split('.').pop()?.toLowerCase() || '';
+}
+
+/**
+ * Format file size for display
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
@@ -139,15 +178,6 @@ export function formatFileSize(bytes: number): string {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-}
-
-/**
- * Get file extension from filename
- * @param filename - The filename
- * @returns File extension
- */
-export function getFileExtension(filename: string): string {
-  return filename.split('.').pop()?.toLowerCase() || '';
 }
 
 /**

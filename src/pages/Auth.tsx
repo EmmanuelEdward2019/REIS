@@ -44,26 +44,52 @@ const Auth = () => {
 
   // Redirect if already logged in
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
     console.log('Auth useEffect triggered:', { user: !!user, profile, userRole: profile?.user_role });
 
-    if (user && profile) {
-      // Redirect to appropriate dashboard based on user role
-      let dashboardPath = '/client-dashboard';
+    if (user) {
+      // If we have a profile, redirect immediately based on role
+      if (profile && profile.user_role) {
+        let dashboardPath = '/client-dashboard';
 
-      if (profile.user_role === 'admin') {
-        dashboardPath = '/admin-dashboard';
-        console.log('Redirecting to admin dashboard');
-      } else if (profile.user_role === 'partner') {
-        dashboardPath = '/partners-dashboard';
-        console.log('Redirecting to partners dashboard');
+        if (profile.user_role === 'admin') {
+          dashboardPath = '/admin-dashboard';
+          console.log('Redirecting to admin dashboard');
+        } else if (profile.user_role === 'partner') {
+          dashboardPath = '/partners-dashboard';
+          console.log('Redirecting to partners dashboard');
+        } else {
+          console.log('Redirecting to client dashboard');
+        }
+
+        // Always redirect to the user's dashboard based on their role
+        // Only use 'from' location state if it's a different path than the auth page itself
+        const from = (location.state as any)?.from?.pathname;
+        const redirectPath = from && !from.includes('/auth') ? from : dashboardPath;
+
+        console.log('Final redirect path:', redirectPath);
+        navigate(redirectPath, { replace: true });
       } else {
-        console.log('Redirecting to client dashboard');
+        // If profile is loading or failed to load, set a timeout to redirect to client dashboard as fallback
+        // This prevents users from getting stuck on the auth page if profile fetch fails
+        timeoutId = setTimeout(() => {
+          if (user && !profile) {
+            console.warn('Profile fetch timed out or failed, redirecting to client dashboard');
+            navigate('/client-dashboard', { replace: true });
+          }
+          // Even if we have a profile but no user_role, redirect to client dashboard as fallback
+          else if (user && profile && !profile.user_role) {
+            console.warn('Profile missing user_role, redirecting to client dashboard');
+            navigate('/client-dashboard', { replace: true });
+          }
+        }, 3000); // Increased timeout to 3 seconds to allow more time for profile fetch
       }
-
-      const from = (location.state as any)?.from?.pathname || dashboardPath;
-      console.log('Final redirect path:', from);
-      navigate(from, { replace: true });
     }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [user, profile, navigate, location]);
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -404,7 +430,7 @@ const Auth = () => {
           {' '}for creating an Eagle & Thistle Account and I authorize Eagle & Thistle to contact me for account management purposes via the contact information I provide.
         </div>
 
-        <Button 
+        <Button
           className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded-md text-base font-medium"
           onClick={() => setStep(2)}
         >
@@ -654,13 +680,13 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between p-6">
-<Link to="/" className="flex items-center">
-  <img
-    src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png"
-    alt="Eagle & Thistle Group"
-    className="h-10 w-auto"
-  />
-</Link>
+        <Link to="/" className="flex items-center">
+          <img
+            src="/lovable-uploads/76f8e1a6-f2ed-41a8-ac1e-dbcff484f1ea.png"
+            alt="Eagle & Thistle Group"
+            className="h-10 w-auto"
+          />
+        </Link>
         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
           <span>en-CA</span>
           <div className="w-5 h-5 rounded-full border border-border flex items-center justify-center">

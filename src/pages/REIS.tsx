@@ -8,7 +8,7 @@ const REIS = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative h-[60vh] min-h-[500px] bg-gradient-to-r from-primary/20 to-accent/20">
+      <section className="relative min-h-[60vh] min-h-[500px] bg-gradient-to-r from-primary/20 to-accent/20 pt-32 pb-20">
         <div className="absolute inset-0">
           <img
             src={heroRenewableIntegration}

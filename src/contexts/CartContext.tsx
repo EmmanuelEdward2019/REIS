@@ -27,6 +27,9 @@ interface CartContextType {
   clearCart: () => Promise<void>;
   refreshCart: () => Promise<void>;
   getCartTotal: (currency: 'NGN' | 'GBP') => number;
+  showAddToCartDialog: boolean;
+  addToCartDialogData: { productName: string; quantity: number } | null;
+  setShowAddToCartDialog: (show: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -47,6 +50,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [showAddToCartDialog, setShowAddToCartDialog] = useState(false);
+  const [addToCartDialogData, setAddToCartDialogData] = useState<{ productName: string; quantity: number } | null>(null);
 
   // Check authentication and load cart
   useEffect(() => {
@@ -57,7 +62,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       setUserId(user?.id || null);
-      
+
       if (user) {
         await refreshCart();
       } else {
@@ -121,7 +126,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       if (!localCart) return;
 
       const localItems: CartItem[] = JSON.parse(localCart);
-      
+
       for (const item of localItems) {
         // Check if item already exists in database
         const { data: existingItem } = await supabase
@@ -188,11 +193,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       setCartItems(data as CartItem[] || []);
     } catch (error) {
       console.error('Error refreshing cart:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load cart',
-        variant: 'destructive'
-      });
+      toast.error('Failed to load cart');
     } finally {
       setIsLoading(false);
     }
@@ -201,6 +202,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   // Add item to cart
   const addToCart = async (productId: string, quantity: number = 1) => {
     try {
+      let productName = '';
+
       if (!userId) {
         // Add to local cart
         const { data: product } = await supabase
@@ -210,6 +213,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
           .single();
 
         if (!product) throw new Error('Product not found');
+
+        productName = product.name;
 
         const existingItemIndex = cartItems.findIndex(item => item.product_id === productId);
         let newCartItems: CartItem[];
@@ -229,42 +234,50 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
         setCartItems(newCartItems);
         saveLocalCart(newCartItems);
-        toast({ title: 'Success', description: 'Product added to cart' });
-        return;
-      }
-
-      // Add to database cart
-      const { data: existingItem } = await supabase
-        .from('shopping_cart')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('product_id', productId)
-        .single();
-
-      if (existingItem) {
-        await supabase
-          .from('shopping_cart')
-          .update({ quantity: existingItem.quantity + quantity })
-          .eq('id', existingItem.id);
       } else {
-        await supabase
+        // Get product name first
+        const { data: product } = await supabase
+          .from('products')
+          .select('name')
+          .eq('id', productId)
+          .single();
+
+        if (product) {
+          productName = product.name;
+        }
+
+        // Add to database cart
+        const { data: existingItem } = await supabase
           .from('shopping_cart')
-          .insert({
-            user_id: userId,
-            product_id: productId,
-            quantity
-          });
+          .select('*')
+          .eq('user_id', userId)
+          .eq('product_id', productId)
+          .single();
+
+        if (existingItem) {
+          await supabase
+            .from('shopping_cart')
+            .update({ quantity: existingItem.quantity + quantity })
+            .eq('id', existingItem.id);
+        } else {
+          await supabase
+            .from('shopping_cart')
+            .insert({
+              user_id: userId,
+              product_id: productId,
+              quantity
+            });
+        }
+
+        await refreshCart();
       }
 
-      await refreshCart();
-      toast({ title: 'Success', description: 'Product added to cart' });
+      // Show dialog instead of toast
+      setAddToCartDialogData({ productName, quantity });
+      setShowAddToCartDialog(true);
     } catch (error: any) {
       console.error('Error adding to cart:', error);
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to add product to cart',
-        variant: 'destructive'
-      });
+      toast.error(error.message || 'Failed to add product to cart');
     }
   };
 
@@ -276,7 +289,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         const newCartItems = cartItems.filter(item => item.id !== cartItemId);
         setCartItems(newCartItems);
         saveLocalCart(newCartItems);
-        toast({ title: 'Success', description: 'Product removed from cart' });
+        toast.success('Product removed from cart');
         return;
       }
 
@@ -289,14 +302,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       if (error) throw error;
 
       await refreshCart();
-      toast({ title: 'Success', description: 'Product removed from cart' });
+      toast.success('Product removed from cart');
     } catch (error: any) {
       console.error('Error removing from cart:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to remove product from cart',
-        variant: 'destructive'
-      });
+      toast.error('Failed to remove product from cart');
     }
   };
 
@@ -329,11 +338,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       await refreshCart();
     } catch (error: any) {
       console.error('Error updating quantity:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to update quantity',
-        variant: 'destructive'
-      });
+      toast.error('Failed to update quantity');
     }
   };
 
@@ -356,11 +361,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       setCartItems([]);
     } catch (error: any) {
       console.error('Error clearing cart:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to clear cart',
-        variant: 'destructive'
-      });
+      toast.error('Failed to clear cart');
     }
   };
 
@@ -386,7 +387,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         updateQuantity,
         clearCart,
         refreshCart,
-        getCartTotal
+        getCartTotal,
+        showAddToCartDialog,
+        addToCartDialogData,
+        setShowAddToCartDialog
       }}
     >
       {children}
