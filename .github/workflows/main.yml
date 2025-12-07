@@ -10,14 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇ Checkout code
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v3
 
-      - name: 🏗 Build app (if needed)
+      - name: 🏗️ Build app (if needed)
         run: |
           npm install || echo "No npm dependencies"
           npm run build || echo "No build step"
-           - name: 🚀 Deploy via FTP
+
+      - name: 🚀 Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.CPANEL_HOST }}
@@ -25,4 +26,3 @@ jobs:
           password: ${{ secrets.CPANEL_PASSWORD }}
           server-dir: ${{ secrets.CPANEL_REMOTE_DIR }}
           local-dir: dist/
-
