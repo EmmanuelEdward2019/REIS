@@ -12,41 +12,26 @@ import {
   Shield,
   Code2,
   Database,
-  Cloud,
   ArrowRight,
   CheckCircle2,
   Zap,
   BarChart3,
   Brain,
-  Lock,
   Globe,
   Building2,
   Factory,
-  Truck,
   Users,
-  TrendingUp,
-  Award,
-  Clock,
   Target,
-  Settings,
-  FileText,
-  Layers,
   MapPin,
-  Activity,
   ChevronRight,
-  Lightbulb,
-  Wrench,
   Eye,
-  Play,
-  Gauge,
   ExternalLink,
   Phone,
-  Mail,
-  ChevronLeft
+  ChevronLeft,
+  Handshake
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import heroDataAnalytics from '@/assets/hero-data-analytics.jpg';
 import ConsultationModal from '@/components/common/ConsultationModal';
 
 // Data & AI showcase images
@@ -55,6 +40,7 @@ import dataAiMachineLearning from '@/assets/data-ai-machine-learning.jpg';
 import dataAiSoftware from '@/assets/data-ai-software.jpg';
 import dataAiSecurity from '@/assets/data-ai-security.jpg';
 import dataAiTeam from '@/assets/data-ai-team.jpg';
+import cognisianLogo from '@/assets/Conisian logo.jpg';
 
 const DataAI = () => {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
@@ -256,41 +242,8 @@ const DataAI = () => {
     }
   };
 
-  // Delivery Model Steps
-  const deliverySteps = [
-    { num: 1, title: 'Discover & Baseline', desc: 'Objectives, KPIs, risks, data readiness', icon: Eye },
-    { num: 2, title: 'Design', desc: 'Target architecture, governance, delivery plan, success metrics', icon: Lightbulb },
-    { num: 3, title: 'Build', desc: 'Pipelines, features, models, secure product surfaces (apps/agents/APIs)', icon: Wrench },
-    { num: 4, title: 'Validate', desc: 'Offline/online tests, human-in-the-loop reviews, privacy/safety checks', icon: CheckCircle2 },
-    { num: 5, title: 'Deploy', desc: 'Hardening, cutover, change management, training', icon: Play },
-    { num: 6, title: 'Operate', desc: 'MLOps, observability, SRE, SLA-backed support, continual improvement', icon: Settings }
-  ];
-
-  // Metrics
-  const metricsStrip = [
-    { value: '68', label: 'Projects Delivered' },
-    { value: '94%', label: 'On-time Rate' },
-    { value: '99.95%', label: 'Uptime' },
-    { value: '≤30', label: 'Days to Pilot' },
-    { value: '18%', label: 'Avg Cost Reduction' },
-    { value: '12.3%', label: 'Model Accuracy Gain' }
-  ];
-
-  const businessOutcomes = [
-    { sector: 'Academia', metrics: ['Registration cycle time↓', 'Retention↑', 'Transcript TAT↓', 'Self-service rate↑'] },
-    { sector: 'Public Sector', metrics: ['Access success↑', 'Time-to-publish↓', 'School onboarding↑', 'Resolution time↓'] },
-    { sector: 'SMB', metrics: ['Stockouts↓', 'Shrinkage↓', 'Expiry write-offs↓', 'Basket size↑'] },
-    { sector: 'Energy & Utilities', metrics: ['Downtime↓', 'Forecast error↓', 'Truck rolls↓', 'tCO₂e avoided↑'] },
-    { sector: 'Manufacturing', metrics: ['FPY↑', 'DPMO↓', 'OEE↑', 'Energy per unit↓'] },
-    { sector: 'Healthcare', metrics: ['No-shows↓', 'Documentation time↓', 'Readmissions↓', 'Backlog clearance↓'] }
-  ];
-
-  const engagementOptions = [
-    { title: 'Discovery & Roadmap Sprint', duration: '2–4 weeks', type: 'Fixed price' },
-    { title: 'Build-Operate-Transfer (BOT)', duration: 'Custom', type: 'We build & run, then hand over' },
-    { title: 'Managed Service', duration: 'Ongoing', type: 'SLA/SLO-backed ops with change budget' },
-    { title: 'Outcome-based Pilots', duration: 'Variable', type: 'Shared risk with clear KPI gates' }
-  ];
+  // Delivery Model Steps (kept for reference)
+  // Removed: deliverySteps, metricsStrip, businessOutcomes, engagementOptions
 
   // Client Projects
   const clientProjects = [
@@ -308,15 +261,8 @@ const DataAI = () => {
     { name: 'Comternet', location: 'Technology', url: 'https://www.comternet.com', icon: Globe, color: 'text-cyan-500', bg: 'bg-cyan-500/10' }
   ];
 
-  // Reference Solutions
-  const referenceSolutions = [
-    { title: 'State Education Results Portal', desc: 'Student/School/Ministry roles, bulk uploads, immutable audit, SLA support', icon: Landmark, color: 'text-slate-500' },
-    { title: 'Academia Student Lifecycle Portal', desc: 'Admissions→graduation workflows, GPA/CGPA, transcripts, risk nudges', icon: GraduationCap, color: 'text-blue-500' },
-    { title: 'SMB CRM + Inventory + POS', desc: 'Barcode/QR, expiry & shrinkage analytics, demand forecasting, loyalty', icon: ShoppingCart, color: 'text-green-500' },
-    { title: 'Energy & Utilities Forecasting & Orchestration', desc: 'RES/load forecasts, dispatch assistance, crew routing', icon: Zap, color: 'text-yellow-500' },
-    { title: 'Manufacturing Computer Vision', desc: 'Defect detection, yield uplift, root-cause analytics', icon: Eye, color: 'text-amber-500' },
-    { title: 'Healthcare Accelerator', desc: 'FHIR/HL7 data layer, documentation NLP, cohort analytics, safety guardrails', icon: HeartPulse, color: 'text-red-500' }
-  ];
+  // Reference Solutions - kept for potential future use
+  // const referenceSolutions = [...];
 
   // Contact Information
   const contactOffices = [
@@ -338,24 +284,6 @@ const DataAI = () => {
       phone: '+234 (0) 816 500 0095',
       type: 'ng'
     }
-  ];
-
-  // Annex A - KPI Definitions
-  const kpiDefinitions = [
-    { term: 'Time-to-Pilot', def: 'Median days from contract signature to first user pilot' },
-    { term: 'On-Time Rate', def: '(# engagements delivered on/before promise) / (# engagements)' },
-    { term: 'MAPE/MAE, F1/AUROC, mAP, Precision/Recall', def: 'Model metrics (per domain) with evaluation dataset IDs' },
-    { term: 'Uptime', def: '90-day rolling availability = 1 − (downtime / total time)' },
-    { term: 'tCO₂e avoided', def: '(kWh saved × grid emission factor) − project embodied carbon (optional)' }
-  ];
-
-  // Annex B - Security Controls
-  const securityControls = [
-    'Identity & Access (RBAC/ABAC), MFA, JIT access, periodic reviews',
-    'Encryption (at rest/in transit), key rotation, HSM, secrets vault',
-    'Network segmentation & zero-trust patterns',
-    'Logging, SIEM hooks, incident playbooks, tabletop exercises',
-    'DPIAs, consent registry, retention & erasure workflows, de-identification'
   ];
 
   // Carousel state
@@ -380,85 +308,79 @@ const DataAI = () => {
       />
 
       {/* Hero Section */}
-      <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-black pt-32 pb-20">
+      <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pb-20">
+        {/* Vibrant Gradient Background - consistent throughout */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-blue-900 to-purple-950" />
+
+        {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src={heroDataAnalytics}
-            alt="Data & AI"
-            className="w-full h-full object-cover opacity-30 scale-105"
+            src={dataAiSecurity}
+            alt="Data & AI Security"
+            className="w-full h-full object-cover opacity-25 mix-blend-overlay"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-background" />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-white text-center">
+        {/* Animated Glow Effects */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/40 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-600/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-cyan-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
+
+        {/* Grid Pattern */}
+        <div className="absolute inset-0 z-0 opacity-10">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff1a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff1a_1px,transparent_1px)] bg-[size:50px_50px]" />
+        </div>
+
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-white text-center pt-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-5xl mx-auto"
           >
-            <Badge className="mb-6 bg-primary/20 text-primary-foreground border-primary/30 px-4 py-2">
-              <Brain className="w-4 h-4 mr-2" />
-              Data & Artificial Intelligence Division
-            </Badge>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight">
-              Turn Data into Decisions,<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-cyan-400">
-                AI into Dependable Products
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <Badge className="mb-8 bg-white/10 text-white border border-white/30 px-6 py-3 text-sm backdrop-blur-md">
+                <Brain className="w-4 h-4 mr-2" />
+                Data & Artificial Intelligence Division
+              </Badge>
+            </motion.div>
+
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight tracking-tight">
+              <span className="text-white">Data-Driven</span>
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300">
+                Intelligence
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-300 mb-4 leading-relaxed max-w-3xl mx-auto">
-              We deliver strategy → platforms → analytics/ML → apps/agents → security & governance → ongoing operations as one accountable team.
+
+            <p className="text-xl md:text-2xl text-blue-100 mb-12 leading-relaxed max-w-3xl mx-auto font-light">
+              Transform your organization with AI-powered solutions that deliver real business outcomes
             </p>
-            <div className="flex flex-wrap justify-center gap-3 mb-8">
-              <Badge variant="outline" className="text-gray-300 border-gray-500">
-                <Globe className="w-3 h-3 mr-1" /> UK
-              </Badge>
-              <Badge variant="outline" className="text-gray-300 border-gray-500">
-                <Globe className="w-3 h-3 mr-1" /> Nigeria
-              </Badge>
-              <Badge variant="outline" className="text-gray-300 border-gray-500">
-                <Globe className="w-3 h-3 mr-1" /> EMEA
-              </Badge>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" onClick={() => setIsConsultationOpen(true)} className="bg-primary hover:bg-primary/90 text-lg px-8 py-6 h-auto">
-                Start Your Project <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate('/projects')}
-                className="text-blue-400 border-white/30 hover:bg-white/10 text-lg px-8 py-6 h-auto hover:text-blue-300"
+
+            <div className="flex flex-col sm:flex-row gap-5 justify-center pb-8">
+              <button
+                type="button"
+                onClick={() => setIsConsultationOpen(true)}
+                className="inline-flex items-center justify-center bg-white text-indigo-900 font-bold px-10 py-4 text-lg rounded-full shadow-xl shadow-white/20 hover:bg-blue-50 hover:scale-105 transition-all duration-200 cursor-pointer"
+              >
+                Start Your Project
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => document.getElementById('client-projects')?.scrollIntoView({ behavior: 'smooth' })}
+                className="inline-flex items-center justify-center bg-transparent border-2 border-white text-white font-bold px-10 py-4 text-lg rounded-full hover:bg-white hover:text-indigo-900 hover:scale-105 transition-all duration-200 cursor-pointer"
               >
                 View Case Studies
-              </Button>
+              </button>
             </div>
           </motion.div>
         </div>
       </div>
-
-      {/* Metrics Strip */}
-      <section className="py-8 bg-primary">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
-            {metricsStrip.map((metric, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-primary-foreground"
-              >
-                <div className="text-2xl md:text-3xl font-bold">{metric.value}</div>
-                <div className="text-sm opacity-80">{metric.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Division at a Glance */}
       <section className="py-20 bg-background">
@@ -494,132 +416,13 @@ const DataAI = () => {
             </Card>
             <Card className="border-2 hover:border-primary/50 transition-colors">
               <CardHeader>
-                <Layers className="w-10 h-10 text-primary mb-2" />
+                <Database className="w-10 h-10 text-primary mb-2" />
                 <CardTitle>Modern Platform Approach</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">Sources → Lakehouse/Data Warehouse → Governance → ML/AI → Apps & Agents → MLOps</p>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Visual Showcase - Our Capabilities */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <Badge className="mb-4">Our Expertise</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Delivering Excellence</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              See how our team brings data and AI solutions to life
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Analytics Image */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="group relative overflow-hidden rounded-2xl aspect-[4/3]"
-            >
-              <img
-                src={dataAiAnalytics}
-                alt="Data Analytics Presentation"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <Badge className="mb-2 bg-green-500/20 text-green-300 border-green-500/30">Analytics & BI</Badge>
-                <h3 className="text-xl font-bold text-white">Data-Driven Insights</h3>
-                <p className="text-sm text-gray-300">Transform raw data into actionable business intelligence</p>
-              </div>
-            </motion.div>
-
-            {/* AI/ML Image */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              viewport={{ once: true }}
-              className="group relative overflow-hidden rounded-2xl aspect-[4/3]"
-            >
-              <img
-                src={dataAiMachineLearning}
-                alt="AI and Machine Learning"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <Badge className="mb-2 bg-orange-500/20 text-orange-300 border-orange-500/30">AI & Machine Learning</Badge>
-                <h3 className="text-xl font-bold text-white">Intelligent Automation</h3>
-                <p className="text-sm text-gray-300">Building smart systems that learn and adapt</p>
-              </div>
-            </motion.div>
-
-            {/* Software Products Image */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              viewport={{ once: true }}
-              className="group relative overflow-hidden rounded-2xl aspect-[4/3]"
-            >
-              <img
-                src={dataAiSoftware}
-                alt="Software Development"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <Badge className="mb-2 bg-cyan-500/20 text-cyan-300 border-cyan-500/30">Software Products</Badge>
-                <h3 className="text-xl font-bold text-white">Custom Applications</h3>
-                <p className="text-sm text-gray-300">Web, mobile, and agentic apps tailored to your needs</p>
-              </div>
-            </motion.div>
-
-            {/* Security Image */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              viewport={{ once: true }}
-              className="group relative overflow-hidden rounded-2xl aspect-[4/3] md:col-span-2 lg:col-span-1"
-            >
-              <img
-                src={dataAiSecurity}
-                alt="Cybersecurity Team"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <Badge className="mb-2 bg-red-500/20 text-red-300 border-red-500/30">Cybersecurity</Badge>
-                <h3 className="text-xl font-bold text-white">Security Operations</h3>
-                <p className="text-sm text-gray-300">Proactive threat detection and incident response</p>
-              </div>
-            </motion.div>
-
-            {/* Team Collaboration Image - Spans 2 columns on larger screens */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              viewport={{ once: true }}
-              className="group relative overflow-hidden rounded-2xl aspect-[4/3] md:col-span-2"
-            >
-              <img
-                src={dataAiTeam}
-                alt="Team Collaboration"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <Badge className="mb-2 bg-primary/20 text-primary-foreground border-primary/30">Our Team</Badge>
-                <h3 className="text-xl font-bold text-white">Collaborative Excellence</h3>
-                <p className="text-sm text-gray-300">Expert teams working together to deliver exceptional results</p>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
@@ -664,6 +467,96 @@ const DataAI = () => {
                 </Card>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Strategic Partnership with Cognisian AI */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge className="mb-4 bg-blue-500/20 text-blue-300 border-blue-500/30">
+                <Handshake className="w-4 h-4 mr-2" />
+                Strategic Partnership
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Powered by World-Class AI Expertise</h2>
+              <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+                Eagle & Thistle has partnered with Cognisian AI to deliver cutting-edge artificial intelligence solutions
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Cognisian Info */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="space-y-6"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-20 h-20 bg-white rounded-2xl p-3 shadow-xl">
+                    <img src={cognisianLogo} alt="Cognisian AI" className="w-full h-full object-contain" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold">Cognisian AI</h3>
+                    <a
+                      href="https://cognisian.ai"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 flex items-center gap-1 text-sm"
+                    >
+                      cognisian.ai <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+
+                <p className="text-gray-300 leading-relaxed">
+                  Cognisian is a boutique AI company founded by experts with decades of experience,
+                  including PhDs and industry leaders, specializing in cutting-edge AI solutions.
+                </p>
+
+                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                  <div className="text-4xl font-bold text-blue-400 mb-2">150+</div>
+                  <p className="text-gray-300">
+                    Man-years of combined experience in data engineering and solving complex problems
+                    using machine learning, neural networks, and advanced analytics across multiple industries.
+                  </p>
+                </div>
+
+                <Button
+                  size="lg"
+                  onClick={() => window.open('https://cognisian.ai', '_blank')}
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 h-auto rounded-xl shadow-lg cursor-pointer w-full sm:w-auto"
+                >
+                  Visit Cognisian AI <ExternalLink className="ml-2 w-4 h-4" />
+                </Button>
+              </motion.div>
+
+              {/* Partnership Benefits */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="space-y-4"
+              >
+                <h4 className="text-xl font-semibold mb-6">What This Partnership Brings</h4>
+                {[
+                  { title: 'PhD-Level AI Research', desc: 'Access to cutting-edge research and methodologies from world-class AI scientists' },
+                  { title: 'Deep Industry Experience', desc: 'Solutions informed by decades of real-world implementation across sectors' },
+                  { title: 'Advanced ML & Neural Networks', desc: 'State-of-the-art machine learning and deep learning capabilities' },
+                  { title: 'End-to-End Data Engineering', desc: 'Comprehensive data pipeline design, implementation, and optimization' }
+                ].map((benefit, idx) => (
+                  <div key={idx} className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-lg p-4">
+                    <CheckCircle2 className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h5 className="font-semibold text-white">{benefit.title}</h5>
+                      <p className="text-sm text-gray-400">{benefit.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -960,319 +853,8 @@ const DataAI = () => {
         </div>
       </section>
 
-      {/* Delivery Model */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-12">
-            <div>
-              <Badge className="mb-4">Delivery Model</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">How We Deliver</h2>
-              <p className="text-lg text-muted-foreground">
-                A structured approach from discovery to operations
-              </p>
-            </div>
-            <div className="relative rounded-2xl overflow-hidden aspect-video">
-              <img
-                src={dataAiTeam}
-                alt="Team Collaboration"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4">
-                <p className="text-white text-sm font-medium">Expert teams delivering end-to-end solutions</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {deliverySteps.map((step, index) => (
-              <motion.div
-                key={step.num}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="h-full border-2 hover:border-primary/50 transition-colors">
-                  <CardHeader>
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">
-                        {step.num}
-                      </div>
-                      <step.icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <CardTitle className="mt-4">{step.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{step.desc}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="bg-card border rounded-xl p-6">
-            <h4 className="font-semibold mb-4 text-foreground">Artefacts Delivered</h4>
-            <div className="flex flex-wrap gap-3">
-              {['Solution blueprint', 'Data model & contracts', 'Security plan', 'Test & validation reports', 'Runbooks', 'KPI & impact dashboard', 'Training packs'].map((item, idx) => (
-                <Badge key={idx} variant="outline" className="flex items-center gap-1">
-                  <FileText className="w-3 h-3" />
-                  {item}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Responsible AI, Security & Privacy */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <Badge className="mb-4">Trust & Safety</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Responsible AI, Security & Privacy</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="border-2 border-blue-200 dark:border-blue-900">
-              <CardHeader>
-                <Settings className="w-8 h-8 text-blue-500 mb-2" />
-                <CardTitle>Governance</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>• Model/agent inventory</li>
-                  <li>• Approvals & versioning</li>
-                  <li>• Gated releases & kill-switches</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="border-2 border-orange-200 dark:border-orange-900">
-              <CardHeader>
-                <Activity className="w-8 h-8 text-orange-500 mb-2" />
-                <CardTitle>Risk</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>• Fairness & explainability</li>
-                  <li>• Privacy & performance drift</li>
-                  <li>• Misuse prevention</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="border-2 border-red-200 dark:border-red-900">
-              <CardHeader>
-                <Lock className="w-8 h-8 text-red-500 mb-2" />
-                <CardTitle>Security</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>• Identity & access</li>
-                  <li>• Encryption & secrets</li>
-                  <li>• Logging & SIEM</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="border-2 border-purple-200 dark:border-purple-900">
-              <CardHeader>
-                <Eye className="w-8 h-8 text-purple-500 mb-2" />
-                <CardTitle>Privacy</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>• DPIAs & consent</li>
-                  <li>• De-identification</li>
-                  <li>• Data residency & audit</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Metrics & Impact */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <Badge className="mb-4">Metrics & Impact</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">What We Measure & Publish</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {businessOutcomes.map((outcome, idx) => (
-              <Card key={idx} className="border">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-primary" />
-                    {outcome.sector}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {outcome.metrics.map((metric, mIdx) => (
-                      <Badge key={mIdx} variant="outline" className="text-xs">{metric}</Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="mt-12 grid md:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader>
-                <Users className="w-6 h-6 text-primary mb-2" />
-                <CardTitle className="text-lg">Adoption & Satisfaction</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground space-y-1">
-                <p>• Monthly Active Users (MAU)</p>
-                <p>• Net Promoter Score (NPS)</p>
-                <p>• Assistant containment rate</p>
-                <p>• Training & proficiency scores</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <Gauge className="w-6 h-6 text-primary mb-2" />
-                <CardTitle className="text-lg">Model Performance</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground space-y-1">
-                <p>• MAPE/MAE (forecasting)</p>
-                <p>• F1/AUROC (classification)</p>
-                <p>• mAP/F1 (computer vision)</p>
-                <p>• Precision/recall (NLP)</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <Globe className="w-6 h-6 text-primary mb-2" />
-                <CardTitle className="text-lg">Sustainability</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground space-y-1">
-                <p>• tCO₂e avoided</p>
-                <p>• Paperless transactions %</p>
-                <p>• Site visits avoided</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Organisation & Standards */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <Badge className="mb-4">Division Organisation</Badge>
-              <h3 className="text-2xl font-bold mb-6 text-foreground">Leadership & Governance</h3>
-              <div className="space-y-4">
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-foreground">Leadership</h4>
-                  <p className="text-sm text-muted-foreground">Director, Data & AI (reports to CEO)</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-foreground mb-2">Service Line Heads</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {['Strategy & Governance', 'Data Engineering', 'Analytics/BI', 'AI/ML', 'Product Engineering', 'Cybersecurity/Privacy', 'Geo-spatial'].map((line, idx) => (
-                      <Badge key={idx} variant="secondary">{line}</Badge>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-foreground mb-2">Assurance</h4>
-                  <p className="text-sm text-muted-foreground">Data Privacy Officer; Group HSEQ/IT; Corporate CFO/Director support</p>
-                </div>
-              </div>
-            </div>
-            <div>
-              <Badge className="mb-4">Standards & IMS</Badge>
-              <h3 className="text-2xl font-bold mb-6 text-foreground">Integrated Management System</h3>
-              <div className="space-y-3">
-                {[
-                  { code: 'E&T/IMS/QA/001', name: 'Quality Policy' },
-                  { code: 'E&T/IMS/ENV/001', name: 'Environmental Plan' },
-                  { code: 'E&T/IMS/HSE/001', name: 'HSE Manual' },
-                  { code: 'E&T/DATA/001', name: 'Data Governance Framework' },
-                  { code: 'E&T/LMS/001', name: 'Learning Quality Framework' }
-                ].map((doc, idx) => (
-                  <div key={idx} className="flex items-center gap-3 bg-muted/50 p-3 rounded-lg">
-                    <FileText className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="font-medium text-foreground text-sm">{doc.name}</p>
-                      <p className="text-xs text-muted-foreground">{doc.code}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Commercial & Engagement Options */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-12">
-            <div className="relative rounded-2xl overflow-hidden aspect-video order-2 lg:order-1">
-              <img
-                src={dataAiAnalytics}
-                alt="Data Analytics Presentation"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4">
-                <p className="text-white text-sm font-medium">Driving business outcomes with data-driven insights</p>
-              </div>
-            </div>
-            <div className="order-1 lg:order-2">
-              <Badge className="mb-4">Engagement Options</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Work With Us</h2>
-              <p className="text-lg text-muted-foreground">
-                Flexible engagement models tailored to your needs
-              </p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {engagementOptions.map((option, idx) => (
-              <Card key={idx} className="border-2 hover:border-primary/50 transition-colors">
-                <CardHeader>
-                  <CardTitle className="text-lg">{option.title}</CardTitle>
-                  <Badge variant="outline">{option.duration}</Badge>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{option.type}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <Card className="border-2 border-primary/20 bg-primary/5">
-            <CardHeader>
-              <CardTitle>Typical SLAs</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-4">
-                <Badge variant="secondary" className="text-sm">
-                  <Clock className="w-3 h-3 mr-1" /> 99.9–99.95% app uptime
-                </Badge>
-                <Badge variant="secondary" className="text-sm">
-                  <Zap className="w-3 h-3 mr-1" /> P1 ≤ 1h response
-                </Badge>
-                <Badge variant="secondary" className="text-sm">
-                  <Activity className="w-3 h-3 mr-1" /> Weekly error-budget reviews
-                </Badge>
-                <Badge variant="secondary" className="text-sm">
-                  <Brain className="w-3 h-3 mr-1" /> Monthly model-drift reviews
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
       {/* Client Projects Carousel */}
-      <section className="py-20 bg-background">
+      <section id="client-projects" className="py-20 bg-background scroll-mt-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Badge className="mb-4">Our Portfolio</Badge>
@@ -1347,42 +929,71 @@ const DataAI = () => {
         </div>
       </section>
 
-      {/* Reference Solutions */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <Badge className="mb-4">Reference Solutions</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Annex Summaries</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Pre-built solutions accelerating time-to-value
-            </p>
+      {/* Expertise Showcase - Marquee Carousel */}
+      <section className="py-16 bg-muted/30 overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+          <div className="text-center">
+            <Badge className="mb-4">Our Expertise</Badge>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">Delivering Excellence</h2>
           </div>
+        </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {referenceSolutions.map((solution, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="h-full border-2 hover:border-primary/30 transition-colors">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <solution.icon className={`w-6 h-6 ${solution.color}`} />
-                      <CardTitle className="text-lg">{solution.title}</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">{solution.desc}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
+        {/* Marquee Container */}
+        <div className="relative">
+          <div className="flex animate-marquee gap-6" style={{ width: 'max-content' }}>
+            {/* First set of images */}
+            {[
+              { src: dataAiAnalytics, label: 'Analytics & BI', title: 'Data-Driven Insights', color: 'bg-green-500/20 text-green-300 border-green-500/30' },
+              { src: dataAiMachineLearning, label: 'AI & Machine Learning', title: 'Intelligent Automation', color: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
+              { src: dataAiSoftware, label: 'Software Products', title: 'Custom Applications', color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' },
+              { src: dataAiSecurity, label: 'Cybersecurity', title: 'Security Operations', color: 'bg-red-500/20 text-red-300 border-red-500/30' },
+              { src: dataAiTeam, label: 'Our Team', title: 'Collaborative Excellence', color: 'bg-blue-500/20 text-blue-300 border-blue-500/30' }
+            ].map((item, idx) => (
+              <div key={idx} className="relative w-80 h-56 flex-shrink-0 rounded-xl overflow-hidden group">
+                <img src={item.src} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <Badge className={`mb-2 ${item.color}`}>{item.label}</Badge>
+                  <h3 className="text-lg font-bold text-white">{item.title}</h3>
+                </div>
+              </div>
+            ))}
+            {/* Duplicate set for seamless loop */}
+            {[
+              { src: dataAiAnalytics, label: 'Analytics & BI', title: 'Data-Driven Insights', color: 'bg-green-500/20 text-green-300 border-green-500/30' },
+              { src: dataAiMachineLearning, label: 'AI & Machine Learning', title: 'Intelligent Automation', color: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
+              { src: dataAiSoftware, label: 'Software Products', title: 'Custom Applications', color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' },
+              { src: dataAiSecurity, label: 'Cybersecurity', title: 'Security Operations', color: 'bg-red-500/20 text-red-300 border-red-500/30' },
+              { src: dataAiTeam, label: 'Our Team', title: 'Collaborative Excellence', color: 'bg-blue-500/20 text-blue-300 border-blue-500/30' }
+            ].map((item, idx) => (
+              <div key={`dup-${idx}`} className="relative w-80 h-56 flex-shrink-0 rounded-xl overflow-hidden group">
+                <img src={item.src} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <Badge className={`mb-2 ${item.color}`}>{item.label}</Badge>
+                  <h3 className="text-lg font-bold text-white">{item.title}</h3>
+                </div>
+              </div>
             ))}
           </div>
         </div>
+
+        {/* CSS for Marquee Animation */}
+        <style>{`
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .animate-marquee {
+            animation: marquee 30s linear infinite;
+          }
+          .animate-marquee:hover {
+            animation-play-state: paused;
+          }
+        `}</style>
       </section>
+
+
 
       {/* Contact Section */}
       <section className="py-20 bg-background">
@@ -1422,41 +1033,7 @@ const DataAI = () => {
         </div>
       </section>
 
-      {/* Annexes */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Annex A - KPI Definitions */}
-            <div>
-              <Badge className="mb-4">Optional Annex A</Badge>
-              <h3 className="text-2xl font-bold mb-6 text-foreground">KPI Definitions</h3>
-              <p className="text-sm text-muted-foreground mb-4">For proposals & SLAs</p>
-              <div className="space-y-3">
-                {kpiDefinitions.map((kpi, idx) => (
-                  <div key={idx} className="bg-card border rounded-lg p-4">
-                    <h4 className="font-semibold text-foreground text-sm mb-1">{kpi.term}</h4>
-                    <p className="text-xs text-muted-foreground">{kpi.def}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            {/* Annex B - Security Controls */}
-            <div>
-              <Badge className="mb-4">Optional Annex B</Badge>
-              <h3 className="text-2xl font-bold mb-6 text-foreground">Security & Privacy Controls</h3>
-              <div className="space-y-3">
-                {securityControls.map((control, idx) => (
-                  <div key={idx} className="flex items-start gap-3 bg-card border rounded-lg p-4">
-                    <Lock className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <p className="text-sm text-muted-foreground">{control}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-24 bg-primary text-primary-foreground relative overflow-hidden">
