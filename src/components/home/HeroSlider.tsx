@@ -16,7 +16,9 @@ const slides = [
     description: 'Advanced offshore renewable energy integration with AI-powered optimization',
     image: heroRenewableIntegration,
     cta1: 'Order Now',
+    cta1Link: '/shop',
     cta2: 'Learn More',
+    cta2Link: '/about',
     price: 'Starting at $2.5M'
   },
   {
@@ -26,7 +28,9 @@ const slides = [
     description: 'Complete residential solar installations with battery storage systems',
     image: heroResidentialSolar,
     cta1: 'Get Quote',
+    cta1Link: '/reis',
     cta2: 'Learn More',
+    cta2Link: '/about',
     price: 'Starting at $15,000'
   },
   {
@@ -36,7 +40,9 @@ const slides = [
     description: 'Comprehensive training programs for renewable energy professionals',
     image: heroTrainingFacility,
     cta1: 'Enroll Now',
+    cta1Link: '/lms',
     cta2: 'View Courses',
+    cta2Link: '/lms',
     price: 'Starting at $500'
   },
   {
@@ -46,7 +52,9 @@ const slides = [
     description: 'Industrial energy storage systems with Eagle & Thistle branding',
     image: heroEnergyStorageSystems,
     cta1: 'Order Now',
+    cta1Link: '/shop',
     cta2: 'Learn More',
+    cta2Link: '/about',
     price: 'Starting at $500K'
   },
   {
@@ -56,7 +64,9 @@ const slides = [
     description: 'Join us in transforming the energy landscape with cutting-edge renewable solutions',
     image: heroRenewableIntegration,
     cta1: 'Explore REIS',
+    cta1Link: '/reis',
     cta2: 'Join as Partner',
+    cta2Link: '/become-a-partner',
     price: 'Partnership Opportunities Available'
   }
 ];
@@ -67,7 +77,7 @@ const HeroSlider = () => {
 
   useEffect(() => {
     if (!isAutoplay) return;
-    
+
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
@@ -98,9 +108,8 @@ const HeroSlider = () => {
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
           >
             {/* Background Image */}
             <div className="absolute inset-0">
@@ -135,7 +144,7 @@ const HeroSlider = () => {
                       size="lg"
                       className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-primary text-white hover:bg-primary/90 rounded-md transition-colors"
                     >
-                      <Link to="/auth">{slide.cta1}</Link>
+                      <Link to={slide.cta1Link}>{slide.cta1}</Link>
                     </Button>
                     <Button
                       asChild
@@ -143,7 +152,7 @@ const HeroSlider = () => {
                       variant="outline"
                       className="flex-1 max-w-[200px] px-6 py-3 text-base font-medium bg-gray-200 hover:bg-gray-300 text-black border-gray-300 rounded-md transition-colors"
                     >
-                      <Link to="/become-a-partner">{slide.cta2}</Link>
+                      <Link to={slide.cta2Link}>{slide.cta2}</Link>
                     </Button>
                   </div>
                 </div>
@@ -174,9 +183,8 @@ const HeroSlider = () => {
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-colors ${
-                index === currentSlide ? 'bg-white' : 'bg-white/40'
-              }`}
+              className={`w-3 h-3 rounded-full transition-colors ${index === currentSlide ? 'bg-white' : 'bg-white/40'
+                }`}
             />
           ))}
         </div>

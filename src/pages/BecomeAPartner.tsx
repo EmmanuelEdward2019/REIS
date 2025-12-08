@@ -28,32 +28,12 @@ const BecomeAPartner = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [existingApplication, setExistingApplication] = useState<any>(null);
+  const [progressSaved, setProgressSaved] = useState(false);
 
-  // Check if user is already logged in and has an application
-  useEffect(() => {
-    const checkExistingApplication = async () => {
-      if (user) {
-        const { data, error } = await supabase
-          .from('partner_applications')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
+  // LocalStorage key for saving progress
+  const STORAGE_KEY = 'partner_application_progress';
 
-        if (data && !error) {
-          setExistingApplication(data);
-          // If application is already submitted, redirect to partner dashboard
-          if (data.application_status !== 'draft') {
-            toast({
-              title: "Application Already Submitted",
-              description: "Redirecting to your partner dashboard...",
-            });
-            setTimeout(() => navigate('/partners-dashboard'), 2000);
-          }
-        }
-      }
-    };
-    checkExistingApplication();
-  }, [user, navigate, toast]);
+  // Form data state - must be declared before useEffects that reference it
   const [formData, setFormData] = useState({
     // Step 0: Country & Category
     partnerCountry: '' as PartnerCountry,
@@ -64,6 +44,9 @@ const BecomeAPartner = () => {
     // Step 1: Create Account
     email: '',
     phone: '',
+    phoneVerified: false,
+    otpCode: '',
+    otpSent: false,
     password: '',
     enable2FA: false,
     privacyNoticeAccepted: false,
@@ -132,7 +115,11 @@ const BecomeAPartner = () => {
     dprApprovals: '',
 
     // Step 10: Commercial
-    bankDetails: '',
+    bankName: '',
+    bankAccountName: '',
+    bankAccountNumber: '',
+    bankSortCode: '',
+    bankSwiftBic: '',
     preferredCurrency: '',
     paymentTerms: '',
     commissionAgreementAccepted: false,
@@ -156,6 +143,90 @@ const BecomeAPartner = () => {
     partnerId: '',
     applicationStatus: 'draft'
   });
+
+  // Load saved progress from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedProgress = localStorage.getItem(STORAGE_KEY);
+      if (savedProgress) {
+        const { formData: savedFormData, step } = JSON.parse(savedProgress);
+        if (savedFormData) {
+          // Don't restore password for security
+          const { password, ...restData } = savedFormData;
+          setFormData(prev => ({
+            ...prev,
+            ...restData,
+            password: '' // Clear password
+          }));
+          setCurrentStep(step || 0);
+          toast({
+            title: "Progress Restored",
+            description: "Your previous progress has been loaded. You can continue where you left off.",
+          });
+        }
+      }
+    } catch (e) {
+      console.error('Error loading saved progress:', e);
+    }
+  }, []);
+
+  // Auto-save progress to localStorage whenever formData or currentStep changes
+  useEffect(() => {
+    const saveProgress = () => {
+      try {
+        // Don't save password
+        const { password, ...dataToSave } = formData;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          formData: dataToSave,
+          step: currentStep,
+          savedAt: new Date().toISOString()
+        }));
+        setProgressSaved(true);
+        setTimeout(() => setProgressSaved(false), 2000);
+      } catch (e) {
+        console.error('Error saving progress:', e);
+      }
+    };
+
+    // Debounce save to avoid too frequent writes
+    const timeoutId = setTimeout(saveProgress, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [formData, currentStep]);
+
+  // Clear saved progress after successful submission
+  const clearSavedProgress = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      console.error('Error clearing saved progress:', e);
+    }
+  };
+
+  // Check if user is already logged in and has an application
+  useEffect(() => {
+    const checkExistingApplication = async () => {
+      if (user) {
+        const { data, error } = await (supabase as any)
+          .from('partner_applications')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (data && !error) {
+          setExistingApplication(data);
+          // If application is already submitted, redirect to partner dashboard
+          if (data.application_status !== 'draft') {
+            toast({
+              title: "Application Already Submitted",
+              description: "Redirecting to your partner dashboard...",
+            });
+            setTimeout(() => navigate('/partners-dashboard'), 2000);
+          }
+        }
+      }
+    };
+    checkExistingApplication();
+  }, [user, navigate, toast]);
 
   const totalSteps = 14;
   const getPolicyLink = () => {
@@ -191,28 +262,106 @@ const BecomeAPartner = () => {
   };
 
   const verifyNIN = async () => {
-    if (!formData.nin || formData.nin.length < 8) {
-      toast({ title: 'Invalid NIN', description: 'Enter a valid NIN to verify.', variant: 'destructive' });
+    // Validate NIN format (Nigerian NIN is exactly 11 digits)
+    if (!formData.nin || !isValidNIN(formData.nin)) {
+      toast({
+        title: 'Invalid NIN Format',
+        description: 'Nigerian NIN must be exactly 11 digits.',
+        variant: 'destructive'
+      });
       return;
     }
+
+    setLoading(true);
     try {
-      const res = await fetch('/api/verify-nin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nin: formData.nin, phone: formData.phone, email: formData.email })
+      // Mock NIN verification - records NIN for admin manual verification
+      // In production, integrate with VerifyMe, YouVerify, or Smile Identity API
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      handleInputChange('ninVerified', true);
+      toast({
+        title: 'NIN Recorded',
+        description: 'Your NIN has been recorded and will be verified by our team during KYC review.'
       });
-      if (!res.ok) throw new Error('Verification failed');
-      const data = await res.json().catch(() => ({}));
-      if (data && (data.verified === true || data.status === 'verified')) {
-        handleInputChange('ninVerified', true);
-        toast({ title: 'NIN Verified', description: 'Your identity has been verified successfully.' });
-      } else {
-        handleInputChange('ninVerified', false);
-        toast({ title: 'Verification Failed', description: 'We could not verify this NIN.', variant: 'destructive' });
-      }
     } catch (e) {
       handleInputChange('ninVerified', false);
-      toast({ title: 'Verification Error', description: 'Unable to verify NIN right now.', variant: 'destructive' });
+      toast({
+        title: 'Verification Error',
+        description: 'Unable to process NIN. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendPhoneOTP = async () => {
+    if (!formData.phone || !isValidPhone(formData.phone)) {
+      toast({
+        title: 'Invalid Phone Number',
+        description: 'Please enter a valid phone number.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Mock OTP sending - In production, use Twilio, Africa's Talking, or similar
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      handleInputChange('otpSent', true);
+      toast({
+        title: 'OTP Sent',
+        description: `A verification code has been sent to ${formData.phone}. For demo: use code 123456`
+      });
+    } catch (e) {
+      toast({
+        title: 'Failed to Send OTP',
+        description: 'Unable to send verification code. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyPhoneOTP = async () => {
+    if (!formData.otpCode || formData.otpCode.length !== 6) {
+      toast({
+        title: 'Invalid OTP',
+        description: 'Please enter the 6-digit verification code.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Mock OTP verification - accepts "123456" for demo
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      if (formData.otpCode === '123456') {
+        handleInputChange('phoneVerified', true);
+        toast({
+          title: 'Phone Verified',
+          description: 'Your phone number has been verified successfully.'
+        });
+      } else {
+        toast({
+          title: 'Invalid Code',
+          description: 'The verification code is incorrect. Please try again.',
+          variant: 'destructive'
+        });
+      }
+    } catch (e) {
+      toast({
+        title: 'Verification Failed',
+        description: 'Unable to verify code. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -350,25 +499,38 @@ const BecomeAPartner = () => {
     });
   };
 
+  // Validation helpers
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidPhone = (phone: string) => /^[+]?[0-9]{10,15}$/.test(phone.replace(/[\s-]/g, ''));
+  const isValidNIN = (nin: string) => /^[0-9]{11}$/.test(nin);
+  const isValidPassword = (password: string) => password.length >= 8;
+
   const canProceed = () => {
     switch (currentStep) {
       case 0:
-        // Require country, category, policy acceptance, and NIN verification if Nigeria
+        // Require country, category, policy acceptance
         if (!formData.partnerCountry || !formData.partnerCategory) return false;
         if (!formData.policyAccepted) return false;
-        // Allow proceeding even if NIN not verified yet (API pending)
-        return true;
-      case 2:
-        // Dynamic registration details; lightly validate core fields to allow testing
+        // For Nigeria, require NIN (verification is optional for now - admin can verify manually)
+        if (formData.partnerCountry === 'NG' && !formData.nin) return false;
         return true;
       case 1:
-        return formData.email && formData.phone && formData.password && formData.privacyNoticeAccepted;
+        // Create Account - validate email, phone, password
+        if (!formData.email || !isValidEmail(formData.email)) return false;
+        if (!formData.phone || !isValidPhone(formData.phone)) return false;
+        if (!formData.password || !isValidPassword(formData.password)) return false;
+        if (!formData.privacyNoticeAccepted) return false;
+        return true;
       case 2:
-        return formData.partnerType && formData.legalName && formData.countryOfRegistration;
+        // Dynamic registration - require core identity fields
+        if (!formData.legalName) return false;
+        // For company type, require registration number
+        if (formData.partnerType === 'company' && !formData.companyRegistration) return false;
+        return true;
       case 3:
         return formData.baseCity && formData.baseCountry && formData.coverageRegions.length > 0;
       case 4:
-        return formData.partnerClass;
+        return !!formData.partnerClass;
       case 5:
         return formData.specialties.length > 0;
       case 6:
@@ -384,7 +546,7 @@ const BecomeAPartner = () => {
           return formData.nationalId && formData.addressProofFiles.length > 0;
         }
       case 10:
-        return formData.bankDetails && formData.preferredCurrency && formData.commissionAgreementAccepted;
+        return formData.bankName && formData.bankAccountNumber && formData.preferredCurrency && formData.commissionAgreementAccepted;
       case 11:
         if (requiresProductListings()) {
           return formData.productSkus && formData.returnPolicy;
@@ -490,7 +652,10 @@ const BecomeAPartner = () => {
         certifications: formData.isoCertifications.concat(formData.manufacturerCertifications),
 
         // Financial Information
-        bank_account_number: formData.bankDetails || null,
+        bank_name: formData.bankName || null,
+        bank_account_number: formData.bankAccountNumber || null,
+        bank_routing_number: formData.bankSortCode || null,
+        bank_swift_code: formData.bankSwiftBic || null,
         payment_terms: formData.paymentTerms || null,
 
         // Insurance & Compliance
@@ -537,6 +702,9 @@ const BecomeAPartner = () => {
         description: `Your Partner ID is ${partnerData.partner_id}. We'll review your application and contact you within 2-3 business days.`,
       });
 
+      // Clear saved progress from localStorage
+      clearSavedProgress();
+
       // Redirect to partner dashboard after 2 seconds
       setTimeout(() => {
         navigate('/partners-dashboard');
@@ -552,12 +720,6 @@ const BecomeAPartner = () => {
     } finally {
       setLoading(false);
     }
-    // Here you would normally submit to your backend
-    console.log('Submitted form data:', updatedFormData);
-
-    // Move to summary step
-    setCurrentStep(13);
-    setFormData(updatedFormData);
   };
 
   const renderStep = () => {
@@ -631,16 +793,51 @@ const BecomeAPartner = () => {
               </div>
 
               {formData.partnerCountry === 'NG' && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="md:col-span-2">
-                    <Label htmlFor="nin">NIN (National Identification Number)</Label>
-                    <Input id="nin" value={formData.nin} onChange={(e) => handleInputChange('nin', e.target.value)} placeholder="Enter your NIN" />
+                <div className="space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="md:col-span-2">
+                      <Label htmlFor="nin">NIN (National Identification Number) *</Label>
+                      <Input
+                        id="nin"
+                        value={formData.nin}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '').slice(0, 11);
+                          handleInputChange('nin', value);
+                          if (formData.ninVerified) handleInputChange('ninVerified', false);
+                        }}
+                        placeholder="Enter 11-digit NIN"
+                        maxLength={11}
+                        className={formData.nin && !isValidNIN(formData.nin) ? 'border-red-500' : formData.ninVerified ? 'border-green-500' : ''}
+                      />
+                      {formData.nin && !isValidNIN(formData.nin) && (
+                        <p className="text-xs text-red-500 mt-1">NIN must be exactly 11 digits</p>
+                      )}
+                      {formData.ninVerified && (
+                        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" /> NIN recorded - will be verified during KYC
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-end">
+                      <Button
+                        onClick={verifyNIN}
+                        variant={formData.ninVerified ? 'default' : 'outline'}
+                        className="w-full md:w-auto"
+                        disabled={loading || !isValidNIN(formData.nin)}
+                      >
+                        {loading ? (
+                          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Verifying...</>
+                        ) : formData.ninVerified ? (
+                          <><CheckCircle className="w-4 h-4 mr-2" /> Recorded</>
+                        ) : (
+                          'Verify NIN'
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex items-end">
-                    <Button onClick={verifyNIN} variant={formData.ninVerified ? 'default' : 'outline'} className="w-full md:w-auto">
-                      {formData.ninVerified ? 'Verified' : 'Verify NIN'}
-                    </Button>
-                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Your NIN will be verified by our team during the KYC review process.
+                  </p>
                 </div>
               )}
             </div>
@@ -711,7 +908,7 @@ const BecomeAPartner = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
-                <Label htmlFor="email">Email Address (will be verified)</Label>
+                <Label htmlFor="email">Email Address *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -719,23 +916,84 @@ const BecomeAPartner = () => {
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   placeholder="your@email.com"
                   required
+                  className={formData.email && !isValidEmail(formData.email) ? 'border-red-500' : formData.email && isValidEmail(formData.email) ? 'border-green-500' : ''}
                 />
+                {formData.email && !isValidEmail(formData.email) && (
+                  <p className="text-xs text-red-500 mt-1">Please enter a valid email address</p>
+                )}
               </div>
 
               <div>
-                <Label htmlFor="phone">Phone Number (OTP verification)</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="+44 20 1234 5678"
-                  required
-                />
+                <Label htmlFor="phone">Phone Number *</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => {
+                      handleInputChange('phone', e.target.value);
+                      // Reset verification if phone changes
+                      if (formData.phoneVerified) {
+                        handleInputChange('phoneVerified', false);
+                        handleInputChange('otpSent', false);
+                        handleInputChange('otpCode', '');
+                      }
+                    }}
+                    placeholder={formData.partnerCountry === 'NG' ? '+234 801 234 5678' : '+44 20 1234 5678'}
+                    required
+                    disabled={formData.phoneVerified}
+                    className={`flex-1 ${formData.phone && !isValidPhone(formData.phone) ? 'border-red-500' : formData.phoneVerified ? 'border-green-500 bg-green-50' : formData.phone && isValidPhone(formData.phone) ? 'border-blue-500' : ''}`}
+                  />
+                  {!formData.phoneVerified && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={sendPhoneOTP}
+                      disabled={loading || !isValidPhone(formData.phone) || formData.otpSent}
+                    >
+                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : formData.otpSent ? 'Resend' : 'Send OTP'}
+                    </Button>
+                  )}
+                  {formData.phoneVerified && (
+                    <div className="flex items-center gap-1 text-green-600 px-3">
+                      <CheckCircle className="h-5 w-5" />
+                      <span className="text-sm font-medium">Verified</span>
+                    </div>
+                  )}
+                </div>
+                {formData.phone && !isValidPhone(formData.phone) && (
+                  <p className="text-xs text-red-500 mt-1">Please enter a valid phone number (10-15 digits)</p>
+                )}
+
+                {/* OTP Input - appears after OTP is sent */}
+                {formData.otpSent && !formData.phoneVerified && (
+                  <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <Label htmlFor="otpCode" className="text-sm text-blue-700">Enter Verification Code</Label>
+                    <div className="flex gap-2 mt-1">
+                      <Input
+                        id="otpCode"
+                        type="text"
+                        value={formData.otpCode}
+                        onChange={(e) => handleInputChange('otpCode', e.target.value.replace(/\D/g, '').slice(0, 6))}
+                        placeholder="123456"
+                        maxLength={6}
+                        className="w-32 text-center font-mono text-lg tracking-widest"
+                      />
+                      <Button
+                        type="button"
+                        onClick={verifyPhoneOTP}
+                        disabled={loading || formData.otpCode.length !== 6}
+                      >
+                        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Verify'}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-blue-600 mt-1">Demo code: 123456</p>
+                  </div>
+                )}
               </div>
 
               <div>
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Password *</Label>
                 <Input
                   id="password"
                   type="password"
@@ -743,7 +1001,13 @@ const BecomeAPartner = () => {
                   onChange={(e) => handleInputChange('password', e.target.value)}
                   placeholder="Create a strong password"
                   required
+                  className={formData.password && !isValidPassword(formData.password) ? 'border-red-500' : formData.password && isValidPassword(formData.password) ? 'border-green-500' : ''}
                 />
+                {formData.password && !isValidPassword(formData.password) ? (
+                  <p className="text-xs text-red-500 mt-1">Password must be at least 8 characters</p>
+                ) : formData.password && isValidPassword(formData.password) ? (
+                  <p className="text-xs text-green-600 mt-1">Password strength: Good</p>
+                ) : null}
               </div>
 
               <div className="md:col-span-2">
@@ -1127,8 +1391,12 @@ const BecomeAPartner = () => {
             {/* E) Banking & Tax */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label>Bank/Payee Details</Label>
-                <Textarea value={formData.bankDetails} onChange={(e) => handleInputChange('bankDetails', e.target.value)} rows={2} />
+                <Label>Bank Name</Label>
+                <Input value={formData.bankName} onChange={(e) => handleInputChange('bankName', e.target.value)} placeholder="e.g., First Bank Nigeria" />
+              </div>
+              <div>
+                <Label>Account Number</Label>
+                <Input value={formData.bankAccountNumber} onChange={(e) => handleInputChange('bankAccountNumber', e.target.value.replace(/\D/g, ''))} placeholder="10-digit NUBAN" />
               </div>
               <div>
                 <Label>Currency (NGN/GBP)</Label>
@@ -1638,21 +1906,68 @@ const BecomeAPartner = () => {
               <p className="text-muted-foreground">Payment and commercial arrangements</p>
             </div>
 
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-blue-800">
+                <strong>Bank Details:</strong> Your bank information will be used for commission payments and refunds. Please ensure accuracy.
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="bankDetails">Bank/Payee Details</Label>
-                <Textarea
-                  id="bankDetails"
-                  value={formData.bankDetails}
-                  onChange={(e) => handleInputChange('bankDetails', e.target.value)}
-                  placeholder="Bank name, account number, sort code/routing number..."
-                  rows={4}
+                <Label htmlFor="bankName">Bank Name *</Label>
+                <Input
+                  id="bankName"
+                  value={formData.bankName}
+                  onChange={(e) => handleInputChange('bankName', e.target.value)}
+                  placeholder={formData.partnerCountry === 'NG' ? 'e.g., First Bank Nigeria' : 'e.g., Barclays Bank'}
                   required
                 />
               </div>
 
               <div>
-                <Label>Preferred Currency</Label>
+                <Label htmlFor="bankAccountName">Account Name *</Label>
+                <Input
+                  id="bankAccountName"
+                  value={formData.bankAccountName}
+                  onChange={(e) => handleInputChange('bankAccountName', e.target.value)}
+                  placeholder="Name on the account"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="bankAccountNumber">Account Number *</Label>
+                <Input
+                  id="bankAccountNumber"
+                  value={formData.bankAccountNumber}
+                  onChange={(e) => handleInputChange('bankAccountNumber', e.target.value.replace(/\D/g, ''))}
+                  placeholder={formData.partnerCountry === 'NG' ? '10-digit NUBAN' : '8-digit account number'}
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="bankSortCode">{formData.partnerCountry === 'NG' ? 'Bank Code' : 'Sort Code'}</Label>
+                <Input
+                  id="bankSortCode"
+                  value={formData.bankSortCode}
+                  onChange={(e) => handleInputChange('bankSortCode', e.target.value)}
+                  placeholder={formData.partnerCountry === 'NG' ? '3-digit bank code' : '6-digit sort code (XX-XX-XX)'}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="bankSwiftBic">SWIFT/BIC Code (for international transfers)</Label>
+                <Input
+                  id="bankSwiftBic"
+                  value={formData.bankSwiftBic}
+                  onChange={(e) => handleInputChange('bankSwiftBic', e.target.value.toUpperCase())}
+                  placeholder="e.g., FBNINGLA"
+                />
+              </div>
+
+              <div>
+                <Label>Preferred Currency *</Label>
                 <Select value={formData.preferredCurrency} onValueChange={(value) => handleInputChange('preferredCurrency', value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select currency" />
