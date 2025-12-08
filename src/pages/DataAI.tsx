@@ -864,7 +864,39 @@ const DataAI = () => {
             </p>
           </div>
 
-          <div className="relative">
+          {/* Mobile: Horizontal Scrollable Carousel */}
+          <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+            <div className="flex gap-4" style={{ width: 'max-content' }}>
+              {clientProjects.map((client, idx) => (
+                <Card key={idx} className="border-2 hover:border-primary/50 transition-all hover:shadow-lg group w-64 flex-shrink-0">
+                  <CardHeader className="text-center pb-2">
+                    <div className={`w-16 h-16 ${client.bg} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+                      <client.icon className={`w-8 h-8 ${client.color}`} />
+                    </div>
+                    <CardTitle className="text-lg">{client.name}</CardTitle>
+                    <CardDescription>{client.location}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    {client.url !== '#' ? (
+                      <a
+                        href={client.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-primary hover:text-primary/80 text-sm font-medium"
+                      >
+                        Visit Website <ExternalLink className="w-4 h-4" />
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">Private Client</span>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: Grid with Pagination */}
+          <div className="hidden md:block relative">
             {/* Carousel Navigation */}
             <div className="flex justify-between items-center mb-6">
               <button
@@ -927,6 +959,17 @@ const DataAI = () => {
             </motion.div>
           </div>
         </div>
+
+        {/* Hide scrollbar CSS */}
+        <style>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}</style>
       </section>
 
       {/* Expertise Showcase - Marquee Carousel */}
