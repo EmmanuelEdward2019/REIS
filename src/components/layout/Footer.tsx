@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Facebook, 
   Twitter, 
@@ -15,6 +17,39 @@ import {
 } from 'lucide-react';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes('@')) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('form_submissions')
+        .insert({
+          form_type: 'newsletter',
+          email: email,
+          source_page: window.location.pathname,
+          status: 'new'
+        });
+
+      if (error) throw error;
+
+      toast.success('Thank you for subscribing!');
+      setEmail('');
+    } catch (error) {
+      console.error('Error subscribing:', error);
+      toast.error('Failed to subscribe. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <footer className="bg-background border-t border-border pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -103,16 +138,22 @@ const Footer = () => {
               <p className="text-muted-foreground text-sm">
                 Subscribe to our newsletter for the latest updates on renewable energy solutions and industry insights.
               </p>
-              <div className="flex space-x-2">
+              <form onSubmit={handleNewsletterSubmit} className="flex space-x-2">
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="flex-1 px-4 py-2 bg-muted border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 />
-                <button className="px-6 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors">
-                  Subscribe
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="px-6 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Subscribing...' : 'Subscribe'}
                 </button>
-              </div>
+              </form>
             </div>
 
             {/* Social Media */}

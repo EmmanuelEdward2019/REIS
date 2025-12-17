@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ConsultationModalProps {
     isOpen: boolean;
@@ -36,13 +37,30 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose, 
     }, [defaultInterest, setValue]);
 
     const onSubmit = async (data: FormData) => {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        try {
+            // Save to Supabase form_submissions table
+            const { error } = await supabase
+                .from('form_submissions')
+                .insert({
+                    form_type: 'consultation',
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone || null,
+                    interest: data.interest,
+                    message: data.message || null,
+                    source_page: window.location.pathname,
+                    status: 'new'
+                });
 
-        console.log('Form submitted:', data);
-        toast.success("Request received! We'll get back to you shortly.");
-        reset();
-        onClose();
+            if (error) throw error;
+
+            toast.success("Request received! We'll get back to you shortly.");
+            reset();
+            onClose();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            toast.error('Failed to submit request. Please try again.');
+        }
     };
 
     return (

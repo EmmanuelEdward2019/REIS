@@ -452,9 +452,7 @@ const DataAI = () => {
                 Book a Call
               </Button>
               <a
-                href="mailto:info@eagleandthistlegroup.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="mailto:info@eagleandthistlegroup.com?subject=Data%20%26%20AI%20Inquiry"
                 className="inline-flex items-center justify-center font-semibold px-8 py-6 h-auto text-base bg-white text-blue-600 hover:bg-blue-50 rounded-md transition-colors cursor-pointer"
               >
                 <Mail className="mr-2 w-5 h-5" />

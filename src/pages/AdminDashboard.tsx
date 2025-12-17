@@ -89,6 +89,7 @@ import ProductManager from '@/components/admin/ProductManager';
 import JobCodesManager from '@/components/admin/JobCodesManager';
 import IoTControllersManager from '@/components/admin/IoTControllersManager';
 import PartnerManager from '@/components/admin/PartnerManager';
+import FormSubmissionsManager from '@/components/admin/FormSubmissionsManager';
 
 const AdminDashboard = () => {
   const { user, profile } = useAuth();
@@ -760,6 +761,7 @@ const AdminDashboard = () => {
                   <TabsTrigger value="tickets" className="text-xs sm:text-sm">Tickets</TabsTrigger>
                   <TabsTrigger value="orders" className="text-xs sm:text-sm">Orders</TabsTrigger>
                   <TabsTrigger value="inventory" className="text-xs sm:text-sm">Inventory</TabsTrigger>
+                  <TabsTrigger value="form_submissions" className="text-xs sm:text-sm">Forms</TabsTrigger>
                   <TabsTrigger value="news" className="text-xs sm:text-sm">News</TabsTrigger>
                   <TabsTrigger value="events" className="text-xs sm:text-sm">Events</TabsTrigger>
                   <TabsTrigger value="case_studies" className="text-xs sm:text-sm px-3 py-2">Case Studies</TabsTrigger>
@@ -813,6 +815,10 @@ const AdminDashboard = () => {
 
                 <TabsContent value="inventory" className="space-y-6">
                   <InventorySupplyChain />
+                </TabsContent>
+
+                <TabsContent value="form_submissions" className="space-y-6">
+                  <FormSubmissionsManager />
                 </TabsContent>
 
                 <TabsContent value="overview" className="space-y-6">

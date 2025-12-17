@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   MessageCircle, 
   Phone, 
@@ -20,6 +22,48 @@ import {
 } from 'lucide-react';
 
 const Support = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('form_submissions')
+        .insert({
+          form_type: 'contact',
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          source_page: '/support',
+          status: 'new'
+        });
+
+      if (error) throw error;
+
+      toast.success('Message sent! We\'ll get back to you soon.');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const supportChannels = [
     {
       icon: MessageCircle,
@@ -189,21 +233,34 @@ const Support = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form className="space-y-6">
+              <form onSubmit={handleContactSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">Name</label>
-                    <Input placeholder="Your full name" />
+                    <Input 
+                      placeholder="Your full name" 
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    />
                   </div>
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">Email</label>
-                    <Input type="email" placeholder="your@email.com" />
+                    <Input 
+                      type="email" 
+                      placeholder="your@email.com" 
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    />
                   </div>
                 </div>
                 
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">Subject</label>
-                  <Input placeholder="How can we help you?" />
+                  <Input 
+                    placeholder="How can we help you?" 
+                    value={formData.subject}
+                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                  />
                 </div>
                 
                 <div>
@@ -211,11 +268,13 @@ const Support = () => {
                   <Textarea 
                     placeholder="Please describe your question or issue in detail..."
                     className="min-h-[120px]"
+                    value={formData.message}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
                   />
                 </div>
                 
-                <Button size="lg" className="w-full">
-                  Send Message
+                <Button size="lg" className="w-full" type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </form>
